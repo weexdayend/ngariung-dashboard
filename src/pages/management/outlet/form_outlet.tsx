@@ -101,7 +101,7 @@ function FormOutlet({ onClose, onUpdated, item }: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   
-    const endpoint = newData ? `${process.env.APIURL}/outlet/register` : `${process.env.APIURL}/outlet/update`;
+    const endpoint = newData ? `https://dashboard-sakapulse.vercel.app/api/outlet/register` : `https://dashboard-sakapulse.vercel.app/api/outlet/update`;
     
     const body: any = {
       outletName,

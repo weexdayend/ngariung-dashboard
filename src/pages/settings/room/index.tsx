@@ -17,7 +17,7 @@ function Index({ token, roomData, popoverData }: Props) {
   const [datas, setDatas] = useState(roomData)
 
   const fetchNewData = async () => {
-    const response = await axios.get(`${process.env.APIURL}/room/get`, {
+    const response = await axios.get(`https://dashboard-sakapulse.vercel.app/api/room/get`, {
         headers: {
           Authorization: `${token}`
         }
@@ -56,14 +56,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     }
 
-    const response = await axios.get(`${process.env.APIURL}/room/get`, {
+    const response = await axios.get(`https://dashboard-sakapulse.vercel.app/api/room/get`, {
       headers: {
         Authorization: `${cookies['token']}`
       },
     });
     const roomData = await response.data;
 
-    const popover = await axios.get(`${process.env.APIURL}/outlet/get`, {
+    const popover = await axios.get(`https://dashboard-sakapulse.vercel.app/api/outlet/get`, {
       headers: {
         Authorization: `${cookies['token']}`
       }

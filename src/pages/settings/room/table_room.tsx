@@ -53,7 +53,7 @@ function TableRoom({ token, roomData, popoverData, onUpdated }: Props) {
   ]
 
   const assigned = async (roomId: any, assignedId: any) => {
-    const endpoint = '/api/room/assigned';
+    const endpoint = 'https://dashboard-sakapulse.vercel.app/api/room/assigned';
     const body: any = {
       roomId: roomId,
       assignedOutletId: assignedId,

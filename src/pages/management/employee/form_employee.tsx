@@ -87,7 +87,7 @@ function FormEmployee({ onClose, onUpdated, item }: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   
-    const endpoint = newData ? `${process.env.APIURL}/employee/register` : `${process.env.APIURL}/employee/update`;
+    const endpoint = newData ? `https://dashboard-sakapulse.vercel.app/api/employee/register` : `https://dashboard-sakapulse.vercel.app/api/employee/update`;
     
     const body: any = {
       employeeName,

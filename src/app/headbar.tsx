@@ -6,13 +6,9 @@ import {
 } 
 from '@heroicons/react/outline'
 
-import { useSelector } from 'react-redux'
-import { selectedMenu } from '@/utils/menuReducers'
-import { selectedSubMenu } from '@/utils/menuReducers'
+import axios from 'axios'
 
 import { Popover, Transition } from '@headlessui/react'
-
-import axios from 'axios'
 import { useRouter } from 'next/router'
 
 interface Profile {
@@ -29,7 +25,7 @@ function HeadBar() {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get(`${process.env.APIURL}/profile`);
+        const response = await axios.get(`https://dashboard-sakapulse.vercel.app/api/profile`);
         setProfileData(response.data);
       } catch (error) {
         console.error('Error fetching profile data:', error);
@@ -37,7 +33,7 @@ function HeadBar() {
     };
     const fetchBusinessData = async () => {
       try {
-        const response = await axios.get(`${process.env.APIURL}/business/get`);
+        const response = await axios.get(`https://dashboard-sakapulse.vercel.app/api/business/get`);
         const businessData = response.data;
 
         if (businessData) {
@@ -66,7 +62,7 @@ function HeadBar() {
 
   function handleLogout() {
     // Call the logout API route
-    axios.post(`${process.env.APIURL}/logout`)
+    axios.post(`https://dashboard-sakapulse.vercel.app/api/logout`)
       .then(() => {
         // Redirect the user to the login page or any other appropriate page
         router.replace('/auth');

@@ -53,7 +53,7 @@ function Body({}: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const endpoint = newData ? `${process.env.APIURL}/business/register` : `${process.env.APIURL}/business/update`;
+    const endpoint = newData ? `https://dashboard-sakapulse.vercel.app/api/business/register` : `https://dashboard-sakapulse.vercel.app/api/business/update`;
     const response = await toast.promise(
       axios.post(endpoint, { businessName, businessPhone, businessEmail }),
       {

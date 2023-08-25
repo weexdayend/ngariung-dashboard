@@ -70,7 +70,7 @@ function FormRoom({ onClose, onUpdated, token, item }: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const endpoint = newData ? `${process.env.APIURL}/room/register` : `${process.env.APIURL}/room/update`;
+    const endpoint = newData ? `https://dashboard-sakapulse.vercel.app/api/room/register` : `https://dashboard-sakapulse.vercel.app/api/room/update`;
 
     const body: any = {
       roomName,

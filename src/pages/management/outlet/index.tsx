@@ -16,7 +16,7 @@ function OutletManagement({ token, data }: Props) {
   const [datas, setDatas] = useState(data)
 
   const fetchNewData = async () => {
-    const response = await axios.get(`${process.env.APIURL}/outlet/get`, {
+    const response = await axios.get(`https://dashboard-sakapulse.vercel.app/api/outlet/get`, {
         headers: {
           Authorization: `${token}`
         }
@@ -55,7 +55,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     }
 
-    const response = await axios.get(`${process.env.APIURL}/outlet/get`, {
+    const response = await axios.get(`https://dashboard-sakapulse.vercel.app/api/outlet/get`, {
       headers: {
         Authorization: `${cookies['token']}`
       }
