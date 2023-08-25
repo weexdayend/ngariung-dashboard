@@ -24,7 +24,7 @@ function Body({}: Props) {
           {
             form == 'login' ? (
               <p className="text-sm leading-6">
-                Don't have a SakaPulse account? <span onClick={() => setForm('register')} className="text-indigo-600 font-bold cursor-pointer hover:text-indigo-500">Sign up</span>
+                Not having yet a SakaPulse account? <span onClick={() => setForm('register')} className="text-indigo-600 font-bold cursor-pointer hover:text-indigo-500">Sign up</span>
               </p>
             ) : (
               <p className="text-sm leading-6">
