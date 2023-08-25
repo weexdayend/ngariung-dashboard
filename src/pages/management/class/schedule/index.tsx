@@ -56,14 +56,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  const responseFitness = await axios.get('http://localhost:3000/api/class/get', {
+  const responseFitness = await axios.get('/api/class/get', {
     headers: {
       Authorization: `${cookies['token']}`
     },
   });
   const fitnessData = await responseFitness.data;
 
-  const responseOutlet = await axios.get('http://localhost:3000/api/outlet/byline?line=Fitness', {
+  const responseOutlet = await axios.get('/api/outlet/byline?line=Fitness', {
     headers: {
       Authorization: `${cookies['token']}`
     },
