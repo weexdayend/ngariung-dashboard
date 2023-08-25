@@ -7,9 +7,9 @@ import { GetServerSideProps } from 'next';
 import cookie from 'cookie'
 
 type Props = {
-  error: any,
-  token: any,
-  fitnessData: any,
+  error: any
+  token: any
+  fitnessData: any
   outletData: any
 }
 

@@ -6,9 +6,10 @@ import { GetServerSideProps } from 'next';
 import cookie from 'cookie'
 
 type Props = {
-  token: any;
-  popoverData: any;
-  data: any;
+  error: any
+  token: any
+  popoverData: any
+  data: any
 }
 
 function EmployeeManagement({ token, popoverData, data }: Props) {
@@ -16,7 +17,7 @@ function EmployeeManagement({ token, popoverData, data }: Props) {
   const [datas, setDatas] = useState(data)
 
   const fetchNewData = async () => {
-    const response = await axios.get('/api/employee/get', {
+    const response = await axios.get(`${process.env.APIURL}/employee/get`, {
         headers: {
           Authorization: `${token}`
         }
@@ -40,47 +41,55 @@ function EmployeeManagement({ token, popoverData, data }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const cookies = cookie.parse(context.req.headers.cookie || '');
+  try {
+    const cookies = cookie.parse(context.req.headers.cookie || '');
   
-  // Check if the user is authenticated using the cookies
-  const isAuthenticated = !!cookies['token'] && !!cookies['refreshToken'];
-
-  if (!isAuthenticated) {
-    return {
-      redirect: {
-        destination: '/auth', // Redirect to login if not authenticated
-        permanent: false,
-      },
+    // Check if the user is authenticated using the cookies
+    const isAuthenticated = !!cookies['token'] && !!cookies['refreshToken'];
+  
+    if (!isAuthenticated) {
+      return {
+        redirect: {
+          destination: '/auth', // Redirect to login if not authenticated
+          permanent: false,
+        },
+      }
     }
-  }
-
-  const response = await axios.get('http://localhost:3000/api/employee/get', {
-    headers: {
-      Authorization: `${cookies['token']}`
-    }
-  });
-  const data = await response.data;
-
-  const popover = await axios.get('http://localhost:3000/api/outlet/get', {
+  
+    const response = await axios.get(`${process.env.APIURL}/employee/get`, {
       headers: {
         Authorization: `${cookies['token']}`
       }
     });
-  const popoverData = await popover.data;
-  const transformedData = popoverData.data.map((item: any) => {
+    const data = await response.data;
+  
+    const popover = await axios.get(`${process.env.APIURL}//outlet/get`, {
+        headers: {
+          Authorization: `${cookies['token']}`
+        }
+      });
+    const popoverData = await popover.data;
+    const transformedData = popoverData.data.map((item: any) => {
+      return {
+        id: item._id, // Replace this with the actual ID field in the response
+        name: item.outletName, // Replace this with the actual field name for outlet name
+      };
+    });
+  
     return {
-      id: item._id, // Replace this with the actual ID field in the response
-      name: item.outletName, // Replace this with the actual field name for outlet name
+      props: {
+        token: `${cookies['token']}`,
+        popoverData: transformedData,
+        data,
+      },
     };
-  });
-
-  return {
-    props: {
-      token: `${cookies['token']}`,
-      popoverData: transformedData,
-      data,
-    },
-  };
+  } catch(error: any) {
+    return {
+      props: {
+        error: error
+      }
+    }
+  }
 }
 
 export default EmployeeManagement

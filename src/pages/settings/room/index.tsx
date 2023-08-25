@@ -17,7 +17,7 @@ function Index({ token, roomData, popoverData }: Props) {
   const [datas, setDatas] = useState(roomData)
 
   const fetchNewData = async () => {
-    const response = await axios.get('/api/room/get', {
+    const response = await axios.get(`${process.env.APIURL}/room/get`, {
         headers: {
           Authorization: `${token}`
         }
@@ -41,47 +41,55 @@ function Index({ token, roomData, popoverData }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const cookies = cookie.parse(context.req.headers.cookie || '');
+  try {
+    const cookies = cookie.parse(context.req.headers.cookie || '');
   
-  // Check if the user is authenticated using the cookies
-  const isAuthenticated = !!cookies['token'] && !!cookies['refreshToken'];
+    // Check if the user is authenticated using the cookies
+    const isAuthenticated = !!cookies['token'] && !!cookies['refreshToken'];
 
-  if (!isAuthenticated) {
-    return {
-      redirect: {
-        destination: '/auth', // Redirect to login if not authenticated
-        permanent: false,
+    if (!isAuthenticated) {
+      return {
+        redirect: {
+          destination: '/auth', // Redirect to login if not authenticated
+          permanent: false,
+        },
+      }
+    }
+
+    const response = await axios.get(`${process.env.APIURL}/room/get`, {
+      headers: {
+        Authorization: `${cookies['token']}`
       },
+    });
+    const roomData = await response.data;
+
+    const popover = await axios.get(`${process.env.APIURL}/outlet/get`, {
+      headers: {
+        Authorization: `${cookies['token']}`
+      }
+    });
+    const popoverData = await popover.data;
+    const transformedData = popoverData.data.map((item: any) => {
+      return {
+        id: item._id, // Replace this with the actual ID field in the response
+        name: item.outletName, // Replace this with the actual field name for outlet name
+      };
+    });
+
+    return {
+      props: {
+        token: cookies['token'],
+        roomData,
+        popoverData: transformedData,
+      },
+    };
+  } catch(error: any) {
+    return {
+      props: {
+        error: error
+      }
     }
   }
-
-  const response = await axios.get('http://localhost:3000/api/room/get', {
-    headers: {
-      Authorization: `${cookies['token']}`
-    },
-  });
-  const roomData = await response.data;
-
-  const popover = await axios.get('http://localhost:3000/api/outlet/get', {
-    headers: {
-      Authorization: `${cookies['token']}`
-    }
-  });
-  const popoverData = await popover.data;
-  const transformedData = popoverData.data.map((item: any) => {
-    return {
-      id: item._id, // Replace this with the actual ID field in the response
-      name: item.outletName, // Replace this with the actual field name for outlet name
-    };
-  });
-
-  return {
-    props: {
-      token: cookies['token'],
-      roomData,
-      popoverData: transformedData,
-    },
-  };
 }
 
 export default Index

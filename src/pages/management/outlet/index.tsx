@@ -6,8 +6,9 @@ import { GetServerSideProps } from 'next';
 import cookie from 'cookie'
 
 type Props = {
-  token: any;
-  data: any;
+  error: any
+  token: any
+  data: any
 }
 
 function OutletManagement({ token, data }: Props) {
@@ -15,7 +16,7 @@ function OutletManagement({ token, data }: Props) {
   const [datas, setDatas] = useState(data)
 
   const fetchNewData = async () => {
-    const response = await axios.get('/api/outlet/get', {
+    const response = await axios.get(`${process.env.APIURL}/outlet/get`, {
         headers: {
           Authorization: `${token}`
         }
@@ -39,33 +40,41 @@ function OutletManagement({ token, data }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const cookies = cookie.parse(context.req.headers.cookie || '');
+  try{
+    const cookies = cookie.parse(context.req.headers.cookie || '');
   
-  // Check if the user is authenticated using the cookies
-  const isAuthenticated = !!cookies['token'] && !!cookies['refreshToken'];
+    // Check if the user is authenticated using the cookies
+    const isAuthenticated = !!cookies['token'] && !!cookies['refreshToken'];
 
-  if (!isAuthenticated) {
+    if (!isAuthenticated) {
+      return {
+        redirect: {
+          destination: '/auth', // Redirect to login if not authenticated
+          permanent: false,
+        },
+      }
+    }
+
+    const response = await axios.get(`${process.env.APIURL}/outlet/get`, {
+      headers: {
+        Authorization: `${cookies['token']}`
+      }
+    });
+    const data = await response.data;
+
     return {
-      redirect: {
-        destination: '/auth', // Redirect to login if not authenticated
-        permanent: false,
+      props: {
+        token: cookies['token'],
+        data,
       },
+    };
+  } catch(error: any) {
+    return {
+      props: {
+        error: error
+      }
     }
   }
-
-  const response = await axios.get('http://localhost:3000/api/outlet/get', {
-    headers: {
-      Authorization: `${cookies['token']}`
-    }
-  });
-  const data = await response.data;
-
-  return {
-    props: {
-      token: cookies['token'],
-      data,
-    },
-  };
 }
 
 export default OutletManagement
