@@ -45,18 +45,18 @@ async function getOutletData(businessId: any) {
 }
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== 'GET') {
-    return res.status(405).end(); // Method Not Allowed
-  }
-
-  const cookies = req.headers.authorization
-  const token = cookies;
-
-  if (!token || !SECRET) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
-
   try {
+    if (req.method !== 'GET') {
+      return res.status(405).end(); // Method Not Allowed
+    }
+  
+    const cookies = req.headers.authorization
+    const token = cookies;
+  
+    if (!token || !SECRET) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
     // Verify the token
     const decodedToken = verify(token, SECRET) as JwtPayload;
     const userId = decodedToken.userId;
