@@ -116,20 +116,29 @@ function FormOutlet({ onClose, onUpdated, item }: Props) {
       body['_id'] = item._id;
       body['status'] = outletStatus
     }
-  
+
+    const responsePromise = new Promise(async (resolve, reject) => {
+      try {
+        const response = await axios.post(endpoint, body)
+        resolve(response.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+
     await toast.promise(
-      axios.post(endpoint, body),
+      responsePromise, // Resolve with the response data
       {
-        loading: 'Store your data...',
-        success: () => {
+        loading: 'Updating your data...',
+        success: (response: any) => {
           setTimeout(() => {
             onClose();
             onUpdated();
           }, 1500);
-          return newData ? 'Outlet registered successfully' : 'Outlet updated successfully';
+          return response.message;
         },
-        error: () => {
-          return 'An error occurred';
+        error: (e: any) => {
+          return e.response?.data?.error
         },
       }
     );
@@ -140,6 +149,14 @@ function FormOutlet({ onClose, onUpdated, item }: Props) {
       <Toaster
         position="bottom-center"
         reverseOrder={false}
+        toastOptions={{
+          success: {
+            style: {
+              background: 'linear-gradient(90deg, #4f46e5 0%, #fb7185 100%)', // Green gradient
+              color: '#fff'
+            },
+          },
+        }}
       />
       <form onSubmit={handleSubmit}>
         <div className="space-y-12">
