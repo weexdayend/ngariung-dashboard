@@ -70,7 +70,7 @@ function FormRoom({ onClose, onUpdated, token, item }: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const endpoint = newData ? '/api/room/register' : '/api/room/update';
+    const endpoint = newData ? `${process.env.APIURL}/room/register` : `${process.env.APIURL}/room/update`;
 
     const body: any = {
       roomName,

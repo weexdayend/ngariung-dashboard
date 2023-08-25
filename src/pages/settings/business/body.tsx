@@ -27,7 +27,7 @@ function Body({}: Props) {
   useEffect(() => {
     const fetchBusinessData = async () => {
       try {
-        const response = await axios.get('/api/business/get');
+        const response = await axios.get(`${process.env.APIURL}/business/get`);
         const businessData = response.data;
 
         if (response.status === 200) {

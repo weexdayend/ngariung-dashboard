@@ -151,7 +151,7 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const endpoint = '/api/class/register';
+    const endpoint = `${process.env.APIURL}/class/register`;
 
     const newSlot: Slot = {
       instructor: selectInstructor.name,

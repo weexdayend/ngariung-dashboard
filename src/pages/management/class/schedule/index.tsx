@@ -21,7 +21,7 @@ function Index({ error, token, fitnessData, outletData }: Props) {
   const [datas, setDatas] = useState(fitnessData)
 
   const fetchNewData = async () => {
-    const response = await axios.get('https://dashboard-sakapulse.vercel.app/api/class/get', {
+    const response = await axios.get(`${process.env.APIURL}/class/get`, {
         headers: {
           Authorization: `${token}`
         }
@@ -60,14 +60,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     }
   
-    const responseFitness = await axios.get('https://dashboard-sakapulse.vercel.app/api/class/get', {
+    const responseFitness = await axios.get(`${process.env.APIURL}/class/get`, {
       headers: {
         Authorization: `${cookies['token']}`
       },
     });
     const fitnessData = await responseFitness.data;
   
-    const responseOutlet = await axios.get('https://dashboard-sakapulse.vercel.app/api/outlet/byline?line=Fitness', {
+    const responseOutlet = await axios.get(`${process.env.APIURL}/outlet/byline?line=Fitness`, {
       headers: {
         Authorization: `${cookies['token']}`
       },

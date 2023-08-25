@@ -87,7 +87,7 @@ function FormEmployee({ onClose, onUpdated, item }: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   
-    const endpoint = newData ? '/api/employee/register' : '/api/employee/update';
+    const endpoint = newData ? `${process.env.APIURL}/employee/register` : `${process.env.APIURL}/employee/update`;
     
     const body: any = {
       employeeName,
