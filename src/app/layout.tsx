@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
 import './globals.css'
 
@@ -6,16 +6,16 @@ import Head from 'next/head';
 import Sidebar from './sidebar';
 import HeadBar from './headbar';
 
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
-import 'react-big-calendar/lib/css/react-big-calendar.css'
+import './styles.css'; // main style file
+import './default.css'; // theme css file
+import './react-big-calendar.css'
 
 import { store } from '@/utils/store';
 
 import Router from 'next/router';
 import NProgress from 'nprogress'; // Import nprogress styles as well
 
-import 'nprogress/nprogress.css'; // Import nprogress styles
+import './nprogress.css'; // Import nprogress styles
 import BreadCrumbs from '@/components/breadcrumbs';
 
 // Binding events to show and hide the loading progress bar
