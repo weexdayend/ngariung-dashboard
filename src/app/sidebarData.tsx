@@ -21,7 +21,7 @@ export const sidebarData: MenuItem[] = [
       { id: 34, label: 'Outlet', icon: 'location_marker', link: 'management/outlet' },
       { id: 35, label: 'Employee', icon: 'users', link: 'management/employee' },
       { id: 36, label: 'Supplier', icon: 'office_building', link: 'management/supplier' },
-      { id: 36, label: 'Room', icon: 'home', link: 'management/room' },
+      { id: 37, label: 'Room', icon: 'home', link: 'management/room' },
     ]
   },
   {
