@@ -16,7 +16,7 @@ function EmployeeManagement({ token, popoverData, data }: Props) {
   const [datas, setDatas] = useState(data)
 
   const fetchNewData = async () => {
-    const response = await axios.get('https://dashboard-salestracker.vercel.app/api/employee/get', {
+    const response = await axios.get('/api/employee/get', {
         headers: {
           Authorization: `${token}`
         }

@@ -40,6 +40,8 @@ function Body({}: Props) {
           className="absolute inset-0 w-full h-full object-cover"
           src="/assets/pexel-bg-login.jpg"
           alt="SAKA GROUP"
+          width={1000}
+          height={1000}
         />
       </div>
     </div>

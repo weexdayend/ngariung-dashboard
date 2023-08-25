@@ -15,7 +15,7 @@ function OutletManagement({ token, data }: Props) {
   const [datas, setDatas] = useState(data)
 
   const fetchNewData = async () => {
-    const response = await axios.get('https://dashboard-salestracker.vercel.app/api/outlet/get', {
+    const response = await axios.get('/api/outlet/get', {
         headers: {
           Authorization: `${token}`
         }

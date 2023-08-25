@@ -173,6 +173,8 @@ function LoginForm({}: Props) {
           className="h-14 w-auto"
           src="/assets/sales-tracker-logo.png"
           alt="Your Company"
+          width={100}
+          height={100}
         />
         <h2 className="mt-10 text-left text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Sign in to your account

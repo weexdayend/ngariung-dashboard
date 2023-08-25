@@ -17,7 +17,7 @@ function Index({ token, roomData, popoverData }: Props) {
   const [datas, setDatas] = useState(roomData)
 
   const fetchNewData = async () => {
-    const response = await axios.get('https://dashboard-salestracker.vercel.app/api/room/get', {
+    const response = await axios.get('/api/room/get', {
         headers: {
           Authorization: `${token}`
         }
