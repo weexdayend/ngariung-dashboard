@@ -1,9 +1,14 @@
+import RootLayout from '@/app/layout';
 import { parse } from 'cookie';
 import { GetServerSideProps } from 'next';
 
-const Index = () => {
-  return null;
-};
+function Index({ Component, pageProps }: any) {
+  return (
+    <RootLayout>
+      <Component {...pageProps} />
+    </RootLayout>
+  );
+}
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookies = parse(context.req.headers.cookie || '');

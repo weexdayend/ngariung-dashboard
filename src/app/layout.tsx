@@ -8,6 +8,7 @@ import HeadBar from './headbar';
 
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
+import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 import { store } from '@/utils/store';
 
@@ -15,6 +16,7 @@ import Router from 'next/router';
 import NProgress from 'nprogress'; // Import nprogress styles as well
 
 import 'nprogress/nprogress.css'; // Import nprogress styles
+import BreadCrumbs from '@/components/breadcrumbs';
 
 // Binding events to show and hide the loading progress bar
 Router.events.on('routeChangeStart', () => NProgress.start());
@@ -43,6 +45,7 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
 
             {/* Page content goes here */}
             <main className="mt-4">
+              <BreadCrumbs />
               {children}
             </main>
             

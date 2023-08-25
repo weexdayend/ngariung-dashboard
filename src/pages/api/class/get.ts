@@ -67,7 +67,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const formattedDataArray = fitnessData.map((dataItem) => {
       const {
         _id,
-        day,
+        date,
         outletId,
         tenantId,
         schedule,
@@ -76,7 +76,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     
       return {
         _id,
-        day,
+        date,
         outletId,
         tenantId,
         schedule,

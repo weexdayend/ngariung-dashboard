@@ -16,7 +16,7 @@ async function addSchedule(scheduleData: any, tenantId: any) {
     const collection = db.collection('FitnessClass');
 
     const existingSchedule = await collection.findOne({
-      day: scheduleData.day,
+      date: scheduleData.date,
       outletId: new ObjectId(scheduleData.outlet),
       tenantId: new ObjectId(tenantId),
       schedule: {
@@ -60,7 +60,7 @@ async function addSchedule(scheduleData: any, tenantId: any) {
       // Insert the new schedule data
       const result = await collection.updateOne(
         {
-          day: scheduleData.day,
+          date: scheduleData.date,
           outletId: new ObjectId(scheduleData.outlet),
           tenantId: new ObjectId(tenantId),
         },
@@ -84,7 +84,7 @@ async function addSchedule(scheduleData: any, tenantId: any) {
         return 'Schedule added successfully';
       } else if (result.matchedCount === 0) {
         const insertResult = await collection.insertOne({
-          day: scheduleData.day,
+          date: scheduleData.date,
           outletId: new ObjectId(scheduleData.outlet),
           tenantId: new ObjectId(tenantId),
           schedule: scheduleData.schedule
@@ -119,7 +119,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const { 
-    day,
+    date,
     outlet,
     schedule,
   } = req.body;
@@ -146,7 +146,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(200).json({ message: 'Outlet not found' })
     }
 
-    const result = await addSchedule({day, outlet, schedule}, business?.tenantId);
+    const result = await addSchedule({date, outlet, schedule}, business?.tenantId);
 
     res.status(201).json({ message: result });
   } catch (error: any) {

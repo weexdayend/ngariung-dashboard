@@ -11,6 +11,7 @@ import NumberField from '@/components/number_fields';
 import {
   BriefcaseIcon,
 } from '@heroicons/react/solid'
+import DateField from '@/components/date_fields';
 
 interface Slot {
   instructor: string;
@@ -25,7 +26,7 @@ interface Slot {
 }
 
 interface ClassSchedule {
-  day: string;
+  date: string;
   outlet: string;
   schedule: Slot[];
 }
@@ -43,16 +44,6 @@ type Props = {
   outletData: any;
 }
 
-const ListDay = [
-  { id: '1', name: 'Sunday' },
-  { id: '2', name: 'Monday' },
-  { id: '3', name: 'Tuesday' },
-  { id: '4', name: 'Wednesday' },
-  { id: '5', name: 'Thursday' },
-  { id: '6', name: 'Friday' },
-  { id: '7', name: 'Saturday' },
-]
-
 const TypeClass = [
   { id: '0', name: 'Beginner' },
   { id: '1', name: 'Regular' },
@@ -62,10 +53,10 @@ const TypeClass = [
 
 function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
   const [className, setClassName] = useState<string>('');
-  const [day, setDay] = useState<DropDownList | { id: '', name: '' }>({ id: '', name: '' });
   const [startTime, setStartTime] = useState<string>('');
   const [endTime, setEndTime] = useState<string>('');
   const [maxBookings, setMaxBookings] = useState<number>(0);
+  const [selectedDate, setSelectedDate] = useState('');
 
   const [selectOutlet, setSelectOutlet] = useState<DropDownList | { id: '', name: '' }>({ id: '', name: '' })
   const [selectInstructor, setSelectInstructor] = useState<DropDownList | { id: '', name: '' }>({ id: '', name: '' })
@@ -74,6 +65,9 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
 
   const [itemEmployee, setItemEmployee] = useState<any[]>([]);
   const [itemRoom, setItemRoom] = useState<any[]>([]);
+
+  const [newData, setNewData] = useState(!item)
+  const [dataChanged, setDataChanged] = useState(false);
 
   const formattedDataArray = outletData.data.map((dataItem: any) => {
     const { id, name, employees, rooms } = dataItem;
@@ -94,6 +88,45 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
       return null; // Exclude outlets without employees and rooms data
     }
   }).filter(Boolean); // Remove null values from the array
+
+  useEffect(() => {
+    if (item) {
+      setClassName(item.className || '');
+      setStartTime(item.startTime || '');
+      setEndTime(item.endTime || '');
+      setMaxBookings(item.maxBookings || '');
+      setSelectedDate(item.classDate || '');
+      setSelectOutlet({ id: 'edit', name: item.outlet } || { id: '', name: '' });
+      setSelectInstructor({ id: 'edit', name: item.instructor } || { id: '', name: '' });
+      setSelectRoom({ id: 'edit', name: item.room } || { id: '', name: '' });
+      setTypeClass(item.classType || '');
+    }
+  }, [item]);
+
+  useEffect(() => {
+    if(item){
+      const hasDataChanged =
+        item.className !== className ||
+        item.startTime !== startTime ||
+        item.endTime !== endTime ||
+        item.maxBookings !== maxBookings ||
+        item.classDate !== selectedDate ||
+        item.outlet !== selectOutlet.name ||
+        item.instructor !== selectInstructor.name ||
+        item.room !== selectRoom.name;
+
+      setDataChanged(hasDataChanged);
+    }
+  }, [
+    className, 
+    startTime, 
+    endTime, 
+    maxBookings, 
+    selectedDate,
+    selectOutlet,
+    selectInstructor,
+    selectRoom,
+  ])
 
   useEffect(() => {
     if (selectOutlet.id !== '' && selectOutlet.name !== '') {
@@ -129,7 +162,7 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
     };
   
     const newSchedule: ClassSchedule = {
-      day: day.name,
+      date: selectedDate,
       outlet: selectOutlet.id,
       schedule: [newSlot],
     };
@@ -165,6 +198,20 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
     }
   };
 
+  useEffect(() => {
+    setSelectInstructor({ id: '', name: '' });
+    setSelectRoom({ id: '', name: '' });
+  }, [selectOutlet])
+
+  const isAnyFieldEmpty = !className ||
+                          !startTime ||
+                          !endTime ||
+                          !maxBookings ||
+                          !selectedDate ||
+                          !selectOutlet ||
+                          !selectInstructor ||
+                          !selectRoom;
+
   return (
     <React.Fragment>
       <Toaster
@@ -182,8 +229,8 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
       <form onSubmit={handleSubmit}>
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-base font-semibold leading-7 text-gray-900">Class Information</h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">Give an information about your class.</p>
+            <h2 className="text-base font-semibold leading-7 text-gray-900">Schedule Information</h2>
+            <p className="mt-1 text-sm leading-6 text-gray-600">Give an information about your schedule.</p>
 
             <div className="w-full col-span-full flex flex-row items-center space-x-2 mt-6">
               {
@@ -199,7 +246,13 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-full">
                 <div className="mt-2">
-                  <ListDropdown label="Select outlet" holder="Choose outlet first..." value={selectOutlet || { id: '', name: '' }} onChange={setSelectOutlet} options={formattedDataArray} />
+                  <ListDropdown label="Select outlet" holder="Choose outlet first..." value={selectOutlet} onChange={setSelectOutlet} options={formattedDataArray} />
+                </div>
+              </div>
+
+              <div className="sm:col-span-full">
+                <div className="mt-2">
+                  <DateField label="Select a date" holder="Select a date" value={selectedDate} onChange={setSelectedDate} />
                 </div>
               </div>
 
@@ -211,35 +264,29 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
 
               <div className="col-span-full">
                 <div className="mt-2">
-                  <ListDropdown label="Select instructor" holder="Choose instructor class..." value={selectInstructor || { id: '', name: '' }} onChange={setSelectInstructor} options={itemEmployee} />
+                  <ListDropdown label="Select instructor" holder="Choose instructor class..." value={selectInstructor} onChange={setSelectInstructor} options={itemEmployee} />
                 </div>
               </div>
 
-              <div className="col-span-3">
+              <div className="col-span-full">
                 <div className="mt-2">
-                <ListDropdown label="Select room" holder="Choose room class..." value={selectRoom || { id: '', name: '' }} onChange={setSelectRoom} options={itemRoom} />
+                <ListDropdown label="Select room" holder="Choose room class..." value={selectRoom} onChange={setSelectRoom} options={itemRoom} />
                 </div>
               </div>
 
-              <div className="col-span-3">
+              <div className="col-span-2">
                 <div className="mt-2">
                   <NumberField label="Max quota" value={maxBookings} onChange={setMaxBookings} />
                 </div>
               </div>
 
-              <div className="sm:col-span-full">
-                <div className="mt-2">
-                  <ListDropdown label="Select day" holder="Choose class day..." value={day || { id: '', name: '' }} onChange={setDay} options={ListDay} />
-                </div>
-              </div>
-
-              <div className="col-span-3">
+              <div className="col-span-2">
                 <div className="mt-2">
                   <InputTime label="Start time" value={startTime} onChange={setStartTime} />
                 </div>
               </div>
 
-              <div className="col-span-3">
+              <div className="col-span-2">
                 <div className="mt-2">
                   <InputTime label="End time" value={endTime} onChange={setEndTime} />
                 </div>
@@ -256,13 +303,7 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
           >
             Cancel
           </button>
-          <button
-            type="submit"
-            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Save data
-          </button>
-          {/* {
+          {
             newData ? (
               <button
                 type="submit"
@@ -280,7 +321,7 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
                 Update data
               </button>
             )
-          } */}
+          }
         </div>
       </form>
     </React.Fragment>

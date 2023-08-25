@@ -28,6 +28,7 @@ import {
   AtSymbolIcon,
   CollectionIcon,
   CloudDownloadIcon,
+  CalendarIcon,
 } from '@heroicons/react/outline'
 
 export interface SubMenuItem {
@@ -73,4 +74,5 @@ export const Heroicons = {
   symbol: AtSymbolIcon,
   collection: CollectionIcon,
   cloudown: CloudDownloadIcon,
+  calendar: CalendarIcon,
 };

@@ -1,11 +1,8 @@
 import React, { useEffect, useState, Fragment } from 'react'
 
 import {
-  BellIcon, 
-  ChevronDownIcon, 
-  InformationCircleIcon, 
-  SearchIcon,
-  XCircleIcon
+  BellIcon,
+  InformationCircleIcon,
 } 
 from '@heroicons/react/outline'
 
@@ -25,6 +22,7 @@ interface Profile {
 
 function HeadBar() {
   const [profileData, setProfileData] = useState<Profile | null>(null);
+  const [businessName, setBusinessName] = useState(null);
 
   const router = useRouter();
 
@@ -37,7 +35,21 @@ function HeadBar() {
         console.error('Error fetching profile data:', error);
       }
     };
+    const fetchBusinessData = async () => {
+      try {
+        const response = await axios.get('/api/business/get');
+        const businessData = response.data;
 
+        if (businessData) {
+          // Data exists, update state
+          setBusinessName(businessData.businessName);
+        }
+      } catch (error) {
+        console.error('Error fetching business data:', error);
+      }
+    };
+
+    fetchBusinessData();
     fetchProfileData();
   }, []);
 
@@ -48,9 +60,6 @@ function HeadBar() {
       href: '##',
     },
   ]
-
-  const menu = useSelector(selectedMenu)
-  const subMenu = useSelector(selectedSubMenu)
 
   const nameParts = profileData?.name?.split(' ') ?? [];
   const initials = (nameParts[0]?.charAt(0) ?? '') + (nameParts[1]?.charAt(0) ?? '');
@@ -67,13 +76,22 @@ function HeadBar() {
       });
   }
 
+  const handleRoute = () => {    
+    router.push('settings/business')
+  }
+
   return (
     <nav className="z-50 bg-opacity-10 backdrop-filter backdrop-blur-xl sticky top-0 rounded-b-3xl">
       <div className="backdrop-blur-md bg-white/10 px-1 py-4 rounded-b-3xl">
         <div className="flex items-center justify-between mx-auto px-4">
           <div className='w-full col-span-2 ml-4'>
-            <div className="text-blue-950 text-xs font-sans">{menu} / {subMenu}</div>
-            <div className="text-blue-950 font-bold text-4xl">{subMenu}</div>
+          {
+            businessName != null ? (
+            <div className="text-blue-950 font-bold text-4xl">{businessName}</div>
+            ) : (
+            <div onClick={() => handleRoute()} className="text-blue-950 font-bold text-4xl">No Business yet</div>
+            )
+          }
           </div>
           <div className="xs:hidden sm:hidden md:hidden lg:flex xl:flex flex-row items-center px-3 py-2 rounded-full space-x-3">
             <BellIcon height={24} width={24} className="text-blue-9500 cursor-pointer" />

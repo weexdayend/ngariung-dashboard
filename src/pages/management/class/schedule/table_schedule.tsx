@@ -3,6 +3,10 @@ import React, { useEffect, useState } from 'react'
 import PanelComponent from '../../../../components/panel_component'
 import FormSchedule from './form_schedule'
 
+import { Calendar, momentLocalizer } from 'react-big-calendar'
+import moment from 'moment'
+
+const localizer = momentLocalizer(moment)
 
 type Props = {
   onUpdated: () => void;
@@ -28,11 +32,11 @@ function TableClass({ onUpdated, token, fitnessData, outletData }: Props) {
     const groupedData: any = {};
   
     data.forEach((item: any) => {
-      const { day, ...rest } = item;
-      if (!groupedData[day]) {
-        groupedData[day] = [rest];
+      const { date, ...rest } = item;
+      if (!groupedData[date]) {
+        groupedData[date] = [rest];
       } else {
-        groupedData[day].push(rest);
+        groupedData[date].push(rest);
       }
     });
   
@@ -77,7 +81,7 @@ function TableClass({ onUpdated, token, fitnessData, outletData }: Props) {
     )
   }
 
-  const RenderTable = ({item}: any) => {
+  const RenderTable = () => {
     return(
       <div className='row-span-1 w-full h-fit px-6 py-6 bg-white rounded-3xl shadow-xl shadow-gray-100'>
         <RenderFilter />
@@ -90,10 +94,10 @@ function TableClass({ onUpdated, token, fitnessData, outletData }: Props) {
             </tr>
           </thead>
           <tbody>
-          {Object.entries(groupedData).map(([day, items]: [string, any]) => (
-            <React.Fragment key={day}>
-              <tr className="bg-gray-50" key={day}>
-                <td colSpan={8} className="px-6 py-3 font-semibold">{day}</td>
+          {Object.entries(groupedData).map(([date, items]: [string, any]) => (
+            <React.Fragment key={date+1}>
+              <tr className="bg-gray-50" key={date+1}>
+                <td colSpan={8} className="px-6 py-3 font-semibold">{date}</td>
               </tr>
               {items.map((item: any, i: any) => {
                 return(
@@ -116,36 +120,76 @@ function TableClass({ onUpdated, token, fitnessData, outletData }: Props) {
               })}
             </React.Fragment>
           ))}
-            {/* {
-              item.data.map((item: any, i: any) => (
-                <React.Fragment>
-                <tr className="bg-gray-50" key={i}>
-                  <td colSpan={8} key={i} className="px-6 py-3 font-semibold">{item.day}</td>
-                </tr>
-                {
-                  item.schedule.map((session: any, index: any) => (
-                    <tr className='border-y' key={index}>
-                      <td></td>
-                      <td className="px-6 py-3">{session.className}</td>
-                      <td className="px-6 py-3">{session.classType}</td>
-                      <td className="px-6 py-3">{session.instructor}</td>
-                      <td className="px-6 py-3">{`${session.startTime} - ${session.endTime}`}</td>
-                      <td className="px-6 py-3">{session.outletName}</td>
-                      <td className="px-6 py-3">{session.room}</td>
-                    </tr>
-                  ))
-                }
-                </React.Fragment>
-              ))
-            } */}
           </tbody>
         </table>
       </div>
     )
   }
+
+  const RenderAgenda = () => {
+    const myEventsList = fitnessData.data.flatMap((item: any) =>
+      item.schedule.map((scheduleItem: any) => {
+        const startDate = new Date(item.date);
+        const startTimeParts = scheduleItem.startTime.split(":"); // Split the time string into hours and minutes
+        const startDateTime = new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate(),
+          parseInt(startTimeParts[0]), // Convert hours to integer
+          parseInt(startTimeParts[1]) // Convert minutes to integer
+        );
+
+        const endTimeParts = scheduleItem.endTime.split(":"); // Split the time string into hours and minutes
+        const endDateTime = new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate(),
+          parseInt(endTimeParts[0]), // Convert hours to integer
+          parseInt(endTimeParts[1]) // Convert minutes to integer
+        );
+
+        return {
+          title: `${scheduleItem.className} - ${scheduleItem.classType}`,
+          start: startDateTime,
+          end: endDateTime,
+          outlet: item.outletName,
+          instructor: scheduleItem.instructor,
+          classDate: item.date,
+          className: scheduleItem.className,
+          classType: scheduleItem.classType,
+          startTime: scheduleItem.startTime,
+          endTime: scheduleItem.endTime,
+          room: scheduleItem.room,
+          maxBookings: scheduleItem.maxBookings,
+          resourceId: item._id,
+        };
+      })
+    );
+
+    const handleEventSelect = (event: any) => {
+      // Perform any action you want when an event is selected
+      setEditData(event)
+      setOpen(!open)
+    };
+    
+    return(
+      <div className='max-w-full h-fit px-6 py-6 bg-white rounded-3xl shadow-xl shadow-gray-100'>
+        <RenderFilter />
+        <Calendar
+          onSelectEvent={handleEventSelect}
+          localizer={localizer}
+          events={myEventsList}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: 500 }}
+        />
+      </div>
+    )
+  }
+
   return (
     <>
-    <RenderTable item={groupedData} />
+    <RenderAgenda />
     {open && (
       <PanelComponent setOpen={setOpen}>
         <FormSchedule 

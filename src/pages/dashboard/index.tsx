@@ -4,7 +4,6 @@ import Layout from '../../app/layout'
 import ProfitBalanceCard from './profit_balance_card'
 import SalesSummaryCard from './sales_summary_card'
 import ActivityCard from './activity_card'
-import TitleCard from './title_card'
 import FilterCard from './filter_card'
 
 import { parse } from 'cookie';
@@ -14,7 +13,6 @@ function Dashboard() {
 
   return (
     <Layout>
-      <TitleCard />
       <div className='space-y-4'>
         <div className='flex flex-row space-x-4'>
           <FilterCard />
