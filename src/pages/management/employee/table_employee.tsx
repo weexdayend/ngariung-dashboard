@@ -187,7 +187,9 @@ function TableEmployee({ popoverData, data, onUpdated }: Props) {
           },
         }}
       />
-      <TableComponent columns={column} data={data.data} renderRow={renderRow} renderFilter={renderFilter()} />
+      {
+        data && (<TableComponent columns={column} data={data.data} renderRow={renderRow} renderFilter={renderFilter()} />)
+      }
       {open && (
         <PanelComponent setOpen={setOpen}>
           <FormEmployee onClose={() => setOpen(false)} onUpdated={() => setUpdated(true)} item={editData} />

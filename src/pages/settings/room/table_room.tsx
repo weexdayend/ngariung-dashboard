@@ -208,7 +208,9 @@ function TableRoom({ token, roomData, popoverData, onUpdated }: Props) {
         },
       }}
     />
-    <TableComponent columns={column} data={roomData.data} renderRow={renderRow} renderFilter={renderFilter()} />
+    {
+      roomData && (<TableComponent columns={column} data={roomData.data} renderRow={renderRow} renderFilter={renderFilter()} />)
+    }
     {open && (
       <PanelComponent setOpen={setOpen}>
         <FormRoom 

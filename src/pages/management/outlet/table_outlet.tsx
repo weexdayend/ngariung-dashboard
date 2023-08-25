@@ -89,7 +89,9 @@ function TableOutlet({ data, onUpdated }: Props) {
 
   return (
     <>
-      <TableComponent columns={column} data={data.data} renderRow={renderRow} renderFilter={renderFilter()} />
+      {
+        data && (<TableComponent columns={column} data={data.data} renderRow={renderRow} renderFilter={renderFilter()} />)
+      }
       {open && (
         <PanelComponent setOpen={setOpen}>
           <FormOutlet onClose={() => setOpen(false)} onUpdated={() => setUpdated(true)} item={editData} />

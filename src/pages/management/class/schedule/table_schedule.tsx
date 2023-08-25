@@ -27,23 +27,28 @@ const COLUMN = [
 
 function TableClass({ onUpdated, token, fitnessData, outletData }: Props) {
   const [updated, setUpdated] = useState(false)
+  const [groupedData, setGroupedData] = useState<any>({})
 
   function groupDataByDay(data: any) {
-    const groupedData: any = {};
+    const group: any = {};
   
     data.forEach((item: any) => {
       const { date, ...rest } = item;
-      if (!groupedData[date]) {
-        groupedData[date] = [rest];
+      if (!group[date]) {
+        group[date] = [rest];
       } else {
-        groupedData[date].push(rest);
+        group[date].push(rest);
       }
     });
   
-    return groupedData;
+    setGroupedData(group)
   }
 
-  const groupedData = groupDataByDay(fitnessData.data);
+  useEffect(() => {
+    if (fitnessData) {
+      groupDataByDay(fitnessData.data);
+    }
+  }, [])
 
   useEffect(() => {
     if(updated){
