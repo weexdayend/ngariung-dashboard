@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-import Footer from '@/app/footer'
 import LoginForm from './login-form'
 import RegisterForm from './register-form'
 import Image from 'next/image'
@@ -34,8 +33,6 @@ function Body({}: Props) {
             )
           }
         </div>
-
-        <Footer />
       </div>
       <div className="relative w-full h-full hidden sm:hidden md:hidden lg:block xl:block">
         <div className="absolute z-50 inset-0 w-full h-full bg-gradient-to-b from-indigo-500/40 to-purple-500/50"></div>
