@@ -14,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = cookies.token;
   const refreshToken = cookies.refreshToken;
 
-  if (!token || !refreshToken || SECRET) {
+  if (!token || !refreshToken || !SECRET) {
     return res.status(401).json({ error: 'Authentication required' });
   }
 
