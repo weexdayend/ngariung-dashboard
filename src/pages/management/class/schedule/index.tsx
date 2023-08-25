@@ -18,7 +18,7 @@ function Index({ token, fitnessData, outletData }: Props) {
   const [datas, setDatas] = useState(fitnessData)
 
   const fetchNewData = async () => {
-    const response = await axios.get('http://localhost:3000/api/class/get', {
+    const response = await axios.get('https://dashboard-salestracker.vercel.app/api/class/get', {
         headers: {
           Authorization: `${token}`
         }
