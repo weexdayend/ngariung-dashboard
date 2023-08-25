@@ -12,13 +12,13 @@ const SECRET = publicRuntimeConfig.KEYPASS
 const RFRESH = publicRuntimeConfig.REFPASS
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== 'POST') {
-    return res.status(405).end();
-  }
-
-  const { email, password } = req.body;
-
   try {
+    if (req.method !== 'POST') {
+      return res.status(405).end();
+    }
+  
+    const { email, password } = req.body;
+    
     const client = await connectDB();
     const db = client.db('sakapulse');
     const collection = db.collection('Users');
@@ -47,7 +47,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       serialize('token', token, {
         httpOnly: false,
         secure: true, // Set secure flag in production
-        domain: 'dashboard-sakapulse.vercel.app', // Set the domain without protocol
+        domain: '.sakapulse.vercel.app', // Set the domain without protocol
         path: '/', // Set the path
         maxAge: 60 * 60, // Set max age (in seconds), e.g., 1 hour
         sameSite: 'strict'
@@ -55,7 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       serialize('refreshToken', refreshToken, {
         httpOnly: false,
         secure: true, // Set secure flag in production
-        domain: 'dashboard-sakapulse.vercel.app', // Set the domain without protocol
+        domain: '.sakapulse.vercel.app', // Set the domain without protocol
         path: '/', // Set the path
         maxAge: 60 * 60, // Set max age (in seconds), e.g., 1 hour
         sameSite: 'strict'

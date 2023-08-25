@@ -60,7 +60,7 @@ function LoginForm({}: Props) {
     try {
       const responsePromise = new Promise(async (resolve, reject) => {
         try {
-          const response = await axios.post(`${process.env.APIURL}/login`, { email, password })
+          const response = await axios.post(`https://dashboard-sakapulse.vercel.app/api/login`, { email, password })
           resolve(response.data);
         } catch (error) {
           reject(error);
