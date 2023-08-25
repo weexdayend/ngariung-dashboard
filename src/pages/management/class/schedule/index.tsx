@@ -14,9 +14,6 @@ type Props = {
 }
 
 function Index({ error, token, fitnessData, outletData }: Props) {
-
-  console.log(error)
-
   const [updated, setUpdated] = useState(false)
   const [datas, setDatas] = useState(fitnessData)
 
