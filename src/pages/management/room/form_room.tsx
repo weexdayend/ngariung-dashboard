@@ -85,26 +85,33 @@ function FormRoom({ onClose, onUpdated, token, item }: Props) {
     }
 
     try {
-      const response = await axios.post(endpoint, body);
+      const responsePromise = new Promise(async (resolve, reject) => {
+        try {
+          const response = await axios.post(endpoint, body)
+          resolve(response.data);
+        } catch (error) {
+          reject(error);
+        }
+      });
+  
       await toast.promise(
-        Promise.resolve(response.data), // Resolve with the response data
+        responsePromise, // Resolve with the response data
         {
-          loading: 'Store your data...',
-          success: () => {
+          loading: 'Updating your data...',
+          success: (response: any) => {
             setTimeout(() => {
               onClose();
               onUpdated();
             }, 1500);
-            return response.data.message;
+            return response.message;
           },
-          error: (e) => {
-            // Display a user-friendly error message from the error response
-            return e.error.error ;
+          error: (e: any) => {
+            return e.response?.data?.error
           },
         }
       );
     } catch (error: any) {
-      toast.error(error.response.data.error);
+      console.error(error.response.data.error);
     }
   };
 
