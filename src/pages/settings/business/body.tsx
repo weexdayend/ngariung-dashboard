@@ -54,24 +54,30 @@ function Body({}: Props) {
     e.preventDefault();
 
     const endpoint = newData ? `https://dashboard-sakapulse.vercel.app/api/business/register` : `https://dashboard-sakapulse.vercel.app/api/business/update`;
-    const response = await toast.promise(
-      axios.post(endpoint, { businessName, businessPhone, businessEmail }),
+    const responsePromise = new Promise(async (resolve, reject) => {
+      try {
+        const response = await axios.post(endpoint, { businessName, businessPhone, businessEmail })
+        resolve(response.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+
+    await toast.promise(
+      responsePromise, // Resolve with the response data
       {
-        loading: 'Saving...',
-        success: newData ? 'Business registered successfully' : 'Business updated successfully',
-        error: (error) => {
-          console.error('Operation error:', error);
-          return 'An error occurred';
+        loading: 'Updating your data...',
+        success: (response: any) => {
+          setTimeout(() => {
+            window.location.href='https://dashboard-sakapulse.vercel.app/dashboard'
+          }, 1500);
+          return response.message;
+        },
+        error: (e: any) => {
+          return e.response?.data?.error
         },
       }
     );
-
-    if (response.status === 200 || response.status === 201) {
-      console.log(businessName ? 'Business registered successfully' : 'Business updated successfully');
-    } else {
-      const data = response.data;
-      console.error('Operation error:', data.error);
-    }
   };
 
   return (
