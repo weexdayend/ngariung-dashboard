@@ -7,9 +7,7 @@ import { GetServerSideProps } from 'next';
 import cookie from 'cookie'
 
 type Props = {
-  error: {
-    message: any
-  },
+  error: any,
   token: any,
   fitnessData: any,
   outletData: any
@@ -86,9 +84,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch (error: any) {
     return {
       props: {
-        error: {
-          message: error
-        }
+        error: error
       }
     }
   }
