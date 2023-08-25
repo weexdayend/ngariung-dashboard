@@ -45,17 +45,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     res.setHeader('Set-Cookie', [
       serialize('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Set secure flag in production
-        domain: '.vercel.app', // Set the domain without protocol
+        httpOnly: false,
+        secure: true, // Set secure flag in production
+        domain: 'dashboard-salestracker.vercel.app', // Set the domain without protocol
         path: '/', // Set the path
         maxAge: 60 * 60, // Set max age (in seconds), e.g., 1 hour
         sameSite: 'strict'
       }),
       serialize('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Set secure flag in production
-        domain: '.vercel.app', // Set the domain without protocol
+        httpOnly: false,
+        secure: true, // Set secure flag in production
+        domain: 'dashboard-salestracker.vercel.app', // Set the domain without protocol
         path: '/', // Set the path
         maxAge: 60 * 60, // Set max age (in seconds), e.g., 1 hour
         sameSite: 'strict'
