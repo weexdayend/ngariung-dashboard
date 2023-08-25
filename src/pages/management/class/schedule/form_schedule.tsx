@@ -101,7 +101,7 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
       setSelectRoom({ id: 'edit', name: item.room } || { id: '', name: '' });
       setTypeClass(item.classType || '');
     }
-  }, [item]);
+  }, []);
 
   useEffect(() => {
     if(item){

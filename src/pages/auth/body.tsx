@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import Footer from '@/app/footer'
 import LoginForm from './login-form'
 import RegisterForm from './register-form'
+import Image from 'next/image'
 
 type Props = {}
 
@@ -38,7 +39,7 @@ function Body({}: Props) {
       </div>
       <div className="relative w-full h-full hidden sm:hidden md:hidden lg:block xl:block">
         <div className="absolute z-50 inset-0 w-full h-full bg-gradient-to-b from-indigo-500/40 to-purple-500/50"></div>
-        <img
+        <Image
           className="absolute inset-0 w-full h-full object-cover"
           src="/assets/pexel-bg-login.jpg"
           alt="SAKA GROUP"

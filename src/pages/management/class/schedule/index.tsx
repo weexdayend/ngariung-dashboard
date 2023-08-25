@@ -14,8 +14,6 @@ type Props = {
 
 function Index({ token, fitnessData, outletData }: Props) {
 
-  console.log(fitnessData)
-
   const [updated, setUpdated] = useState(false)
   const [datas, setDatas] = useState(fitnessData)
 

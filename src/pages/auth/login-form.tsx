@@ -4,6 +4,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import toast, { Toaster } from 'react-hot-toast';
+import Image from 'next/image';
 
 type Props = {}
 
@@ -168,7 +169,7 @@ function LoginForm({}: Props) {
       />
       <ModalComponent />
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img
+        <Image
           className="h-14 w-auto"
           src="/assets/sales-tracker-logo.png"
           alt="Your Company"
