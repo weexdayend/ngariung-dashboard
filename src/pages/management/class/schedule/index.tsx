@@ -13,7 +13,7 @@ type Props = {
   outletData: any
 }
 
-function Index({ error, token, fitnessData, outletData }: Props) {
+function Index({ token, fitnessData, outletData }: Props) {
   const [updated, setUpdated] = useState(false)
   const [datas, setDatas] = useState(fitnessData)
 
