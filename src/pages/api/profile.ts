@@ -12,20 +12,20 @@ const { publicRuntimeConfig } = getConfig();
 const SECRET = publicRuntimeConfig.KEYPASS
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== 'GET') {
-    return res.status(405).end(); // Method Not Allowed
-  }
-
-  const cookies = cookie.parse(req.headers.cookie || '')
-
-  const token = cookies.token
-  const refreshToken = cookies.refreshToken
-
-  if (!token || !refreshToken) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
-
   try {
+    if (req.method !== 'GET') {
+      return res.status(405).end(); // Method Not Allowed
+    }
+  
+    const cookies = cookie.parse(req.headers.cookie || '')
+  
+    const token = cookies.token
+    const refreshToken = cookies.refreshToken
+  
+    if (!token || !refreshToken) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
     // Verify the token
     const decodedToken = verify(token, SECRET) as JwtPayload; // Replace with your secret key
 
