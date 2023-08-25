@@ -68,28 +68,32 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
 
   const [newData, setNewData] = useState(!item)
   const [dataChanged, setDataChanged] = useState(false);
-
-  const formattedDataArray = outletData.data.map((dataItem: any) => {
-    const { id, name, employees, rooms } = dataItem;
-  
-    // Check if there is data in employees and rooms arrays
-    const hasEmployees = employees && employees.length > 0;
-    const hasRooms = rooms && rooms.length > 0;
-  
-    // Include the outlet only if it has data in employees or rooms
-    if (hasEmployees || hasRooms) {
-      return {
-        id,
-        name,
-        employees: hasEmployees ? employees : [], // Empty array if no employees data
-        rooms: hasRooms ? rooms : [], // Empty array if no rooms data
-      };
-    } else {
-      return null; // Exclude outlets without employees and rooms data
-    }
-  }).filter(Boolean); // Remove null values from the array
+  const [formattedDataArray, setFormattedDataArray] = useState<any[]>([])
 
   useEffect(() => {
+    if (outletData) {
+      const format = outletData.data.map((dataItem: any) => {
+        const { id, name, employees, rooms } = dataItem;
+      
+        // Check if there is data in employees and rooms arrays
+        const hasEmployees = employees && employees.length > 0;
+        const hasRooms = rooms && rooms.length > 0;
+      
+        // Include the outlet only if it has data in employees or rooms
+        if (hasEmployees || hasRooms) {
+          return {
+            id,
+            name,
+            employees: hasEmployees ? employees : [], // Empty array if no employees data
+            rooms: hasRooms ? rooms : [], // Empty array if no rooms data
+          };
+        } else {
+          return null; // Exclude outlets without employees and rooms data
+        }
+      }).filter(Boolean); // Remove null values from the array
+      
+      setFormattedDataArray(format)
+    }
     if (item) {
       setClassName(item.className || '');
       setStartTime(item.startTime || '');
