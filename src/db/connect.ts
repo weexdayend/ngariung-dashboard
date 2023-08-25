@@ -6,7 +6,7 @@ import { MongoClient, ServerApiVersion } from 'mongodb';
 
 // const PASS = publicRuntimeConfig.PASSKEY
 
-const uri = `mongodb://0.tcp.ap.ngrok.io:10154`
+const uri = `mongodb+srv://vercel-admin-user:FpUoE5OglzIJ95XM@cluster0.hd4oe.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
 
 // const uri = `mongodb+srv://next_app:${PASS}@cluster0.hd4oe.mongodb.net/?retryWrites=true&w=majority`;
 
