@@ -132,7 +132,7 @@ function TableClass({ onUpdated, token, fitnessData, outletData }: Props) {
   }
 
   const RenderAgenda = () => {
-    const myEventsList = fitnessData.data.flatMap((item: any) =>
+    const myEventsList = fitnessData && fitnessData.data.flatMap((item: any) =>
       item.schedule.map((scheduleItem: any) => {
         const startDate = new Date(item.date);
         const startTimeParts = scheduleItem.startTime.split(":"); // Split the time string into hours and minutes
