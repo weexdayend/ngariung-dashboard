@@ -43,6 +43,15 @@ Enjoy a user-friendly interface designed for ease of use. Navigate through featu
 3. Configure your database connection in `config.js`.
 4. Run the application with `npm start`.
 
+## Setting Env First
+
+```bash
+DOMAIN="localhost"
+API_URL="http://localhost:3000/api/"
+PASS_KEY="Z2Nug7rmqhDFdIVF"
+KEY_PASS="Z2Nug7rmqhDFdIVF112233"
+REF_PASS="Z2Nug7rmqhDFdIVF112233"
+
 ## Contributing
 
 We welcome contributions from the community! If you have suggestions, bug reports, or feature requests, please open an issue or submit a pull request.
