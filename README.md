@@ -51,6 +51,7 @@ API_URL="http://localhost:3000/api/"
 PASS_KEY="Z2Nug7rmqhDFdIVF"
 KEY_PASS="Z2Nug7rmqhDFdIVF112233"
 REF_PASS="Z2Nug7rmqhDFdIVF112233"
+```
 
 ## Contributing
 
