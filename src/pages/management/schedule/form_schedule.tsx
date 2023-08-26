@@ -215,8 +215,6 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
     setSelectRoom({ id: '', name: '' });
   }, [selectOutlet])
 
-  console.log(itemEmployee)
-
   const isAnyFieldEmpty = !className ||
                           !startTime ||
                           !endTime ||
