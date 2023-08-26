@@ -48,9 +48,6 @@ Enjoy a user-friendly interface designed for ease of use. Navigate through featu
 ```bash
 DOMAIN="localhost"
 API_URL="http://localhost:3000/api/"
-PASS_KEY="Z2Nug7rmqhDFdIVF"
-KEY_PASS="Z2Nug7rmqhDFdIVF112233"
-REF_PASS="Z2Nug7rmqhDFdIVF112233"
 ```
 
 ## Contributing
