@@ -7,6 +7,7 @@ import { serialize } from 'cookie';
 
 const SECRET = process.env.KEY_PASS
 const RFRESH = process.env.REF_PASS
+const DOMAIN = process.env.DOMAIN
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -45,7 +46,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         serialize('token', token, {
           httpOnly: false,
           secure: true, // Set secure flag in production
-          domain: 'localhost', // Set the domain without protocol
+          domain: DOMAIN, // Set the domain without protocol
           path: '/', // Set the path
           maxAge: 60 * 60, // Set max age (in seconds), e.g., 1 hour
           sameSite: 'strict'
@@ -53,7 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         serialize('refreshToken', refreshToken, {
           httpOnly: false,
           secure: true, // Set secure flag in production
-          domain: 'localhost', // Set the domain without protocol
+          domain: DOMAIN, // Set the domain without protocol
           path: '/', // Set the path
           maxAge: 60 * 60, // Set max age (in seconds), e.g., 1 hour
           sameSite: 'strict'
