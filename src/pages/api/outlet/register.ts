@@ -2,14 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/db/connect';
 
 import { JwtPayload, verify } from 'jsonwebtoken'; // Import verify from jsonwebtoken library
-
 import cookie from 'cookie';
-
-import getConfig from 'next/config';
 import { ObjectId } from 'mongodb';
-const { publicRuntimeConfig } = getConfig();
 
-const SECRET = publicRuntimeConfig.KEYPASS
+const SECRET = process.env.KEY_PASS
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST') {

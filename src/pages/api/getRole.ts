@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import connectDB from '@/db/connect';
 
 import { JwtPayload, verify } from 'jsonwebtoken'; // Import verify from jsonwebtoken library
 import cookie from 'cookie';
-import { ObjectId } from 'mongodb';
 
 const SECRET = process.env.KEY_PASS
 
@@ -28,20 +26,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       // You can access the decoded token payload to get user information
       const userId = decodedToken.userId;
+      const userRole = decodedToken.userRole;
 
-      // Connect to the MongoDB database
-      const client = await connectDB();
-      const db = client.db('sakapulse');
-      const collection = db.collection('Users');
-
-      // Fetch profile data based on userId
-      const profileData = await collection.findOne({ _id: new ObjectId(userId) });
-
-      if (!profileData) {
-        return res.status(404).json({ error: userId });
-      }
-
-      res.status(200).json({ name: profileData.fullName, email: profileData.email });
+      res.status(200).json({ _id: userId, role: userRole });
     }
   } catch (error) {
     console.error('Authentication error:', error);

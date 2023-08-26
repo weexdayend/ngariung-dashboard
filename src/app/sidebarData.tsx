@@ -16,7 +16,7 @@ export const sidebarData: MenuItem[] = [
     label: 'Management',
     icon: 'briefcase',
     subMenu: [
-      { id: 32, label: 'Class Schedule', icon: 'calendar', link: 'management/class/schedule' },
+      { id: 32, label: 'Schedule', icon: 'calendar', link: 'management/schedule' },
       { id: 33, label: 'Customer', icon: 'identification', link: 'management/customer' },
       { id: 34, label: 'Outlet', icon: 'location_marker', link: 'management/outlet' },
       { id: 35, label: 'Employee', icon: 'users', link: 'management/employee' },

@@ -3,11 +3,8 @@ import connectDB from '@/db/connect';
 import { JwtPayload, verify } from 'jsonwebtoken';
 import cookie from 'cookie';
 import { ObjectId } from 'mongodb';
-import getConfig from 'next/config';
 
-const { publicRuntimeConfig } = getConfig();
-
-const SECRET = publicRuntimeConfig.KEYPASS
+const SECRET = process.env.KEY_PASS
 
 async function getBusinessData(userId: any) {
   const client = await connectDB();

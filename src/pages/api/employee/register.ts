@@ -3,14 +3,10 @@ import connectDB from '@/db/connect';
 
 import { JwtPayload, verify } from 'jsonwebtoken'; // Import verify from jsonwebtoken library
 import bcrypt from 'bcrypt';
-
 import cookie from 'cookie';
-
-import getConfig from 'next/config';
 import { ObjectId } from 'mongodb';
-const { publicRuntimeConfig } = getConfig();
 
-const SECRET = publicRuntimeConfig.KEYPASS
+const SECRET = process.env.KEY_PASS
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST') {
@@ -64,7 +60,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       phoneNumber: employeePhone,
       email: employeeEmail,
       password: hashedPassword,
-      role: employeeRole,
+      role: employeeRole.name,
       status: false,
       tenantId: getTenant?.tenantId,
     };

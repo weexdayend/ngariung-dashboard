@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const expiredTokenCookie = serialize('token', '', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    domain: '4caf-125-164-21-148.ngrok-free.app',
+    domain: 'localhost',
     path: '/',
     maxAge: -1, // Set to a negative value to expire the cookie immediately
     sameSite: 'strict',
@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const expiredRefreshTokenCookie = serialize('refreshToken', '', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    domain: '4caf-125-164-21-148.ngrok-free.app',
+    domain: 'localhost',
     path: '/',
     maxAge: -1,
     sameSite: 'strict',

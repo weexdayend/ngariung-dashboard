@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import PanelComponent from '../../../../components/panel_component'
+import PanelComponent from '../../../components/panel_component'
 import FormSchedule from './form_schedule'
 
 import { Calendar, momentLocalizer } from 'react-big-calendar'
@@ -83,51 +83,6 @@ function TableClass({ onUpdated, token, fitnessData, outletData }: Props) {
           </button>
         </div>
       </>
-    )
-  }
-
-  const RenderTable = () => {
-    return(
-      <div className='row-span-1 w-full h-fit px-6 py-6 bg-white rounded-3xl shadow-xl shadow-gray-100'>
-        <RenderFilter />
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead>
-            <tr>
-              {COLUMN.map((column) => (
-                <th key={column} className="py-3 px-6 text-left">{column}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-          {Object.entries(groupedData).map(([date, items]: [string, any]) => (
-            <React.Fragment key={date+1}>
-              <tr className="bg-gray-50" key={date+1}>
-                <td colSpan={8} className="px-6 py-3 font-semibold">{date}</td>
-              </tr>
-              {items.map((item: any, i: any) => {
-                return(
-                  <tr className='border-y' key={i}>
-                    <td></td>
-                    {
-                      item.schedule.map((schedule: any) => (
-                        <>
-                          <td className="px-6 py-3 text-sm">{schedule.className}</td>
-                          <td className="px-6 py-3 text-sm">{schedule.classType}</td>
-                          <td className="px-6 py-3 text-sm">{schedule.instructor}</td>
-                          <td className="px-6 py-3 text-sm">{`${schedule.startTime} - ${schedule.endTime}`}</td>
-                          <td className="px-6 py-3 text-sm">{item.outletName}</td>
-                          <td className="px-6 py-3 text-sm">{schedule.room}</td>
-                        </>
-                      ))
-                    }
-                  </tr>
-                )
-              })}
-            </React.Fragment>
-          ))}
-          </tbody>
-        </table>
-      </div>
     )
   }
 

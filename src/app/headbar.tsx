@@ -25,7 +25,7 @@ function HeadBar() {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get(`/api/profile`);
+        const response = await axios.get(`${process.env.API_URL}profile`);
         setProfileData(response.data);
       } catch (error) {
         console.error('Error fetching profile data:', error);
@@ -33,7 +33,7 @@ function HeadBar() {
     };
     const fetchBusinessData = async () => {
       try {
-        const response = await axios.get(`/api/business/get`);
+        const response = await axios.get(`${process.env.API_URL}business/get`);
         const businessData = response.data;
 
         if (businessData) {
@@ -62,7 +62,7 @@ function HeadBar() {
 
   function handleLogout() {
     // Call the logout API route
-    axios.post(`/api/logout`)
+    axios.post(`${process.env.API_URL}logout`)
       .then(() => {
         // Redirect the user to the login page or any other appropriate page
         router.replace('/auth');

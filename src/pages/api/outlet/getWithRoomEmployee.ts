@@ -2,11 +2,9 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/db/connect';
 import { JwtPayload, verify } from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
-import getConfig from 'next/config';
 
-const { publicRuntimeConfig } = getConfig();
+const SECRET = process.env.KEY_PASS
 
-const SECRET = publicRuntimeConfig.KEYPASS
 
 async function getBusinessData(userId: any) {
   const client = await connectDB();
@@ -17,14 +15,13 @@ async function getBusinessData(userId: any) {
   return businessData;
 }
 
-async function getOutletData(businessId: any, outletLine: any) {
+async function getOutletData(businessId: any) {
   const client = await connectDB();
   const db = client.db('sakapulse');
   const collection = db.collection('BusinessOutlet');
 
   const outletData = await collection.find({
     businessId: new ObjectId(businessId),
-    'outletLine.name': outletLine,
   }).toArray();
   return outletData;
 }
@@ -49,7 +46,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { line } = req.query;
 
     const userData = await getBusinessData(userId);
-    const outletData = await getOutletData(userData?.tenantId, line)
+    const outletData = await getOutletData(userData?.tenantId)
 
     if (!outletData) {
       return res.status(200).json({

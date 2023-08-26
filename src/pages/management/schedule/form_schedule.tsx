@@ -12,6 +12,7 @@ import {
   BriefcaseIcon,
 } from '@heroicons/react/solid'
 import DateField from '@/components/date_fields';
+import ComboboxDropdown from '@/components/combobox_fileds';
 
 interface Slot {
   instructor: string;
@@ -36,6 +37,12 @@ interface DropDownList {
   name: string | '';
 }
 
+interface ComboBoxList {
+  id: string | '';
+  name: string | '';
+  phone: string | '';
+}
+
 type Props = {
   onClose: () => void;
   onUpdated: () => void;
@@ -51,6 +58,11 @@ const TypeClass = [
   { id: '3', name: 'Member' },
 ]
 
+const TypeSchedule = [
+  { id: '0', name: 'Fitness' },
+  { id: '1', name: 'Meeting' },
+]
+
 function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
   const [className, setClassName] = useState<string>('');
   const [startTime, setStartTime] = useState<string>('');
@@ -59,7 +71,7 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
   const [selectedDate, setSelectedDate] = useState('');
 
   const [selectOutlet, setSelectOutlet] = useState<DropDownList | { id: '', name: '' }>({ id: '', name: '' })
-  const [selectInstructor, setSelectInstructor] = useState<DropDownList | { id: '', name: '' }>({ id: '', name: '' })
+  const [selectInstructor, setSelectInstructor] = useState<ComboBoxList | { id: '', name: '', phone: '' }>({ id: '', name: '', phone: '' })
   const [selectRoom, setSelectRoom] = useState<DropDownList | { id: '', name: '' }>({ id: '', name: '' })
   const [selectTypeClass, setTypeClass] = useState('')
 
@@ -101,7 +113,7 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
       setMaxBookings(item.maxBookings || '');
       setSelectedDate(item.classDate || '');
       setSelectOutlet({ id: 'edit', name: item.outlet } || { id: '', name: '' });
-      setSelectInstructor({ id: 'edit', name: item.instructor } || { id: '', name: '' });
+      setSelectInstructor({ id: 'edit', name: item.instructor, phone: '' } || { id: '', name: '', phone: '' });
       setSelectRoom({ id: 'edit', name: item.room } || { id: '', name: '' });
       setTypeClass(item.classType || '');
     }
@@ -137,11 +149,7 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
       const filteredOutlet = formattedDataArray.find((outlet: any) => outlet.name === selectOutlet.name);
 
       if (filteredOutlet) {
-        const instructorEmployees = filteredOutlet.employees.filter(
-          (employee: any) => employee.role?.name === 'Instructor'
-        );
-
-        setItemEmployee(instructorEmployees);
+        setItemEmployee(filteredOutlet.employees);
         setItemRoom(filteredOutlet.rooms);
       }
 
@@ -151,7 +159,7 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const endpoint = `https://dashboard-sakapulse.vercel.app/api/class/register`;
+    const endpoint = `${process.env.API_URL}class/register`;
 
     const newSlot: Slot = {
       instructor: selectInstructor.name,
@@ -203,9 +211,11 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
   };
 
   useEffect(() => {
-    setSelectInstructor({ id: '', name: '' });
+    setSelectInstructor({ id: '', name: '', phone: '' });
     setSelectRoom({ id: '', name: '' });
   }, [selectOutlet])
+
+  console.log(itemEmployee)
 
   const isAnyFieldEmpty = !className ||
                           !startTime ||
@@ -234,18 +244,7 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12">
             <h2 className="text-base font-semibold leading-7 text-gray-900">Schedule Information</h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">Give an information about your schedule.</p>
-
-            <div className="w-full col-span-full flex flex-row items-center space-x-2 mt-6">
-              {
-                TypeClass.map((item, i) => (
-                  <div key={i} onClick={() => setTypeClass(item.name)} className={`flex flex-row items-center w-fit px-3 py-2 cursor-pointer rounded-full ${item.name == selectTypeClass ? 'bg-gradient-to-r from-indigo-400 to-rose-400' : 'bg-gray-400'}`}>
-                    <BriefcaseIcon className="w-4 h-4 text-white" />
-                    <p className="text-white font-bold text-xs ml-1 pr-1">{item.name}</p>
-                  </div>
-                ))
-              }
-            </div>
+            <p className="mt-1 text-sm leading-6 text-gray-600">Give an information about your schedule, make sure you have already to input your Employee and Room data.</p>
 
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-full">
@@ -262,25 +261,25 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
 
               <div className="sm:col-span-full">
                 <div className="mt-2">
-                  <InputField label="Class name" value={className} onChange={setClassName} />
+                  <InputField label="Schedule name" value={className} onChange={setClassName} />
                 </div>
               </div>
 
               <div className="col-span-full">
                 <div className="mt-2">
-                  <ListDropdown label="Select instructor" holder="Choose instructor class..." value={selectInstructor} onChange={setSelectInstructor} options={itemEmployee} />
+                  <ComboboxDropdown label="Select PIC" holder="Who's person in contact?" value={selectInstructor} onChange={setSelectInstructor} options={itemEmployee} />
                 </div>
               </div>
 
               <div className="col-span-full">
                 <div className="mt-2">
-                <ListDropdown label="Select room" holder="Choose room class..." value={selectRoom} onChange={setSelectRoom} options={itemRoom} />
+                <ListDropdown label="Select room" holder="Where's the room?" value={selectRoom} onChange={setSelectRoom} options={itemRoom} />
                 </div>
               </div>
 
               <div className="col-span-2">
                 <div className="mt-2">
-                  <NumberField label="Max quota" value={maxBookings} onChange={setMaxBookings} />
+                  <NumberField label="Pax" value={maxBookings} onChange={setMaxBookings} />
                 </div>
               </div>
 
@@ -294,6 +293,17 @@ function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
                 <div className="mt-2">
                   <InputTime label="End time" value={endTime} onChange={setEndTime} />
                 </div>
+              </div>
+
+              <div className="w-full col-span-full flex flex-row items-center space-x-2 mt-6">
+                {
+                  TypeClass.map((item, i) => (
+                    <div key={i} onClick={() => setTypeClass(item.name)} className={`flex flex-row items-center w-fit px-3 py-2 cursor-pointer rounded-full ${item.name == selectTypeClass ? 'bg-gradient-to-r from-indigo-400 to-rose-400' : 'bg-gray-400'}`}>
+                      <BriefcaseIcon className="w-4 h-4 text-white" />
+                      <p className="text-white font-bold text-xs ml-1 pr-1">{item.name}</p>
+                    </div>
+                  ))
+                }
               </div>
             </div>
           </div>

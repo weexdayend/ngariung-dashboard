@@ -27,7 +27,7 @@ function Body({}: Props) {
   useEffect(() => {
     const fetchBusinessData = async () => {
       try {
-        const response = await axios.get(`https://dashboard-sakapulse.vercel.app/api/business/get`);
+        const response = await axios.get(`${process.env.API_URL}business/get`);
         const businessData = response.data;
 
         if (response.status === 200) {
@@ -53,7 +53,7 @@ function Body({}: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const endpoint = newData ? `https://dashboard-sakapulse.vercel.app/api/business/register` : `https://dashboard-sakapulse.vercel.app/api/business/update`;
+    const endpoint = newData ? `${process.env.API_URL}business/register` : `${process.env.API_URL}business/update`;
     const responsePromise = new Promise(async (resolve, reject) => {
       try {
         const response = await axios.post(endpoint, { businessName, businessPhone, businessEmail })

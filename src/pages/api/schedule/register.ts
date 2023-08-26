@@ -4,10 +4,7 @@ import cookie from 'cookie';
 import { JwtPayload, verify } from 'jsonwebtoken'; // Import verify from jsonwebtoken library
 import { ObjectId } from 'mongodb';
 
-import getConfig from 'next/config';
-const { publicRuntimeConfig } = getConfig();
-
-const SECRET = publicRuntimeConfig.KEYPASS
+const SECRET = process.env.KEY_PASS
 
 async function addSchedule(scheduleData: any, tenantId: any) {
   try {

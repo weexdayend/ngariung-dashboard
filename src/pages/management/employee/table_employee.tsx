@@ -47,7 +47,7 @@ function TableEmployee({ popoverData, data, onUpdated }: Props) {
   }
 
   const assigned = async (employeeId: any, assignedId: any) => {
-    const endpoint = '/api/employee/assigned';
+    const endpoint = `${process.env.API_URL}employee/assigned`;
     const body: any = {
       _id: employeeId,
       assignedOutletId: assignedId,

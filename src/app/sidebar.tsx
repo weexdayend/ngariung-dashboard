@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { sidebarData } from './sidebarData';
-import { selectMenu, selectedExpanded, selectedMenu, selectedSubMenuId, setExpandedMenu } from '@/utils/menuReducers';
+import { selectedExpanded, setExpandedMenu } from '@/utils/menuReducers';
 
 import { Heroicons } from './types';
 
-const Sidebar: React.FC = () => {
+import axios from 'axios';
+import { useRouter } from 'next/router';
+
+function Sidebar({}) {
+  const [role, setRole] = useState<string>('')
   const expandedMenu = useSelector(selectedExpanded);
-  const selectedSubMenuItemId = useSelector(selectedSubMenuId);
-  const selectedMenuItem = useSelector(selectedMenu);
 
   const dispatch = useDispatch();
 
@@ -19,9 +21,18 @@ const Sidebar: React.FC = () => {
     dispatch(setExpandedMenu(expandedMenu === menu ? null : menu));
   };
 
-  const handleMenuItemClick = (menu: string, subMenu: string, menuId: number, subMenuId: number) => {
-    dispatch(selectMenu({ menu: menu, subMenu: subMenu, menuId: menuId, subMenuId: subMenuId }));
-  };
+  const router = useRouter();
+  const paths = router.asPath.split('/').filter((path) => path !== '');
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      const response = await axios.get(`${process.env.API_URL}getRole`);
+      const data = response.data;
+
+      setRole(data.role)
+    }
+    fetchRole()
+  }, [])
 
   return (
     <>
@@ -40,17 +51,17 @@ const Sidebar: React.FC = () => {
             return (
               <div key={menuItem.id}>
                 <button className={`w-full px-6 text-left pt-3 pb-2 items-center leading-6`} onClick={() => handleToggle(menuItem.label)}>
-                  <p className={`text-base ${selectedMenuItem == menuItem.label ? 'font-medium text-blue-950' : 'font-normal text-blue-950/20'}`}>{menuItem.label}</p>
+                  <p className={`text-base ${paths[0] == menuItem.label.toLowerCase() ? 'font-medium text-blue-950' : 'font-normal text-blue-950/20'}`}>{menuItem.label}</p>
                 </button>
                 {isMenuExpanded && (
                   <div className='mx-3 py-2'>
                     {menuItem.subMenu?.map((subMenuItem) => {
                       const IconComponent = Heroicons[subMenuItem.icon];
                       return (
-                        <Link key={subMenuItem.id} href={'/' + subMenuItem.link} className="flex flex-row items-center px-6 space-x-2" onClick={() => handleMenuItemClick(menuItem.label, subMenuItem.label, menuItem.id, subMenuItem.id)} >
-                          <div className={`${selectedSubMenuItemId === subMenuItem.id ? 'scale-110 text-blue-500' : 'font-normal text-blue-950/40'}`}><IconComponent height={18} width={18} className={`${selectedSubMenuItemId === subMenuItem.id ? 'scale-110 text-blue-500' : 'font-normal text-blue-950/40'}`} /></div>
-                          <div className={`text-sm pt-3 pb-2 ${selectedSubMenuItemId === subMenuItem.id ? 'font-medium text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500' : 'font-normal text-blue-950/40'}`}>{subMenuItem.label}</div>
-                        </Link>
+                        <div key={subMenuItem.id} onClick={() => router.push(`/${subMenuItem.link}`)} className="flex flex-row items-center px-6 space-x-2 cursor-pointer" >
+                          <div className={`${paths[1] === subMenuItem.label.toLowerCase() ? 'scale-110 text-blue-500' : 'font-normal text-blue-950/40'}`}><IconComponent height={18} width={18} className={`${paths[1] === subMenuItem.label.toLowerCase() ? 'scale-110 text-blue-500' : 'font-normal text-blue-950/40'}`} /></div>
+                          <div className={`text-sm pt-3 pb-2 ${paths[1] === subMenuItem.label.toLowerCase() ? 'font-medium text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500' : 'font-normal text-blue-950/40'}`}>{subMenuItem.label}</div>
+                        </div>
                       )
                     })}
                   </div>
@@ -65,7 +76,4 @@ const Sidebar: React.FC = () => {
 }
 
 export default Sidebar;
-function dispatch(arg0: { payload: any; type: "menu/selectMenu"; }) {
-  throw new Error('Function not implemented.');
-}
 

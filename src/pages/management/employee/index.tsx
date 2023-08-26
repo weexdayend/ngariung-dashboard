@@ -17,7 +17,7 @@ function EmployeeManagement({ token, popoverData, data }: Props) {
   const [datas, setDatas] = useState(data)
 
   const fetchNewData = async () => {
-    const response = await axios.get(`https://dashboard-sakapulse.vercel.app/api/employee/get`, {
+    const response = await axios.get(`${process.env.API_URL}employee/get`, {
         headers: {
           Authorization: `${token}`
         }
@@ -56,14 +56,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     }
   
-    const response = await axios.get(`https://dashboard-sakapulse.vercel.app/api/employee/get`, {
+    const response = await axios.get(`${process.env.API_URL}employee/get`, {
       headers: {
         Authorization: `${cookies['token']}`
       }
     });
     const data = await response.data;
   
-    const popover = await axios.get(`https://dashboard-sakapulse.vercel.app/api/outlet/get`, {
+    const popover = await axios.get(`${process.env.API_URL}outlet/get`, {
         headers: {
           Authorization: `${cookies['token']}`
         }

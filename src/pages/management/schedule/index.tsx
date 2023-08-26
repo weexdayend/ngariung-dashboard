@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import Layout from '../../../../app/layout'
+import Layout from '../../../app/layout'
 import TableClass from './table_schedule'
 
 import axios from 'axios'
 import { GetServerSideProps } from 'next';
 import cookie from 'cookie'
+
+import { Toaster, toast } from 'react-hot-toast';
 
 type Props = {
   error: any
@@ -13,13 +15,13 @@ type Props = {
   outletData: any
 }
 
-function Index({ token, fitnessData, outletData }: Props) {
+function Index({ error, token, fitnessData, outletData }: Props) {
   
   const [updated, setUpdated] = useState(false)
   const [datas, setDatas] = useState(fitnessData)
 
   const fetchNewData = async () => {
-    const response = await axios.get(`https://dashboard-sakapulse.vercel.app/api/class/get`, {
+    const response = await axios.get(`${process.env.API_URL}schedule/get`, {
         headers: {
           Authorization: `${token}`
         }
@@ -35,8 +37,16 @@ function Index({ token, fitnessData, outletData }: Props) {
     }
   }, [updated])
 
+  if (error) {
+    toast.error(error)
+  }
+
   return (
     <Layout>
+      <Toaster
+        position="bottom-center"
+        reverseOrder={false}
+      />
       <TableClass token={token} onUpdated={() => setUpdated(true)} fitnessData={datas} outletData={outletData} />
     </Layout>
   )
@@ -58,14 +68,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     }
   
-    const responseFitness = await axios.get(`https://dashboard-sakapulse.vercel.app/api/class/get`, {
+    const responseFitness = await axios.get(`${process.env.API_URL}schedule/get`, {
       headers: {
         Authorization: `${cookies['token']}`
       },
     });
     const fitnessData = await responseFitness.data;
   
-    const responseOutlet = await axios.get(`https://dashboard-sakapulse.vercel.app/api/outlet/byline?line=Fitness`, {
+    const responseOutlet = await axios.get(`${process.env.API_URL}outlet/getWithRoomEmployee`, {
       headers: {
         Authorization: `${cookies['token']}`
       },
@@ -78,13 +88,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         fitnessData,
         outletData,
       },
-    }; 
+    };
   } catch (error: any) {
     return {
       props: {
-        error: error
-      }
-    }
+        error: `${error.message}`, // Serialize the error message, not the whole error object
+      },
+    };
   }
 }
 

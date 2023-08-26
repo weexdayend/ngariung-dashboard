@@ -3,11 +3,9 @@ import connectDB from '@/db/connect';
 
 import { JwtPayload, verify } from 'jsonwebtoken';
 import cookie from 'cookie';
-import getConfig from 'next/config';
 import { ObjectId } from 'mongodb';
-const { publicRuntimeConfig } = getConfig();
 
-const SECRET = publicRuntimeConfig.KEYPASS;
+const SECRET = process.env.KEY_PASS
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const cookies = cookie.parse(req.headers.cookie || '');

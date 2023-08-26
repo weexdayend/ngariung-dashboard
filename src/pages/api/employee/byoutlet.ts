@@ -2,11 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/db/connect';
 import { JwtPayload, verify } from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
-import getConfig from 'next/config';
 
-const { publicRuntimeConfig } = getConfig();
-
-const SECRET = publicRuntimeConfig.KEYPASS
+const SECRET = process.env.KEY_PASS
 
 async function getEmployeeData(userId: any, outletId: any, role: any) {
   const client = await connectDB();

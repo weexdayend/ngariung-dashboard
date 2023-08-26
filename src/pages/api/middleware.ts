@@ -1,10 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-import getConfig from 'next/config';
-const { publicRuntimeConfig } = getConfig();
-
-const SECRET = publicRuntimeConfig.KEYPASS
+const SECRET = process.env.KEY_PASS
 
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
@@ -18,9 +15,11 @@ const authMiddleware = (handler: any) => async (req: AuthenticatedRequest, res: 
   }
 
   try {
-    const decoded = jwt.verify(token, SECRET) as JwtPayload;
-    req.userId = decoded.userId; // Cast userId to string
-    return handler(req, res);
+    if (SECRET !== undefined) {
+      const decoded = jwt.verify(token, SECRET) as JwtPayload;
+      req.userId = decoded.userId; // Cast userId to string
+      return handler(req, res);
+    }
   } catch (error) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
