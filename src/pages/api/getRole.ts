@@ -22,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     
     if (SECRET !== undefined) {
       // Verify the token
-      const decodedToken = verify(token, SECRET) as JwtPayload; // Replace with your secret key
+      const decodedToken = verify(token, SECRET) as JwtPayload;
 
       // You can access the decoded token payload to get user information
       const userId = decodedToken.userId;
