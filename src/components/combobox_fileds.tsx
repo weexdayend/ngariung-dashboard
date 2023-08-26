@@ -61,7 +61,7 @@ const ComboboxDropdown: React.FC<OutletLineComboboxProps> = ({ label, value, onC
               <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                 {query.length > 0 && (
                   <Combobox.Option value={{ id: null, name: query, phone: null }}>
-                    Add new data? "{query}"
+                    <p>{`Add new data? "${query}"`}</p>
                   </Combobox.Option>
                 )}
               </div>
