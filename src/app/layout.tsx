@@ -18,6 +18,8 @@ import NProgress from 'nprogress'; // Import nprogress styles as well
 import './nprogress.css'; // Import nprogress styles
 import BreadCrumbs from '@/components/breadcrumbs';
 
+import { Analytics } from '@vercel/analytics/react';
+
 // Binding events to show and hide the loading progress bar
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -47,6 +49,7 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
             <main className="mt-4">
               <BreadCrumbs />
               {children}
+              <Analytics />
             </main>
             
             <footer>
