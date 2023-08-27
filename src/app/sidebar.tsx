@@ -58,10 +58,10 @@ function Sidebar({}) {
                     {menuItem.subMenu?.map((subMenuItem) => {
                       const IconComponent = Heroicons[subMenuItem.icon];
                       return (
-                        <div key={subMenuItem.id} onClick={() => router.push(`/${subMenuItem.link}`)} className="flex flex-row items-center px-6 space-x-2 cursor-pointer" >
+                        <Link key={subMenuItem.id} href={`/${subMenuItem.link}`} className="flex flex-row items-center px-6 space-x-2 cursor-pointer" >
                           <div className={`${paths[1] === subMenuItem.label.toLowerCase() ? 'scale-110 text-blue-500' : 'font-normal text-blue-950/40'}`}><IconComponent height={18} width={18} className={`${paths[1] === subMenuItem.label.toLowerCase() ? 'scale-110 text-blue-500' : 'font-normal text-blue-950/40'}`} /></div>
                           <div className={`text-sm pt-3 pb-2 ${paths[1] === subMenuItem.label.toLowerCase() ? 'font-medium text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500' : 'font-normal text-blue-950/40'}`}>{subMenuItem.label}</div>
-                        </div>
+                        </Link>
                       )
                     })}
                   </div>
