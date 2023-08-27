@@ -46,7 +46,6 @@ interface ComboBoxList {
 type Props = {
   onClose: () => void;
   onUpdated: () => void;
-  token: any;
   item: any;
   outletData: any;
 }
@@ -63,7 +62,7 @@ const TypeSchedule = [
   { id: '1', name: 'Meeting' },
 ]
 
-function FormSchedule({ onClose, onUpdated, token, item, outletData }: Props) {
+function FormSchedule({ onClose, onUpdated, item, outletData }: Props) {
   const [className, setClassName] = useState<string>('');
   const [startTime, setStartTime] = useState<string>('');
   const [endTime, setEndTime] = useState<string>('');

@@ -2,9 +2,11 @@ import React from 'react'
 import Layout from '../../../app/layout'
 import TableCustomer from './table_customer'
 
+import withAuth from '@/pages';
+
 type Props = {}
 
-function CustomerManagement({}: Props) {
+function Index({}: Props) {
   return (
     <Layout>
       <TableCustomer />
@@ -12,4 +14,4 @@ function CustomerManagement({}: Props) {
   )
 }
 
-export default CustomerManagement
+export default withAuth(Index)

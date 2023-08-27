@@ -1,18 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import connectDB from '@/db/connect';
-import { JwtPayload, verify } from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
 
-const SECRET = process.env.KEY_PASS
+import connectDB from '@/db/connect';
+import authMiddleware from '@/pages/api/middleware';
 
-
-async function getBusinessData(userId: any) {
-  const client = await connectDB();
-  const db = client.db('sakapulse');
-  const collection = db.collection('Users');
-
-  const businessData = await collection.findOne({ _id: new ObjectId(userId) });
-  return businessData;
+interface AuthenticatedRequest extends NextApiRequest {
+  userId?: string;
+  tenantId?: string;
 }
 
 async function getOutletData(businessId: any) {
@@ -26,27 +20,14 @@ async function getOutletData(businessId: any) {
   return outletData;
 }
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
     return res.status(405).end(); // Method Not Allowed
   }
 
-  const cookies = req.headers.authorization
-  const token = cookies;
-
-  if (!token || !SECRET) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
-
   try {
-    // Verify the token
-    const decodedToken = verify(token, SECRET) as JwtPayload;
-    const userId = decodedToken.userId;
-
-    const { line } = req.query;
-
-    const userData = await getBusinessData(userId);
-    const outletData = await getOutletData(userData?.tenantId)
+    const tenantId = req.tenantId;
+    const outletData = await getOutletData(tenantId)
 
     if (!outletData) {
       return res.status(200).json({
@@ -88,9 +69,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   
     res.status(200).json({ data: formattedDataArray });
   } catch (error) {
-    console.error('Authentication error:', error);
     return res.status(401).json({ error: 'Authentication failed' });
   }
 };
 
-export default handler;
+export default authMiddleware(handler);

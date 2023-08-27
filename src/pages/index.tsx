@@ -1,35 +1,39 @@
-import RootLayout from '@/app/layout';
-import { parse } from 'cookie';
-import { GetServerSideProps } from 'next';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
-function Index({ Component, pageProps }: any) {
-  return (
-    <RootLayout>
-      <Component {...pageProps} />
-    </RootLayout>
-  );
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const cookies = parse(context.req.headers.cookie || '');
-  
-  // Check if a specific cookie exists
-  if (cookies['token'] || cookies['refreshtoken']) {
-    // Redirect logic
-    return {
-      redirect: {
-        destination: '/dashboard',
-        permanent: false,
-      },
-    };
-  } else {
-    return {
-      redirect: {
-        destination: '/auth',
-        permanent: false,
-      },
-    };
-  }
+type Props = {
+  isLoggedIn: boolean;
 };
 
-export default Index;
+function withAuth<P extends Props>(Component: React.ComponentType<P>) {
+  return function WrappedWithAuth(props: P) {
+    const router = useRouter();
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+    useEffect(() => {
+      const checkLoginStatus = async () => {
+        try {
+          const response = await axios.get(`${process.env.API_URL}auth`);
+          const data = response.data;
+          setIsLoggedIn(data.isLoggedIn); // Set the isLoggedIn state based on API response
+        } catch (error) {
+          console.log('Authentication required');
+          router.replace('/auth');
+        }
+      };
+
+      checkLoginStatus();
+    }, [router]);
+
+    // Don't render the component if the user is not logged in
+    if (!isLoggedIn) {
+      return null;
+    }
+
+    // Pass the isLoggedIn value and other props to the wrapped component
+    return <Component {...props} isLoggedIn={isLoggedIn} />;
+  };
+}
+
+export default withAuth;

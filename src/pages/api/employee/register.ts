@@ -1,25 +1,18 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import connectDB from '@/db/connect';
-
-import { JwtPayload, verify } from 'jsonwebtoken'; // Import verify from jsonwebtoken library
-import bcrypt from 'bcrypt';
-import cookie from 'cookie';
 import { ObjectId } from 'mongodb';
 
-const SECRET = process.env.KEY_PASS
+import connectDB from '@/db/connect';
+import bcrypt from 'bcrypt';
+import authMiddleware from '@/pages/api/middleware';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+interface AuthenticatedRequest extends NextApiRequest {
+  userId?: string;
+  tenantId?: string;
+}
+
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   if (req.method !== 'POST') {
     return res.status(405).end(); // Method Not Allowed
-  }
-
-  const cookies = cookie.parse(req.headers.cookie || '')
-
-  const token = cookies.token
-  const refreshToken = cookies.refreshToken
-
-  if (!token || !refreshToken || !SECRET) {
-    return res.status(401).json({ error: 'Authentication required' });
   }
 
   const { 
@@ -30,12 +23,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   } = req.body;
 
   try {
-    // Verify the token
-    const decodedToken = verify(token, SECRET) as JwtPayload; // Replace with your secret key
-
-    // You can access the decoded token payload to get user information
-    const userId = decodedToken.userId;
-    const userObjectId = new ObjectId(userId);
+    const tenantId = req.tenantId;
+    const tenantObjectId = new ObjectId(tenantId)
 
     // Connect to the MongoDB database
     const client = await connectDB();
@@ -52,8 +41,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(400).json({ error: 'Phone number already registered'})
     }
 
-    const getTenant = await users.findOne({ _id: userObjectId })
-
     const hashedPassword = await bcrypt.hash('$akaPulse135', 10);
     const newUsers = {
       fullName: employeeName,
@@ -62,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       password: hashedPassword,
       role: employeeRole.name,
       status: false,
-      tenantId: getTenant?.tenantId,
+      tenantId: tenantObjectId,
     };
     const user = await users.insertOne(newUsers);
 
@@ -73,7 +60,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       employeeEmail,
       employeeRole,
       userId: user.insertedId,
-      tenantId: getTenant?.tenantId,
+      tenantId: tenantObjectId,
       assignedOutletId: null,
       status: false
     };
@@ -86,4 +73,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default handler;
+export default authMiddleware(handler);

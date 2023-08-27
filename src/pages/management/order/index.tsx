@@ -2,7 +2,9 @@ import React from 'react'
 import Layout from '../../../app/layout'
 import TableOrder from './table_order'
 
-function OrderManagement() {
+import withAuth from '@/pages';
+
+function Index() {
   return (
     <Layout>
       <TableOrder />
@@ -10,4 +12,4 @@ function OrderManagement() {
   )
 }
 
-export default OrderManagement
+export default withAuth(Index)

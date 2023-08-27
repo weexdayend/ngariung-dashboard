@@ -10,7 +10,6 @@ const localizer = momentLocalizer(moment)
 
 type Props = {
   onUpdated: () => void;
-  token: any
   fitnessData: any
   outletData: any
 }
@@ -25,7 +24,7 @@ const COLUMN = [
   'Room',
 ]
 
-function TableClass({ onUpdated, token, fitnessData, outletData }: Props) {
+function TableClass({ onUpdated, fitnessData, outletData }: Props) {
   const [updated, setUpdated] = useState(false)
   const [groupedData, setGroupedData] = useState<any>({})
 
@@ -157,7 +156,6 @@ function TableClass({ onUpdated, token, fitnessData, outletData }: Props) {
           onUpdated={() => setUpdated(true)} 
           item={editData} 
           outletData={outletData} 
-          token={token}
         />
       </PanelComponent>
     )}

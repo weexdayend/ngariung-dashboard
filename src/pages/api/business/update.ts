@@ -1,40 +1,29 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import connectDB from '@/db/connect';
-
-import { JwtPayload, verify } from 'jsonwebtoken';
-import cookie from 'cookie';
 import { ObjectId } from 'mongodb';
 
-const SECRET = process.env.KEY_PASS
+import connectDB from '@/db/connect';
+import authMiddleware from '@/pages/api/middleware';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const cookies = cookie.parse(req.headers.cookie || '');
-  const token = cookies.token;
-  const refreshToken = cookies.refreshToken;
+interface AuthenticatedRequest extends NextApiRequest {
+  tenantId?: string;
+}
 
-  if (!token || !refreshToken || !SECRET) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
   const { businessName, businessPhone, businessEmail } = req.body;
 
   try {
-    // Verify the token
-    const decodedToken = verify(token, SECRET) as JwtPayload;
-    const userId = decodedToken.userId;
-    const userObjectId = new ObjectId(userId);
+    const tenantId = req.tenantId;
+    const tenantObjectId = new ObjectId(tenantId)
 
     // Connect to the MongoDB database
     const client = await connectDB();
     const db = client.db('sakapulse');
-    const userCollection = db.collection('Users');
     const businessCollection = db.collection('Business');
-
-    const profileData = await userCollection.findOne({ _id: userObjectId });
 
     // Update the existing business document
     const updateResult = await businessCollection.updateOne(
-      { _id: profileData?.tenantId },
+      { _id: tenantObjectId },
       { $set: { businessName, businessPhone, businessEmail } }
     );
 
@@ -49,4 +38,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default handler;
+export default authMiddleware(handler);

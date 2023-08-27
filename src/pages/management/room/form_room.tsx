@@ -20,7 +20,6 @@ interface DropDownList {
 type Props = {
   onClose: () => void;
   onUpdated: () => void;
-  token: any;
   item: any;
 }
 
@@ -31,7 +30,7 @@ const SizeOption = [
   { id: '4', name: 'Extra Large' },
 ]
 
-function FormRoom({ onClose, onUpdated, token, item }: Props) {
+function FormRoom({ onClose, onUpdated, item }: Props) {
   const [roomName, setRoomName] = useState<string | ''>('')
   const [roomSize, setRoomSize] = useState<DropDownList | { id: '', name: '' }>({ id: '', name: '' })
   const [roomVIP, setRoomVIP] = useState<boolean>(false)

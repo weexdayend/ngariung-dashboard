@@ -1,24 +1,17 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import connectDB from '@/db/connect';
-
-import { JwtPayload, verify } from 'jsonwebtoken'; // Import verify from jsonwebtoken library
-import cookie from 'cookie';
 import { ObjectId } from 'mongodb';
 
-const SECRET = process.env.KEY_PASS
+import connectDB from '@/db/connect';
+import authMiddleware from '@/pages/api/middleware';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+interface AuthenticatedRequest extends NextApiRequest {
+  userId?: string;
+  tenantId?: string;
+}
+
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   if (req.method !== 'POST') {
     return res.status(405).end(); // Method Not Allowed
-  }
-
-  const cookies = cookie.parse(req.headers.cookie || '')
-
-  const token = cookies.token
-  const refreshToken = cookies.refreshToken
-
-  if (!token || !refreshToken || !SECRET) {
-    return res.status(401).json({ error: 'Authentication required' });
   }
 
   const { 
@@ -31,11 +24,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   } = req.body;
 
   try {
-    // Verify the token
-    const decodedToken = verify(token, SECRET) as JwtPayload; // Replace with your secret key
-
-    // You can access the decoded token payload to get user information
-    const userId = decodedToken.userId;
+    const userId = req.userId;
+    const tenantId = req.tenantId;
 
     // Connect to the MongoDB database
     const client = await connectDB();
@@ -43,9 +33,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const users = db.collection('Users');
     const outlet = db.collection('BusinessOutlet');
 
-    const business = await users.findOne({ _id: new ObjectId(userId) });
+    const business = await users.findOne({ _id: new ObjectId(userId), tenantId: new ObjectId(tenantId) });
 
-    if (!business || !business.tenantId) {
+    if (!business) {
       return res.status(200).json({ message: 'Business not found' });
     }
 
@@ -57,7 +47,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Create a new user document
     const newOutlet = {
-      businessId: business.tenantId,
+      businessId: tenantId,
       outletName, 
       outletLine,
       outletAddress, 
@@ -75,4 +65,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default handler;
+export default authMiddleware(handler);
