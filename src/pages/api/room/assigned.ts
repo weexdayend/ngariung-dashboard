@@ -1,19 +1,15 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import connectDB from '@/db/connect';
-
-import cookie from 'cookie';
 import { ObjectId } from 'mongodb';
 
-const SECRET = process.env.KEY_PASS
+import connectDB from '@/db/connect';
+import authMiddleware from '@/pages/api/middleware';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const cookies = cookie.parse(req.headers.cookie || '');
-  const token = cookies.token;
-  const refreshToken = cookies.refreshToken;
+interface AuthenticatedRequest extends NextApiRequest {
+  userId?: string;
+  tenantId?: string;
+}
 
-  if (!token || !refreshToken || !SECRET) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
   const { roomId, assignedOutletId } = req.body;
 
@@ -67,4 +63,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default handler;
+export default authMiddleware(handler);

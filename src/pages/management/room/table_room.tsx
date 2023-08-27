@@ -15,13 +15,12 @@ import {
 } from '@heroicons/react/solid'
 
 type Props = {
-  token: any
   roomData: any
   popoverData: any
   onUpdated: () => void;
 }
 
-function TableRoom({ token, roomData, popoverData, onUpdated }: Props) {
+function TableRoom({ roomData, popoverData, onUpdated }: Props) {
   const [updated, setUpdated] = useState(false)
 
   useEffect(() => {
@@ -217,7 +216,6 @@ function TableRoom({ token, roomData, popoverData, onUpdated }: Props) {
           onClose={() => setOpen(false)} 
           onUpdated={() => setUpdated(true)} 
           item={editData} 
-          token={token}
         />
       </PanelComponent>
     )}

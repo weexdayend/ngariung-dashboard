@@ -1,9 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import connectDB from '@/db/connect';
-import { JwtPayload, verify } from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
 
-const SECRET = process.env.KEY_PASS
+import connectDB from '@/db/connect';
+import authMiddleware from '@/pages/api/middleware';
+
+interface AuthenticatedRequest extends NextApiRequest {
+  userId?: string;
+  tenantId?: string;
+}
 
 async function getEmployeeData(userId: any, outletId: any, role: any) {
   const client = await connectDB();
@@ -24,22 +28,13 @@ async function getEmployeeData(userId: any, outletId: any, role: any) {
   return employeeData;
 }
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
     return res.status(405).end(); // Method Not Allowed
   }
 
-  const cookies = req.headers.authorization
-  const token = cookies;
-
-  if (!token || !SECRET) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
-
   try {
-    // Verify the token
-    const decodedToken = verify(token, SECRET) as JwtPayload;
-    const userId = decodedToken.userId;
+    const userId = req.userId;
 
     const { outlet, role } = req.query;
 
@@ -76,4 +71,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default handler;
+export default authMiddleware(handler);
