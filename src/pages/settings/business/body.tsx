@@ -69,7 +69,7 @@ function Body({}: Props) {
         loading: 'Updating your data...',
         success: (response: any) => {
           setTimeout(() => {
-            window.location.href='https://dashboard-sakapulse.vercel.app/dashboard'
+            window.location.href='/dashboard'
           }, 1500);
           return response.message;
         },

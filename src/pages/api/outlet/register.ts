@@ -47,7 +47,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
     // Create a new user document
     const newOutlet = {
-      businessId: tenantId,
+      businessId: new ObjectId(tenantId),
       outletName, 
       outletLine,
       outletAddress, 

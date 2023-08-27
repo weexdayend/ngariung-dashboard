@@ -2,9 +2,17 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { ObjectId } from 'mongodb';
 
 import connectDB from '@/db/connect';
+import authMiddleware from '@/pages/api/middleware';
+import jwt from 'jsonwebtoken';
+
+import { serialize } from 'cookie';
+
+const SECRET = process.env.KEY_PASS || ''
+const DOMAIN = process.env.DOMAIN
 
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
+  userRole?: string;
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
@@ -50,16 +58,45 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     };
     const tenant = await collection.insertOne(newBusiness);
 
-    await db.collection('Users').updateOne(
-      { _id: userObjectId },
-      { $set: { tenantId: tenant.insertedId } }
-    );
+    if (tenant.acknowledged) {
+      const update = await db.collection('Users').updateOne(
+        { _id: new ObjectId(userId) },
+        { $set: { tenantId: tenant.insertedId } }
+      );
 
-    res.status(201).json({ message: 'Business registered successfully' });
+      if (update.modifiedCount > 0) {
+        const token = jwt.sign({ userId: userId, userRole: req.userRole, tenantId: tenant.insertedId }, SECRET, {
+          expiresIn: '1h', // Set token expiration time
+        });
+        
+        res.setHeader('Set-Cookie', [
+          serialize('token', token, {
+            httpOnly: false,
+            secure: true, // Set secure flag in production
+            domain: DOMAIN, // Set the domain without protocol
+            path: '/', // Set the path
+            maxAge: 60 * 60, // Set max age (in seconds), e.g., 1 hour
+            sameSite: 'strict'
+          }),
+          serialize('refreshToken', token, {
+            httpOnly: false,
+            secure: true, // Set secure flag in production
+            domain: DOMAIN, // Set the domain without protocol
+            path: '/', // Set the path
+            maxAge: 60 * 60, // Set max age (in seconds), e.g., 1 hour
+            sameSite: 'strict'
+          }),
+        ])
+        res.status(201).json({ message: `User data updated successfully` });
+      } else {
+        return res.status(400).json({ error: `User data updated failed`})
+      }
+    } else {
+      return res.status(400).json({ error: 'Business registered failed'})
+    }
   } catch (error) {
-    console.error('Authentication error:', error);
     return res.status(401).json({ error: 'Authentication failed' });
   }
 };
 
-export default handler;
+export default authMiddleware(handler);
