@@ -19,7 +19,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     // Connect to the MongoDB database
     const client = await connectDB();
     const db = client.db('sakapulse');
-    const collection = db.collection('BusinessRoom');
+    const collection = db.collection('Schedule');
 
     // Update the existing business document
     const updateResult = await collection.updateOne(

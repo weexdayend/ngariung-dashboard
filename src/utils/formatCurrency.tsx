@@ -11,6 +11,6 @@ export const formatCurrency = (value: number | '') => {
     });
   
     const formattedValue = formatter.format(value);
-    return formattedValue.replace('Rp', ''); // Remove the currency symbol
+    return formattedValue
   }
 };

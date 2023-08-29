@@ -27,25 +27,18 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       },
     ).toArray();
 
-    const formattedDataArray = fitnessData.map((dataItem) => {
-      const {
-        _id,
-        date,
-        outlet,
-        tenantId,
-        schedule,
-      } = dataItem;
+    const uniqueEventNames = fitnessData.reduce((result: any, dataItem: any) => {
+      const eventName = dataItem.schedule[0].eventName;
+      result[eventName] = true; // Use eventName as the key and set value to true
+      return result;
+    }, {});
     
-      return {
-        _id,
-        date,
-        outlet,
-        tenantId,
-        schedule,
-      };
-    });
-  
-    res.status(200).json({ data: formattedDataArray });
+    const uniqueEventNamesArray = Object.keys(uniqueEventNames).map((eventName, id) => ({
+      id,
+      name: eventName,
+    }));
+
+    res.status(200).json({ data: uniqueEventNamesArray });
   } catch (error) {
     console.error('Authentication error:', error);
     return res.status(401).json({ error: 'Authentication failed' });

@@ -50,6 +50,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       { $push: { employees: { 
         _id: dataUser?._id,
         employeeName: dataUser?.employeeName,
+        employeePhone: dataUser?.employeePhone,
         employeeRole: dataUser?.employeeRole,
       } } }
     );

@@ -13,16 +13,22 @@ async function addSchedule(scheduleData: any, tenantId: any) {
   try {
     const client = await connectDB();
     const db = client.db('sakapulse');
-    const collection = db.collection('FitnessClass');
+    const collection = db.collection('Schedule');
 
     const existingSchedule = await collection.findOne({
       date: scheduleData.date,
-      outletId: new ObjectId(scheduleData.outlet),
+      outlet: {
+        id: new ObjectId(scheduleData.outlet.id),
+        name: scheduleData.outlet.name
+      },
       tenantId: new ObjectId(tenantId),
       schedule: {
         $elemMatch: {
-          className: scheduleData.schedule[0].className,
-          room: scheduleData.schedule[0].room,
+          eventName: scheduleData.schedule[0].eventName,
+          room: {
+            id: new ObjectId(scheduleData.schedule[0].room.id),
+            name: scheduleData.schedule[0].room.name
+          },
           $or: [
             {
               startTime: {
@@ -61,20 +67,37 @@ async function addSchedule(scheduleData: any, tenantId: any) {
       const result = await collection.updateOne(
         {
           date: scheduleData.date,
-          outletId: new ObjectId(scheduleData.outlet),
+          outlet: {
+            id: new ObjectId(scheduleData.outlet.id),
+            name: scheduleData.outlet.name
+          },
           tenantId: new ObjectId(tenantId),
         },
         {
           $push: {
             schedule: {
-              instructor: scheduleData.schedule[0].instructor,
-              classType: scheduleData.schedule[0].classType,
-              className: scheduleData.schedule[0].className,
+              scheduleId: new ObjectId(),
+              eventName: scheduleData.schedule[0].eventName,
+              eventCategory: scheduleData.schedule[0].eventCategory,
+              eventType: scheduleData.schedule[0].eventType,
+              pic: {
+                id: new ObjectId(scheduleData.schedule[0].pic.id),
+                name: scheduleData.schedule[0].pic.name,
+                phone: scheduleData.schedule[0].pic.phone,
+              },
               startTime: scheduleData.schedule[0].startTime,
               endTime: scheduleData.schedule[0].endTime,
               maxBookings: scheduleData.schedule[0].maxBookings,
-              room: scheduleData.schedule[0].room,
+              room: {
+                id: new ObjectId(scheduleData.schedule[0].room.id),
+                name: scheduleData.schedule[0].room.name
+              },
               currentBookings: 0,
+              prices: {
+                basePrice: 0, 
+                taxRate: 0, 
+                serviceRate: 0,
+              }
             }
           }
         }
@@ -85,9 +108,37 @@ async function addSchedule(scheduleData: any, tenantId: any) {
       } else if (result.matchedCount === 0) {
         const insertResult = await collection.insertOne({
           date: scheduleData.date,
-          outletId: new ObjectId(scheduleData.outlet),
+          outlet: {
+            id: new ObjectId(scheduleData.outlet.id),
+            name: scheduleData.outlet.name
+          },
           tenantId: new ObjectId(tenantId),
-          schedule: scheduleData.schedule
+          schedule: [
+            {
+              scheduleId: new ObjectId(),
+              eventName: scheduleData.schedule[0].eventName,
+              eventCategory: scheduleData.schedule[0].eventCategory,
+              eventType: scheduleData.schedule[0].eventType,
+              pic: {
+                id: new ObjectId(scheduleData.schedule[0].pic.id),
+                name: scheduleData.schedule[0].pic.name,
+                phone: scheduleData.schedule[0].pic.phone,
+              },
+              startTime: scheduleData.schedule[0].startTime,
+              endTime: scheduleData.schedule[0].endTime,
+              maxBookings: scheduleData.schedule[0].maxBookings,
+              room: {
+                id: new ObjectId(scheduleData.schedule[0].room.id),
+                name: scheduleData.schedule[0].room.name
+              },
+              currentBookings: 0,
+              prices: {
+                basePrice: 0, 
+                taxRate: 0, 
+                serviceRate: 0,
+              }
+            }
+          ]
         });
     
         if (insertResult.acknowledged) {
@@ -129,7 +180,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       return res.status(200).json({ message: 'Business not found' });
     }
 
-    const checkOutlet = await outlets.findOne({ businessId: tenantId })
+    const checkOutlet = await outlets.findOne({ businessId: new ObjectId(tenantId) })
     if (!checkOutlet) {
       return res.status(200).json({ message: 'Outlet not found' })
     }

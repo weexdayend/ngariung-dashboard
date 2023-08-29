@@ -52,6 +52,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
         _id: employee._id,
         name: employee.employeeName,
         role: employee.employeeRole,
+        phone: employee.employeePhone,
       }))
 
       const normalizeRoom = rooms.map((room: any) => ({

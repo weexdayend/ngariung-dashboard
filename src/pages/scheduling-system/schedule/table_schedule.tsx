@@ -10,44 +10,15 @@ const localizer = momentLocalizer(moment)
 
 type Props = {
   onUpdated: () => void;
+  eventData: any
   fitnessData: any
   outletData: any
+  eventCategoryData: any
+  eventTypeData: any
 }
 
-const COLUMN = [
-  '',
-  'Class',
-  'Type',
-  'Instructor',
-  'Time',
-  'Outlet',
-  'Room',
-]
-
-function TableClass({ onUpdated, fitnessData, outletData }: Props) {
+function TableClass({ onUpdated, eventData, fitnessData, outletData, eventCategoryData, eventTypeData }: Props) {
   const [updated, setUpdated] = useState(false)
-  const [groupedData, setGroupedData] = useState<any>({})
-
-  function groupDataByDay(data: any) {
-    const group: any = {};
-  
-    data.forEach((item: any) => {
-      const { date, ...rest } = item;
-      if (!group[date]) {
-        group[date] = [rest];
-      } else {
-        group[date].push(rest);
-      }
-    });
-  
-    setGroupedData(group)
-  }
-
-  useEffect(() => {
-    if (fitnessData) {
-      groupDataByDay(fitnessData.data);
-    }
-  }, [])
 
   useEffect(() => {
     if(updated){
@@ -108,14 +79,15 @@ function TableClass({ onUpdated, fitnessData, outletData }: Props) {
         );
 
         return {
-          title: `${scheduleItem.className} - ${scheduleItem.classType}`,
+          title: `${scheduleItem.eventName} - ${scheduleItem.eventType.name}`,
           start: startDateTime,
           end: endDateTime,
-          outlet: item.outletName,
-          instructor: scheduleItem.instructor,
-          classDate: item.date,
-          className: scheduleItem.className,
-          classType: scheduleItem.classType,
+          outlet: item.outlet,
+          pic: scheduleItem.pic,
+          eventDate: item.date,
+          eventName: scheduleItem.eventName,
+          eventCategory: scheduleItem.eventCategory,
+          eventType: scheduleItem.eventType,
           startTime: scheduleItem.startTime,
           endTime: scheduleItem.endTime,
           room: scheduleItem.room,
@@ -155,7 +127,10 @@ function TableClass({ onUpdated, fitnessData, outletData }: Props) {
           onClose={() => setOpen(false)} 
           onUpdated={() => setUpdated(true)} 
           item={editData} 
+          eventData={eventData}
           outletData={outletData} 
+          eventCategoryData={eventCategoryData}
+          eventTypeData={eventTypeData}
         />
       </PanelComponent>
     )}

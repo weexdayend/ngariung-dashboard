@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from 'react'
 import Layout from '../../../app/layout'
-import TableClass from './table_schedule'
-
-import axios from 'axios'
-import cookie from 'cookie'
+import TableTypeEvent from './table_type_event';
 
 import { GetServerSideProps } from 'next';
 import { Toaster, toast } from 'react-hot-toast';
+
+import axios from 'axios'
+import cookie from 'cookie'
 
 import withAuth from '@/pages';
 
 type Props = {
   isLoggedIn: boolean
   error: any
-  fitnessData: any
-  outletData: any
+  data: any
 }
 
-function Index({ error, fitnessData, outletData }: Props) {
+function Index({ error, data }: Props) {
   const [updated, setUpdated] = useState(false)
-  const [datas, setDatas] = useState(fitnessData)
+  const [datas, setDatas] = useState(data)
 
   const fetchNewData = async () => {
-    const response = await axios.get(`${process.env.API_URL}schedule/get`);
+    const response = await axios.get(`${process.env.API_URL}event-type/get`);
     const res = await response.data;
     setDatas(res)
   }
@@ -44,33 +43,25 @@ function Index({ error, fitnessData, outletData }: Props) {
         position="bottom-center"
         reverseOrder={false}
       />
-      <TableClass onUpdated={() => setUpdated(true)} fitnessData={datas} outletData={outletData} />
+      <TableTypeEvent data={datas} onUpdated={() => setUpdated(true)} />
     </Layout>
   )
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  try {
+  try{
     const cookies = cookie.parse(context.req.headers.cookie || '');
 
-    const responseFitness = await axios.get(`${process.env.API_URL}schedule/get`, {
+    const response = await axios.get(`${process.env.API_URL}event-type/get`, {
       headers: {
         Cookie: `token=${cookies['token']}`
-      },
+      }
     });
-    const fitnessData = await responseFitness.data;
-  
-    const responseOutlet = await axios.get(`${process.env.API_URL}outlet/getWithRoomEmployee`, {
-      headers: {
-        Cookie: `token=${cookies['token']}`
-      },
-    });
-    const outletData = await responseOutlet.data;
-  
+    const data = await response.data;
+
     return {
       props: {
-        fitnessData,
-        outletData,
+        data,
       },
     };
   } catch (error: any) {

@@ -15,7 +15,7 @@ const TableComponent: React.FC<TableProps> = ({ data, columns, renderRow, render
         <thead>
           <tr>
             {columns.map((column) => (
-              <th key={column} className="py-3 px-6 text-left">{column}</th>
+              <th key={column} className="py-3 px-3 text-left text-xs">{column}</th>
             ))}
           </tr>
         </thead>

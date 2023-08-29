@@ -21,8 +21,14 @@ function Sidebar({}) {
     dispatch(setExpandedMenu(expandedMenu === menu ? null : menu));
   };
 
+  function capitalizeFirstLetterOfEachWord(inputString: any) {
+    return inputString.replace(/\b\w/g, (match: any) => match.toUpperCase());
+  }
+
   const router = useRouter();
   const paths = router.asPath.split('/').filter((path) => path !== '');
+
+  const formattedPaths = paths.map((path) => capitalizeFirstLetterOfEachWord(path.replace(/-/g, ' ')));
 
   useEffect(() => {
     const fetchRole = async () => {
@@ -51,7 +57,7 @@ function Sidebar({}) {
             return (
               <div key={menuItem.id}>
                 <button className={`w-full px-6 text-left pt-3 pb-2 items-center leading-6`} onClick={() => handleToggle(menuItem.label)}>
-                  <p className={`text-base ${paths[0] == menuItem.label.toLowerCase() ? 'font-medium text-blue-950' : 'font-normal text-blue-950/20'}`}>{menuItem.label}</p>
+                  <p className={`text-base ${formattedPaths[0] == menuItem.label ? 'font-medium text-blue-950' : 'font-normal text-blue-950/20'}`}>{menuItem.label}</p>
                 </button>
                 {isMenuExpanded && (
                   <div className='mx-3 py-2'>
@@ -59,8 +65,8 @@ function Sidebar({}) {
                       const IconComponent = Heroicons[subMenuItem.icon];
                       return (
                         <Link key={subMenuItem.id} href={`/${subMenuItem.link}`} className="flex flex-row items-center px-6 space-x-2 cursor-pointer" >
-                          <div className={`${paths[1] === subMenuItem.label.toLowerCase() ? 'scale-110 text-blue-500' : 'font-normal text-blue-950/40'}`}><IconComponent height={18} width={18} className={`${paths[1] === subMenuItem.label.toLowerCase() ? 'scale-110 text-blue-500' : 'font-normal text-blue-950/40'}`} /></div>
-                          <div className={`text-sm pt-3 pb-2 ${paths[1] === subMenuItem.label.toLowerCase() ? 'font-medium text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500' : 'font-normal text-blue-950/40'}`}>{subMenuItem.label}</div>
+                          <div className={`${formattedPaths[1] === subMenuItem.label ? 'scale-110 text-blue-500' : 'font-normal text-blue-950/40'}`}><IconComponent height={18} width={18} className={`${formattedPaths[1] === subMenuItem.label ? 'scale-110 text-blue-500' : 'font-normal text-blue-950/40'}`} /></div>
+                          <div className={`text-sm pt-3 pb-2 ${formattedPaths[1] === subMenuItem.label ? 'font-medium text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500' : 'font-normal text-blue-950/40'}`}>{subMenuItem.label}</div>
                         </Link>
                       )
                     })}

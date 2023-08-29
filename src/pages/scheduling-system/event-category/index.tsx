@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Layout from '../../../app/layout'
-import TableSupplier from './table_supplier'
+import TableEventCategory from './table_event_category';
 
 import { GetServerSideProps } from 'next';
 import { Toaster, toast } from 'react-hot-toast';
@@ -21,7 +21,7 @@ function Index({ error, data }: Props) {
   const [datas, setDatas] = useState(data)
 
   const fetchNewData = async () => {
-    const response = await axios.get(`${process.env.API_URL}supplier/get`);
+    const response = await axios.get(`${process.env.API_URL}event-category/get`);
     const res = await response.data;
     setDatas(res)
   }
@@ -36,14 +36,14 @@ function Index({ error, data }: Props) {
   if (error) {
     toast.error(error)
   }
-  
+
   return (
     <Layout>
       <Toaster
         position="bottom-center"
         reverseOrder={false}
       />
-      <TableSupplier data={datas} onUpdated={() => setUpdated(true)} />
+      <TableEventCategory data={datas} onUpdated={() => setUpdated(true)} />
     </Layout>
   )
 }
@@ -52,7 +52,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try{
     const cookies = cookie.parse(context.req.headers.cookie || '');
 
-    const response = await axios.get(`${process.env.API_URL}supplier/get`, {
+    const response = await axios.get(`${process.env.API_URL}event-category/get`, {
       headers: {
         Cookie: `token=${cookies['token']}`
       }

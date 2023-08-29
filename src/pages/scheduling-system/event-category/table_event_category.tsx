@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
 
 import TableComponent from '@/components/table_component'
 import PanelComponent from '../../../components/panel_component'
-import FormSupplier from './form_supplier';
+import FormEventCategory from './form_event_category'
 
 type Props = {
   data: any;
   onUpdated: () => void;
 }
 
-function TableSupplier({ data, onUpdated }: Props) {
+function TableEventCategory({ data, onUpdated }: Props) {
   const [updated, setUpdated] = useState(false)
   
   useEffect(() => {
@@ -21,10 +21,7 @@ function TableSupplier({ data, onUpdated }: Props) {
 
   const column = [
     '',
-    'Name',
-    'Address',
-    'Phone',
-    'Email',
+    'Event Category',
   ]
 
   const [open, setOpen] = useState(false)
@@ -55,14 +52,7 @@ function TableSupplier({ data, onUpdated }: Props) {
             </span>
           )}
         </td>
-        <td className='py-4 px-6 text-sm font-bold'>{item.supplierName}</td>
-        <td className='py-4 px-6 text-sm'>
-          <span className="text-sm text-indigo-700">
-            {`${item.supplierAddress}`}
-          </span>
-        </td>
-        <td className='py-4 px-6 text-sm'>{item.supplierPhone}</td>
-        <td className='py-4 px-6 text-sm'>{item.supplierEmail}</td>
+        <td className='py-4 px-6 text-sm font-bold'>{item.nameCategory}</td>
         <td className='py-4 px-6'>
           <div onClick={() => handleEdit(item)} className='py-1 px-2 w-fit rounded-md bg-indigo-400 text-white text-sm font-normal cursor-pointer'>
             Edit
@@ -95,11 +85,11 @@ function TableSupplier({ data, onUpdated }: Props) {
       }
       {open && (
         <PanelComponent setOpen={setOpen}>
-          <FormSupplier onClose={() => setOpen(false)} onUpdated={() => setUpdated(true)} item={editData} />
+          <FormEventCategory onClose={() => setOpen(false)} onUpdated={() => setUpdated(true)} item={editData} />
         </PanelComponent>
       )}
     </>
   )
 }
 
-export default TableSupplier
+export default TableEventCategory

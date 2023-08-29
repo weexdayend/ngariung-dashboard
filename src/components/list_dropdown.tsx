@@ -5,6 +5,7 @@ import { ChevronDownIcon, CheckIcon } from '@heroicons/react/outline';
 interface DropDownList {
   id: string | '';
   name: string | '';
+  phone?: string | '';
 }
 
 interface OutletLineDropdownProps {
