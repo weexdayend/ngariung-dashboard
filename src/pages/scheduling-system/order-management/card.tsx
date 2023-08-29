@@ -4,12 +4,10 @@ import { formatCurrency } from '@/utils/formatCurrency';
 
 type DataCardProps = {
   date: any
-  data: any;
-  value: { eventId: string, scheduleId: string};
-  onClick: (value: any) => void
+  data: any
 };
 
-const Card: React.FC<DataCardProps> = ({ date, data, onClick }) => {
+const Card: React.FC<DataCardProps> = ({ date, data }) => {
 
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -18,9 +16,6 @@ const Card: React.FC<DataCardProps> = ({ date, data, onClick }) => {
   const formattedDate = `${year}-${month}-${day}`;
   const filteredData = data.filter((item: any) => item.date === formattedDate);
 
-  const handlerSelectedEvent = (id: string, schedule: string) => {
-    onClick({id, schedule})
-  }
 
   return (
     <>
@@ -28,7 +23,7 @@ const Card: React.FC<DataCardProps> = ({ date, data, onClick }) => {
         filteredData.map((item: any, i: any) => (
           item.schedule.map((child: any) => (
           <div 
-            onClick={() => handlerSelectedEvent(item._id, child.scheduleId)}
+            
             key={i} 
             className={`hover:z-50 group bg-white hover:shadow-xl hover:shadow-indigo-200/50 active:transition-transform duration-300 ease-in-out transform-gpu relative overflow-hidden h-fit rounded-3xl shadow-xl shadow-gray-100/10`}
           >

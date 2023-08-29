@@ -26,7 +26,7 @@ const Card: React.FC<DataCardProps> = ({ data }) => {
     <>
       {
         sortedData.map((item: any, i: any) => (
-          <div className={`hover:z-50 group hover:shadow-xl hover:shadow-indigo-200/50 active:transition-transform duration-300 ease-in-out transform-gpu hover:scale-110 relative overflow-hidden px-6 py-6 ${item.rank === 1 ? 'bg-gradient-to-bl from-indigo-600 to-rose-400' : item.rank === 6 ? 'bg-red-50' : 'bg-gray-50'} rounded-3xl shadow-xl shadow-gray-100`}>
+          <div key={i} className={`hover:z-50 group hover:shadow-xl hover:shadow-indigo-200/50 active:transition-transform duration-300 ease-in-out transform-gpu hover:scale-110 relative overflow-hidden px-6 py-6 ${item.rank === 1 ? 'bg-gradient-to-bl from-indigo-600 to-rose-400' : item.rank === 6 ? 'bg-red-50' : 'bg-gray-50'} rounded-3xl shadow-xl shadow-gray-100`}>
             {
               item.rank === 1 && (
                 <>
