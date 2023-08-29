@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { Toaster, toast } from 'react-hot-toast';
 
@@ -71,7 +71,7 @@ function FormOutlet({ onClose, onUpdated, item }: Props) {
         setEnabled(false)
       }
     }
-  }, [item]);
+  }, []);
 
   useEffect(() => {
     if(item){
@@ -132,8 +132,8 @@ function FormOutlet({ onClose, onUpdated, item }: Props) {
         loading: 'Updating your data...',
         success: (response: any) => {
           setTimeout(() => {
-            onClose();
-            onUpdated();
+            handleOnUpdated();
+            handleOnClose();
           }, 1500);
           return response.message;
         },
@@ -143,6 +143,18 @@ function FormOutlet({ onClose, onUpdated, item }: Props) {
       }
     );
   };
+
+  const handleOnUpdated = useCallback(() => {
+    onUpdated();
+  }, [onUpdated]);
+  
+  const handleOnClose = useCallback(() => {
+    onClose();
+  }, [onClose]);
+  
+  const handleSetEnabled = useCallback((value: any) => {
+    setEnabled(value);
+  }, []);
 
   return (
     <React.Fragment>
@@ -207,7 +219,7 @@ function FormOutlet({ onClose, onUpdated, item }: Props) {
             !newData && (
               <div className="border-b border-gray-900/10 pb-12">      
                 <div className="sm:col-span-full">
-                  <SwitchButton label="Setting activation outlet" enabled={enabled} onChange={setEnabled} />
+                  <SwitchButton label="Setting activation outlet" enabled={enabled} onChange={handleSetEnabled} />
                 </div>
               </div>
             )

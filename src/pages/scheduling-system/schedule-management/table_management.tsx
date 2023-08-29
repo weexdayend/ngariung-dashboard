@@ -25,7 +25,7 @@ function TableRoom({ onUpdated, scheduleData }: Props) {
       onUpdated()
       setUpdated(false)
     }
-  }, [updated])
+  }, [updated, onUpdated])
 
   const column = [
     '',

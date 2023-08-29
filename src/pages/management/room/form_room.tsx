@@ -62,7 +62,7 @@ function FormRoom({ onClose, onUpdated, item }: Props) {
 
       setDataChanged(hasDataChanged)
     }
-  }, [roomName, roomSize, roomVIP, roomCapacity, roomStatus])
+  }, [item, roomName, roomSize, roomVIP, roomCapacity, roomStatus])
 
   const isAnyFieldEmpty = !roomName || !roomSize || !roomCapacity
 

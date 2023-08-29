@@ -59,7 +59,7 @@ function FormEmployee({ onClose, onUpdated, item }: Props) {
         setEnabled(false)
       }
     }
-  }, [item]);
+  }, []);
 
   useEffect(() => {
     if(item){

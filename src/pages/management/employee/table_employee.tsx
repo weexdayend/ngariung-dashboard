@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState, Fragment, useCallback } from 'react'
 
 import TableComponent from '@/components/table_component'
 import PanelComponent from '../../../components/panel_component'
@@ -19,12 +19,16 @@ type Props = {
 function TableEmployee({ popoverData, data, onUpdated }: Props) {
   const [updated, setUpdated] = useState(false)
 
+  const handleOnUpdated = useCallback(() => {
+    onUpdated();
+  }, [onUpdated]);
+  
   useEffect(() => {
-    if(updated){
-      onUpdated()
-      setUpdated(false)
+    if (updated) {
+      handleOnUpdated();
+      setUpdated(false);
     }
-  }, [updated])
+  }, [updated, handleOnUpdated]);
 
   const column = [
     '',

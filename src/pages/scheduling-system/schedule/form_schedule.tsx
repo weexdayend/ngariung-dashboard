@@ -127,7 +127,7 @@ function FormSchedule({ onClose, onUpdated, item, eventData, outletData, eventCa
       setEventType(item.eventType);
       setEventCategory(item.eventCategory);
     }
-  }, []);
+  }, [outletData, eventCategoryData, eventTypeData]);
 
   useEffect(() => {
     if(item){
@@ -145,18 +145,7 @@ function FormSchedule({ onClose, onUpdated, item, eventData, outletData, eventCa
 
       setDataChanged(hasDataChanged);
     }
-  }, [
-    eventName, 
-    startTime, 
-    endTime, 
-    maxBookings, 
-    selectedDate,
-    selectOutlet,
-    selectInstructor,
-    selectRoom,
-    eventType,
-    eventCategory,
-  ])
+  }, [item])
 
   useEffect(() => {
     if (selectOutlet.id !== '' && selectOutlet.name !== '') {
@@ -177,7 +166,7 @@ function FormSchedule({ onClose, onUpdated, item, eventData, outletData, eventCa
 
     const newSlot: Slot = {
       pic: selectInstructor,
-      eventName: eventName.name,
+      eventName: eventName,
       eventCategory: eventCategory,
       eventType: eventType,
       startTime,

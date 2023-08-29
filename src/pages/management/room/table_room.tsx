@@ -24,11 +24,11 @@ function TableRoom({ roomData, popoverData, onUpdated }: Props) {
   const [updated, setUpdated] = useState(false)
 
   useEffect(() => {
-    if(updated){
-      onUpdated()
-      setUpdated(false)
+    if (updated) {
+      onUpdated();
+      setUpdated(false);
     }
-  }, [updated])
+  }, [updated, onUpdated]);
 
   const [open, setOpen] = useState(false)
   const [editData, setEditData] = useState(null)

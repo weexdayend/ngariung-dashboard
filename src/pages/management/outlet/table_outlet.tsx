@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import TableComponent from '@/components/table_component'
 import PanelComponent from '../../../components/panel_component'
@@ -13,12 +13,16 @@ type Props = {
 function TableOutlet({ data, onUpdated }: Props) {
   const [updated, setUpdated] = useState(false)
 
+  const handleOnUpdated = useCallback(() => {
+    onUpdated();
+  }, [onUpdated]);
+
   useEffect(() => {
     if(updated){
-      onUpdated()
+      handleOnUpdated()
       setUpdated(false)
     }
-  }, [updated])
+  }, [updated, onUpdated])
 
   const column = [
     '',
@@ -94,7 +98,7 @@ function TableOutlet({ data, onUpdated }: Props) {
       }
       {open && (
         <PanelComponent setOpen={setOpen}>
-          <FormOutlet onClose={() => setOpen(false)} onUpdated={() => setUpdated(true)} item={editData} />
+          <FormOutlet onClose={() => setOpen(false)} onUpdated={handleOnUpdated} item={editData} />
         </PanelComponent>
       )}
     </>
