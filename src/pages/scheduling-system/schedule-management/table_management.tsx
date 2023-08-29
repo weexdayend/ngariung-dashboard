@@ -100,8 +100,8 @@ function TableRoom({ onUpdated, scheduleData }: Props) {
       <>
         <td className='py-4 px-3 text-sm'>
           {
-            item.schedule.map((schedule: any) => (
-            <Popover className="relative">
+            item.schedule.map((schedule: any, i: any) => (
+            <Popover key={i} className="relative">
               {({ open }) => (
                 <>
                   <Popover.Button
