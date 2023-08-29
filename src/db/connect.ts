@@ -1,14 +1,12 @@
 // db/connect.ts
 import { MongoClient, ServerApiVersion } from 'mongodb';
 
-// import getConfig from 'next/config';
-// const { publicRuntimeConfig } = getConfig();
+const MONGODB_URI = process.env.MONGODB_URI
+const uri = MONGODB_URI
 
-// const PASS = publicRuntimeConfig.PASSKEY
-
-const uri = `mongodb+srv://vercel-admin-user:FpUoE5OglzIJ95XM@cluster0.hd4oe.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
-
-// const uri = `mongodb+srv://next_app:${PASS}@cluster0.hd4oe.mongodb.net/?retryWrites=true&w=majority`;
+if (!uri) {
+  throw new Error('MONGODB_URI is not defined in the environment variables.');
+}
 
 let cachedDb: MongoClient;
 
