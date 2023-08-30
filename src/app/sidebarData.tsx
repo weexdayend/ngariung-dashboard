@@ -18,10 +18,10 @@ export const sidebarData: MenuItem[] = [
     subMenu: [
       { id: 21, label: 'Schedule', icon: 'calendar', link: 'scheduling-system/schedule' },
       { id: 22, label: 'Event Type', icon: 'calendar', link: 'scheduling-system/event-type' },
-      { id: 22, label: 'Event Category', icon: 'calendar', link: 'scheduling-system/event-category' },
-      { id: 23, label: 'Schedule Management', icon: 'calendar', link: 'scheduling-system/schedule-management' },
-      { id: 24, label: 'Schedule Report', icon: 'calendar', link: 'scheduling-system/schedule-report' },
-      { id: 25, label: 'Order Management', icon: 'calendar', link: 'scheduling-system/order-management' },
+      { id: 23, label: 'Event Category', icon: 'calendar', link: 'scheduling-system/event-category' },
+      { id: 24, label: 'Schedule Management', icon: 'calendar', link: 'scheduling-system/schedule-management' },
+      { id: 25, label: 'Schedule Report', icon: 'calendar', link: 'scheduling-system/schedule-report' },
+      { id: 26, label: 'Order Management', icon: 'calendar', link: 'scheduling-system/order-management' },
     ]
   },
   {

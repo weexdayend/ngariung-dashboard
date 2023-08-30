@@ -50,37 +50,37 @@ function Welcome({ data }: Props) {
     setStepForm(1)
   }
 
-  // const setNextStep = async (e: CardProps) => {
-  //   const endpoint = `${process.env.API_URL}book/register`
+  const setNextStep = async (e: CardProps) => {
+    const endpoint = `${process.env.API_URL}book/register`
 
-  //   const body: any = {
-  //     customerName,
-  //     eventId: e.id,
-  //     scheduleId: e.schedule,
-  //   };
+    const body: any = {
+      customerName,
+      eventId: e.id,
+      scheduleId: e.schedule,
+    };
 
-  //   const responsePromise = new Promise(async (resolve, reject) => {
-  //     try {
-  //       const response = await axios.post(endpoint, body)
-  //       resolve(response.data);
-  //     } catch (error) {
-  //       reject(error);
-  //     }
-  //   });
+    const responsePromise = new Promise(async (resolve, reject) => {
+      try {
+        const response = await axios.post(endpoint, body)
+        resolve(response.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
 
-  //   await toast.promise(
-  //     responsePromise, // Resolve with the response data
-  //     {
-  //       loading: 'Updating your data...',
-  //       success: (response: any) => {
-  //         return response.message;
-  //       },
-  //       error: (e: any) => {
-  //         return e.response?.data?.error
-  //       },
-  //     }
-  //   );
-  // }
+    await toast.promise(
+      responsePromise, // Resolve with the response data
+      {
+        loading: 'Updating your data...',
+        success: (response: any) => {
+          return response.message;
+        },
+        error: (e: any) => {
+          return e.response?.data?.error
+        },
+      }
+    );
+  }
 
   return (
     <div className="relative isolate overflow-hidden w-full min-h-screen bg-gray-900 py-4 sm:py-24 lg:py-12 rounded-3xl">
@@ -206,7 +206,7 @@ function Welcome({ data }: Props) {
           </div>
           <div className='w-fit'></div>
           <div className="col-span-full space-y-4 mt-6">
-            <Card data={data.data} date={selectedDate} />
+            <Card data={data.data} date={selectedDate} setNextStep={setNextStep} />
           </div>
         </div>
         )

@@ -101,7 +101,7 @@ function TableRoom({ onUpdated, scheduleData }: Props) {
         <td className='py-4 px-3 text-sm'>
           {
             item.schedule.map((schedule: any, i: any) => (
-            <Popover key={i} className="relative">
+            <Popover key={i+1} className="relative">
               {({ open }) => (
                 <>
                   <Popover.Button
@@ -135,7 +135,7 @@ function TableRoom({ onUpdated, scheduleData }: Props) {
                                   assigned(item._id, schedule.scheduleId, pop.name)
                                 }
                               }}
-                              key={pop.name}
+                              key={pop.name+1}
                               className={`-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out ${schedule.gates == pop.name ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'hover:bg-gray-50 text-gray-600'} cursor-pointer`}
                             >
                               <div className="">

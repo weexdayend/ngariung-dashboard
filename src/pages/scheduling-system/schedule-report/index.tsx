@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Layout from '../../../app/layout'
-import Card from './card'
 
 import { Toaster, toast } from 'react-hot-toast';
 
@@ -47,7 +46,7 @@ function Index({}: Props) {
         reverseOrder={false}
       />
       <div className="grid grid-cols-3 gap-8">
-        <Card data={datas} />
+        <h1>Report goes here</h1>
       </div>
     </Layout>
   )

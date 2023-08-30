@@ -37,10 +37,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (SECRET !== undefined && RFRESH !== undefined) {
       // Generate JWT token
       const token = jwt.sign({ userId: user._id, userRole: user.role, tenantId: user.tenantId }, SECRET, {
-        expiresIn: '1h', // Set token expiration time
+        expiresIn: '30d', // Set token expiration time
       });
       const refreshToken = jwt.sign({ userId: user._id, userRole: user.role, tenantId: user.tenantId }, RFRESH, {
-        expiresIn: '1h', // Set refresh token expiration time
+        expiresIn: '30d', // Set refresh token expiration time
       });
 
       res.setHeader('Set-Cookie', [
@@ -49,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           secure: true, // Set secure flag in production
           domain: DOMAIN, // Set the domain without protocol
           path: '/', // Set the path
-          maxAge: 60 * 60, // Set max age (in seconds), e.g., 1 hour
+          maxAge: 30 * 24 * 60 * 60, // Set max age (in seconds), e.g., 1 hour
           sameSite: 'strict'
         }),
         serialize('refreshToken', refreshToken, {
@@ -57,7 +57,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           secure: true, // Set secure flag in production
           domain: DOMAIN, // Set the domain without protocol
           path: '/', // Set the path
-          maxAge: 60 * 60, // Set max age (in seconds), e.g., 1 hour
+          maxAge: 30 * 24 * 60 * 60, // Set max age (in seconds), e.g., 1 hour
           sameSite: 'strict'
         }),
       ])

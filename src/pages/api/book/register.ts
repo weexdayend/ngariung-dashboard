@@ -35,27 +35,22 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       status: false,
       tenantId: new ObjectId(tenantId)
     };
+    await bookingCollection.insertOne(newBooking);
 
-    const insertResult = await bookingCollection.insertOne(newBooking);
-
-    if (insertResult.acknowledged) {
-      const updateResult = await scheduleCollection.updateOne(
-        {
-          _id: new ObjectId(eventId),
-          "schedule.scheduleId": new ObjectId(scheduleId)
-        },
-        {
-          $inc: { "schedule.currentBookings": 1 }
-        }
-      );
-
-      if (updateResult.modifiedCount > 0) {
-        res.status(201).json({ message: 'Booking schedule successfully' });
-      } else {
-        res.status(201).json({ message: 'Booking schedule has failed' });
+    const updateResult = await scheduleCollection.updateOne(
+      {
+        _id: new ObjectId(eventId),
+        "schedule.scheduleId": new ObjectId(scheduleId)
+      },
+      {
+        $inc: { "schedule.$.currentBookings": 1 }
       }
+    );
+
+    if (updateResult.modifiedCount > 0) {
+      res.status(201).json({ message: 'Booking schedule successfully' });
     } else {
-      res.status(201).json({ message: 'Insert data has failed' });
+      res.status(201).json({ message: 'Booking schedule has failed' });
     }
   } catch (error) {
     console.error('Error:', error);

@@ -1,30 +1,31 @@
-import React, { useState } from 'react'
+import React from 'react'
+import moment from 'moment';
 
 import { formatCurrency } from '@/utils/formatCurrency';
+
+interface CardProps {
+  id: string;
+  schedule: string;
+}
 
 type DataCardProps = {
   date: any
   data: any
 };
 
-const Card: React.FC<DataCardProps> = ({ date, data }) => {
+function Card({ data, date, setNextStep }: DataCardProps & { setNextStep: (e: CardProps) => void }) {
 
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
-
-  const formattedDate = `${year}-${month}-${day}`;
+  const formattedDate = moment(date).format('YYYY-MM-DD');
   const filteredData = data.filter((item: any) => item.date === formattedDate);
-
 
   return (
     <>
       {
         filteredData.map((item: any, i: any) => (
           item.schedule.map((child: any) => (
-          <div 
-            
-            key={i} 
+          <div
+            onClick={() => setNextStep({ id: item._id, schedule: child.scheduleId})}
+            key={i+1} 
             className={`hover:z-50 group bg-white hover:shadow-xl hover:shadow-indigo-200/50 active:transition-transform duration-300 ease-in-out transform-gpu relative overflow-hidden h-fit rounded-3xl shadow-xl shadow-gray-100/10`}
           >
             <div className="p-4 px-8 grid grid-cols-3 w-full">
