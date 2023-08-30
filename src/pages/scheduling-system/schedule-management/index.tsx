@@ -55,26 +55,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const cookies = cookie.parse(context.req.headers.cookie || '');
 
-    const fetchSchedule = async () => {
-      const responseSchedule = await axios.get(`${process.env.API_URL}schedule/get`, {
-        headers: {
-          Cookie: `token=${cookies['token']}`
-        },
-      });
-      const scheduleData = await responseSchedule.data;
+    const responseSchedule = await axios.get(`${process.env.API_URL}schedule/get`, {
+      headers: {
+        Cookie: `token=${cookies['token']}`
+      },
+    });
+    const scheduleData = await responseSchedule.data;
 
-      return scheduleData
-    }
-
-    return Promise.all([
-      fetchSchedule()
-    ]).then(([scheduleData]) => {
-      return {
-        props: {
-          scheduleData,
-        }
+    return {
+      props: {
+        scheduleData,
       }
-    })
+    }
   } catch (error: any) {
     return {
       props: {
