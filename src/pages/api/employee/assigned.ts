@@ -67,8 +67,6 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'An error occurred' });
-  } finally {
-    client.close()
   }
 };
 

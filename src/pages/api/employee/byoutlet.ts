@@ -67,8 +67,6 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     res.status(200).json({ data: formattedDataArray });
   } catch (error) {
     return res.status(500).json({ error: 'An error occurred' });
-  } finally {
-    client.close()
   }
 };
 

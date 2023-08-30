@@ -96,8 +96,6 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     res.status(201).json({ message: 'User data updated successfully' });
   } catch (error) {
     return res.status(500).json({ error: 'An error occurred' });
-  } finally {
-    client.close()
   }
 };
 

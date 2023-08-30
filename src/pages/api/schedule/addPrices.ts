@@ -56,8 +56,6 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     res.status(201).json({ message: result });
   } catch (error: any) {
     return res.status(400).json({ error: error.message }); // Return a more informative error response
-  } finally {
-    client.close()
   }
 };
 

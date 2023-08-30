@@ -153,8 +153,6 @@ async function addSchedule(scheduleData: any, tenantId: any) {
     }
   } catch (error: any) {
     throw new Error(error.message);
-  } finally {
-    client.close()
   }
 }
 

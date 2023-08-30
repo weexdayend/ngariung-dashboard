@@ -10,10 +10,9 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-  let client: MongoClient | undefined;
 
   try {
-    client = await connectDB();
+    const client = await connectDB();
 
     if (req.method !== 'GET') {
       return res.status(405).end(); // Method Not Allowed
@@ -52,10 +51,6 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
-  } finally {
-    if (client) {
-      client.close(); // Close the client connection
-    }
   }
 };
 
