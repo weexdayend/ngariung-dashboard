@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 import connectDB from '@/db/connect';
 import authMiddleware from '@/pages/api/middleware';
@@ -10,16 +10,18 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-  const client = await connectDB();
+  let client: MongoClient | undefined;
 
   try {
+    client = await connectDB();
+
     if (req.method !== 'GET') {
       return res.status(405).end(); // Method Not Allowed
     }
 
     const tenantId = req.tenantId;
-    
-    const db = client.db('sakapulse');
+    const db = client.db(); // Use the client to get the database instance
+
     const collection = db.collection('Schedule');
   
     const fitnessData = await collection.find(
@@ -48,10 +50,12 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   
     res.status(200).json({ data: formattedDataArray });
   } catch (error) {
-    console.error('Authentication error:', error);
-    return res.status(401).json({ error: 'Authentication failed' });
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   } finally {
-    client.close()
+    if (client) {
+      client.close(); // Close the client connection
+    }
   }
 };
 

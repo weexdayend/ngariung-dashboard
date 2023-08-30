@@ -15,33 +15,6 @@ const connectDB = async () => {
     return cachedDb;
   }
 
-
-  const client = new MongoClient(uri, {
-    serverApi: {
-      version: ServerApiVersion.v1,
-      strict: true,
-      deprecationErrors: true,
-    },
-    maxPoolSize: 10, // Adjust the pool size as per your needs
-  });
-
-  try {
-    await client.connect();
-    console.log('Connected to MongoDB');
-    cachedDb = client;
-    return cachedDb;
-  } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
-    throw error;
-  }
-};
-
-const connectDBDua = async () => {
-  if (cachedDb) {
-    return cachedDb;
-  }
-
-
   const client = new MongoClient(uri, {
     serverApi: {
       version: ServerApiVersion.v1,
