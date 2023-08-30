@@ -23,6 +23,7 @@ function Index({ error, scheduleData }: Props) {
   const fetchNewData = async () => {
     const response = await axios.get(`${process.env.API_URL}schedule/get`);
     const res = await response.data;
+    
     setDatas(res)
   }
 
