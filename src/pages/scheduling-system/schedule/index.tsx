@@ -24,6 +24,8 @@ function Index({ error, eventData, fitnessData, outletData, eventCategoryData, e
   const [updated, setUpdated] = useState(false)
   const [datas, setDatas] = useState(fitnessData)
 
+  console.log(eventData)
+
   const fetchNewData = async () => {
     const response = await axios.get(`${process.env.API_URL}schedule/get`);
     const res = await response.data;

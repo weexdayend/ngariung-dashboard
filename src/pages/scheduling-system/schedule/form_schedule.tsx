@@ -19,7 +19,7 @@ interface Instructor {
 
 interface Slot {
   pic: Instructor;
-  eventName: DropDownList,
+  eventName: string,
   eventCategory: { id: string, name: string };
   eventType: { id: string, name: string };
   startTime: string;
@@ -166,7 +166,7 @@ function FormSchedule({ onClose, onUpdated, item, eventData, outletData, eventCa
 
     const newSlot: Slot = {
       pic: selectInstructor,
-      eventName: eventName,
+      eventName: eventName.name,
       eventCategory: eventCategory,
       eventType: eventType,
       startTime,

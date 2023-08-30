@@ -19,8 +19,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     }
 
     const tenantId = req.tenantId;
-    const db = client.db(); // Use the client to get the database instance
-
+    const db = client.db('sakapulse')
     const collection = db.collection('Schedule');
   
     const fitnessData = await collection.find(
