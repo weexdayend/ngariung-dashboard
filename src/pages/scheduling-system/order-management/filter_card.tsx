@@ -19,7 +19,7 @@ function FilterCard() {
   }
 
   const currentDate = new Date();
-  currentDate.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
+  currentDate.setHours(0, 0, 0, 0);
   
   return (
     <div className='w-fit px-6 py-6 bg-white rounded-3xl shadow-xl shadow-gray-100/20'>
