@@ -10,6 +10,8 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
+  const client = await connectDB();
+
   try {
     if (req.method !== 'GET') {
       return res.status(405).end(); // Method Not Allowed
@@ -17,7 +19,6 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
     const tenantId = req.tenantId;
     
-    const client = await connectDB();
     const db = client.db('sakapulse');
     const collection = db.collection('Schedule');
   
@@ -42,6 +43,8 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   } catch (error) {
     console.error('Authentication error:', error);
     return res.status(401).json({ error: 'Authentication failed' });
+  } finally {
+    client.close()
   }
 };
 

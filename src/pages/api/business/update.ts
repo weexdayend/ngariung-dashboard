@@ -9,19 +9,17 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
+  const client = await connectDB();
 
   const { businessName, businessPhone, businessEmail } = req.body;
 
   try {
     const tenantId = req.tenantId;
-    const tenantObjectId = new ObjectId(tenantId)
+    const tenantObjectId = new ObjectId(tenantId);
 
-    // Connect to the MongoDB database
-    const client = await connectDB();
     const db = client.db('sakapulse');
     const businessCollection = db.collection('Business');
 
-    // Update the existing business document
     const updateResult = await businessCollection.updateOne(
       { _id: tenantObjectId },
       { $set: { businessName, businessPhone, businessEmail } }
@@ -33,8 +31,10 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
     res.status(200).json({ message: 'Business updated successfully' });
   } catch (error) {
-    console.error('Authentication error:', error);
-    return res.status(401).json({ error: 'Authentication failed' });
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'An error occurred' });
+  } finally {
+    client.close()
   }
 };
 

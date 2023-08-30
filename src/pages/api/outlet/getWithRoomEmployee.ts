@@ -9,24 +9,26 @@ interface AuthenticatedRequest extends NextApiRequest {
   tenantId?: string;
 }
 
-async function getOutletData(businessId: any) {
-  const client = await connectDB();
-  const db = client.db('sakapulse');
-  const collection = db.collection('BusinessOutlet');
-
-  const outletData = await collection.find({
-    businessId: new ObjectId(businessId),
-  }).toArray();
-  return outletData;
-}
-
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
+  const client = await connectDB();
+
   if (req.method !== 'GET') {
     return res.status(405).end(); // Method Not Allowed
   }
 
   try {
     const tenantId = req.tenantId;
+
+    const getOutletData = async (businessId: any) => {
+      const db = client.db('sakapulse');
+      const collection = db.collection('BusinessOutlet');
+    
+      const outletData = await collection.find({
+        businessId: new ObjectId(businessId),
+      }).toArray();
+      return outletData;
+    }
+
     const outletData = await getOutletData(tenantId)
 
     if (!outletData) {
@@ -71,6 +73,8 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     res.status(200).json({ data: formattedDataArray });
   } catch (error) {
     return res.status(401).json({ error: 'Authentication failed' });
+  } finally {
+    client.close()
   }
 };
 

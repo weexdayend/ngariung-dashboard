@@ -10,8 +10,9 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 async function addSchedule(scheduleData: any, tenantId: any) {
+  const client = await connectDB();
+
   try {
-    const client = await connectDB();
     const db = client.db('sakapulse');
     const collection = db.collection('Schedule');
 
@@ -152,6 +153,8 @@ async function addSchedule(scheduleData: any, tenantId: any) {
     }
   } catch (error: any) {
     throw new Error(error.message);
+  } finally {
+    client.close()
   }
 }
 

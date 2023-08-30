@@ -9,35 +9,11 @@ interface AuthenticatedRequest extends NextApiRequest {
   tenantId?: string;
 }
 
-async function getOutletData(businessId: any) {
-  const client = await connectDB();
-  const db = client.db('sakapulse');
-  const collection = db.collection('BusinessRoom');
-  const outletCollection = db.collection('BusinessOutlet'); // Add this line
 
-  const businessData = await collection.find(
-    { 
-      tenantId: new ObjectId(businessId),
-    },
-  ).toArray();
-  
-  // Fetch outlet information for each employee
-  const employeesWithOutletData = await Promise.all(
-    businessData.map(async (employee) => {
-      if (employee.assignedOutletId) {
-        const outlet = await outletCollection.findOne({
-          _id: new ObjectId(employee.assignedOutletId),
-        });
-        return { ...employee, outletName: outlet?.outletName };
-      }
-      return employee;
-    })
-  );
-
-  return employeesWithOutletData;
-}
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
+  const client = await connectDB();
+
   if (req.method !== 'GET') {
     return res.status(405).end(); // Method Not Allowed
   }
@@ -45,6 +21,32 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   try {
     const tenantId = req.tenantId;
 
+    const getOutletData = async (businessId: any) => {
+      const db = client.db('sakapulse');
+      const collection = db.collection('BusinessRoom');
+      const outletCollection = db.collection('BusinessOutlet'); // Add this line
+    
+      const businessData = await collection.find(
+        { 
+          tenantId: new ObjectId(businessId),
+        },
+      ).toArray();
+      
+      // Fetch outlet information for each employee
+      const employeesWithOutletData = await Promise.all(
+        businessData.map(async (employee) => {
+          if (employee.assignedOutletId) {
+            const outlet = await outletCollection.findOne({
+              _id: new ObjectId(employee.assignedOutletId),
+            });
+            return { ...employee, outletName: outlet?.outletName };
+          }
+          return employee;
+        })
+      );
+    
+      return employeesWithOutletData;
+    }
     const outletData = await getOutletData(tenantId)
 
     if (!outletData) {
@@ -92,6 +94,8 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   } catch (error) {
     console.error('Authentication error:', error);
     return res.status(401).json({ error: 'Authentication failed' });
+  } finally {
+    client.close()
   }
 };
 

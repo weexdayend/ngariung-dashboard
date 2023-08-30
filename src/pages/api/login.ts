@@ -10,6 +10,8 @@ const RFRESH = process.env.REF_PASS
 const DOMAIN = process.env.DOMAIN
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const client = await connectDB();
+
   try {
     if (req.method !== 'POST') {
       return res.status(405).end();
@@ -17,7 +19,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   
     const { email, password } = req.body;
     
-    const client = await connectDB();
     const db = client.db('sakapulse');
     const collection = db.collection('Users');
 
@@ -68,6 +69,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error logging in' });
+  } finally {
+    client.close()
   }
 };
 

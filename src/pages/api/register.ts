@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/db/connect';
 import bcrypt from 'bcrypt';
+import { ObjectId } from 'mongodb';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST') {
@@ -13,6 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const client = await connectDB();
     const db = client.db("sakapulse")
     const collection = db.collection('Users');
+    const business = db.collection('Business');
 
     // Check if the data is already registered
     const existingEmail = await collection.findOne({ email });
@@ -26,6 +28,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const newBusiness = {
+      businessName: null,
+      businessPhone: null,
+      businessEmail: null,
+      status: true
+    };
+    const insert = await business.insertOne(newBusiness)
     // Create a new user document
     const newUser = {
       fullName,
@@ -34,7 +43,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       password: hashedPassword,
       role: 'admin',
       status: true,
-      tenantId: null,
+      tenantId: new ObjectId(insert.insertedId),
     };
     await collection.insertOne(newUser);
 

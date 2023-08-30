@@ -15,7 +15,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
   try {
 
-    const query = supabase.from('EventCategory').select()
+    const query = supabase.from('EventCategory').select().eq('tenantId', `${req.tenantId}`)
     const TypeEvents: DbResult<typeof query> = await query
   
     res.status(200).json({ data: TypeEvents.data });

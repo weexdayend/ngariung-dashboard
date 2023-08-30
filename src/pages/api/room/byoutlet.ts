@@ -9,24 +9,9 @@ interface AuthenticatedRequest extends NextApiRequest {
   tenantId?: string;
 }
 
-async function getEmployeeData(userId: any, outletId: any, ) {
-  const client = await connectDB();
-  const db = client.db('sakapulse');
-  const rooms = db.collection('BusinessRoom');
-  const collection = db.collection('BusinessOutlet');
-
-  const room = await rooms.findOne({
-    _id: new ObjectId(userId),
-  });
-
-  const employeeData = await collection.find({ 
-    tenantId: room?.tenantId,
-  }).toArray();
-
-  return employeeData;
-}
-
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
+  const client = await connectDB();
+
   if (req.method !== 'GET') {
     return res.status(405).end(); // Method Not Allowed
   }
@@ -34,9 +19,24 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   try {
     const userId = req.userId;
 
-    const { outlet } = req.query;
+    const getEmployeeData = async (userId: any) => {
+      const db = client.db('sakapulse');
+      const rooms = db.collection('BusinessRoom');
+      const collection = db.collection('BusinessOutlet');
+    
+      const room = await rooms.findOne({
+        _id: new ObjectId(userId),
+      });
+    
+      const employeeData = await collection.find({ 
+        tenantId: room?.tenantId,
+      }).toArray();
+    
+      return employeeData;
+    }
+    
 
-    const employeeData = await getEmployeeData(userId, outlet);
+    const employeeData = await getEmployeeData(userId);
 
     if (!employeeData) {
       return res.status(200).json({
@@ -66,6 +66,8 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   } catch (error) {
     console.error('Authentication error:', error);
     return res.status(401).json({ error: 'Authentication failed' });
+  } finally {
+    client.close()
   }
 };
 

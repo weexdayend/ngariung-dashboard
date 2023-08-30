@@ -10,22 +10,10 @@ type DataCardProps = {
 
 const Card: React.FC<DataCardProps> = ({ data }) => {
 
-  const sortedData = [...data].sort((a, b) => b.totalEarnings - a.totalEarnings);
-  // Assign rank to each "witel"
-  let rank = 1;
-  let prevAch = sortedData[0].totalEarnings;
-  sortedData.forEach((item, index) => {
-    if (item.totalEarnings < prevAch) {
-      rank = index + 1;
-      prevAch = item.totalEarnings;
-    }
-    item.rank = rank;
-  });
-
   return (
     <>
       {
-        sortedData.map((item: any, i: any) => (
+        data.map((item: any, i: any) => (
           <div key={i} className={`hover:z-50 group hover:shadow-xl hover:shadow-indigo-200/50 active:transition-transform duration-300 ease-in-out transform-gpu hover:scale-110 relative overflow-hidden px-6 py-6 ${item.rank === 1 ? 'bg-gradient-to-bl from-indigo-600 to-rose-400' : item.rank === 6 ? 'bg-red-50' : 'bg-gray-50'} rounded-3xl shadow-xl shadow-gray-100`}>
             {
               item.rank === 1 && (

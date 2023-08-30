@@ -1,7 +1,18 @@
 import React from 'react'
 import { ArrowSmUpIcon } from '@heroicons/react/solid'
+import axios from 'axios';
 
 function ActivityCard() {
+
+  const fetchEventCategory = async () => {
+    const responseEventCategory = await axios.get(`${process.env.API_URL}event-category/get`);
+    const eventCategoryData = await responseEventCategory.data;
+
+    return eventCategoryData
+  }
+
+  fetchEventCategory()
+
   return (
       <div className="px-6 py-6 bg-white rounded-3xl shadow-xl shadow-gray-100 w-full">
         <div className="flex flex-row justify-between">

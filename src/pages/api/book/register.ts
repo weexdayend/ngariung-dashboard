@@ -10,6 +10,8 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
+  const client = await connectDB();
+
   if (req.method !== 'POST') {
     return res.status(405).end(); // Method Not Allowed
   }
@@ -22,13 +24,10 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
   try {
     const tenantId = req.tenantId;
-
-    // Connect to the MongoDB database
-    const client = await connectDB();
     const db = client.db('sakapulse');
-    const collection = db.collection('BookEvent');
+    const bookingCollection = db.collection('BookEvent');
+    const scheduleCollection = db.collection('Schedule');
 
-    // Create a new user document
     const newBooking = {
       customerName,
       eventId: new ObjectId(eventId),
@@ -36,23 +35,21 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       status: false,
       tenantId: new ObjectId(tenantId)
     };
-    const insert =await collection.insertOne(newBooking);
 
-    if (insert.acknowledged){
-      const schedule = db.collection('Schedule');
-      const update =await schedule.updateOne(
+    const insertResult = await bookingCollection.insertOne(newBooking);
+
+    if (insertResult.acknowledged) {
+      const updateResult = await scheduleCollection.updateOne(
         {
           _id: new ObjectId(eventId),
-          "schedule.scheduleId": new ObjectId(scheduleId) // Match the specific schedule item
+          "schedule.scheduleId": new ObjectId(scheduleId)
         },
         {
-          $set: {
-            "schedule.currentBookings": +1,
-          }
+          $inc: { "schedule.currentBookings": 1 }
         }
       );
 
-      if (update.modifiedCount > 0) {
+      if (updateResult.modifiedCount > 0) {
         res.status(201).json({ message: 'Booking schedule successfully' });
       } else {
         res.status(201).json({ message: 'Booking schedule has failed' });
@@ -60,11 +57,11 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     } else {
       res.status(201).json({ message: 'Insert data has failed' });
     }
-
-    
   } catch (error) {
-    console.error('Authentication error:', error);
-    return res.status(401).json({ error: 'Authentication failed' });
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'An error occurred' });
+  } finally {
+    client.close()
   }
 };
 

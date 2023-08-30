@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { Fragment } from 'react'
 
 import {
   BellIcon,
@@ -9,7 +9,7 @@ from '@heroicons/react/outline'
 import axios from 'axios'
 
 import { Popover, Transition } from '@headlessui/react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 interface Profile {
   name: string;
@@ -17,48 +17,7 @@ interface Profile {
 }
 
 function HeadBar() {
-  const [profileData, setProfileData] = useState<Profile | null>(null);
-  const [businessName, setBusinessName] = useState(null);
-
-  const router = useRouter();
-
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const response = await axios.get(`${process.env.API_URL}profile`);
-        setProfileData(response.data);
-      } catch (error) {
-        console.error('Error fetching profile data:', error);
-      }
-    };
-    const fetchBusinessData = async () => {
-      try {
-        const response = await axios.get(`${process.env.API_URL}business/get`);
-        const businessData = response.data;
-
-        if (businessData) {
-          // Data exists, update state
-          setBusinessName(businessData.businessName);
-        }
-      } catch (error) {
-        console.error('Error fetching business data:', error);
-      }
-    };
-
-    fetchBusinessData();
-    fetchProfileData();
-  }, []);
-
-  const solutions = [
-    {
-      name: profileData?.name,
-      description: profileData?.email,
-      href: '##',
-    },
-  ]
-
-  const nameParts = profileData?.name?.split(' ') ?? [];
-  const initials = (nameParts[0]?.charAt(0) ?? '') + (nameParts[1]?.charAt(0) ?? '');
+  const router = useRouter()
 
   function handleLogout() {
     // Call the logout API route
@@ -72,22 +31,12 @@ function HeadBar() {
       });
   }
 
-  const handleRoute = () => {    
-    router.push('settings/business')
-  }
-
   return (
     <nav className="z-50 bg-opacity-10 backdrop-filter backdrop-blur-xl sticky top-0 rounded-b-3xl">
       <div className="backdrop-blur-md bg-white/10 px-1 py-4 rounded-b-3xl">
         <div className="flex items-center justify-between mx-auto px-4">
           <div className='w-full col-span-2 ml-4'>
-          {
-            businessName != null ? (
-            <div className="text-blue-950 font-bold text-4xl">{businessName}</div>
-            ) : (
-            <div onClick={() => handleRoute()} className="text-blue-950 font-bold text-4xl">No Business yet</div>
-            )
-          }
+            <div className="text-blue-950 font-bold text-4xl">SakaPulse</div>
           </div>
           <div className="xs:hidden sm:hidden md:hidden lg:flex xl:flex flex-row items-center px-3 py-2 rounded-full space-x-3">
             <BellIcon height={24} width={24} className="text-blue-9500 cursor-pointer" />
@@ -100,7 +49,7 @@ function HeadBar() {
                       ${open ? '' : 'text-opacity-90'}
                       group inline-flex items-center px-6 py-2 bg-blue-950 rounded-full text-white cursor-pointer text-sm`}
                   >
-                    <span>{initials ? initials : '...'}</span>
+                    <span>SP</span>
                   </Popover.Button>
                   <Transition
                     as={Fragment}
@@ -113,24 +62,6 @@ function HeadBar() {
                   >
                     <Popover.Panel className="absolute right-0 z-50 mt-3 w-screen max-w-sm transform px-4 sm:px-0 lg:max-w-sm">
                       <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                        <div className="relative grid gap-8 bg-white p-7 lg:grid-cols-1">
-                          {solutions.map((item, index) => (
-                            <a
-                              key={index}
-                              href={item.href}
-                              className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
-                            >
-                              <div>
-                                <p className="text-sm font-medium text-gray-900">
-                                  {item.name}
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                  {item.description}
-                                </p>
-                              </div>
-                            </a>
-                          ))}
-                        </div>
                         <div className="bg-gray-50 p-4">
                           <a
                             onClick={() => handleLogout()}

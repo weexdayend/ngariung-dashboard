@@ -9,44 +9,44 @@ interface AuthenticatedRequest extends NextApiRequest {
   tenantId?: string;
 }
 
-async function getEmployeeData(userId: any, outletId: any, role: any) {
-  const client = await connectDB();
-  const db = client.db('sakapulse');
-  const users = db.collection('Users');
-  const collection = db.collection('BusinessEmployee');
-
-  const user = await users.findOne({
-    _id: new ObjectId(userId),
-  });
-
-  const employeeData = await collection.find({ 
-    tenantId: user?.tenantId,
-    'employeeRole.name': role,
-    assignedOutletId: new ObjectId(outletId) 
-  }).toArray();
-
-  return employeeData;
-}
-
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
+  const client = await connectDB();
+
   if (req.method !== 'GET') {
     return res.status(405).end(); // Method Not Allowed
   }
 
   try {
     const userId = req.userId;
-
     const { outlet, role } = req.query;
+
+    const getEmployeeData = async (userId: any, outletId: any, role: any) => {
+      const db = client.db('sakapulse');
+      const users = db.collection('Users');
+      const collection = db.collection('BusinessEmployee');
+
+      const user = await users.findOne({
+        _id: new ObjectId(userId),
+      });
+
+      const employeeData = await collection.find({ 
+        tenantId: user?.tenantId,
+        'employeeRole.name': role,
+        assignedOutletId: new ObjectId(outletId) 
+      }).toArray();
+
+      return employeeData;
+    }
+
 
     const employeeData = await getEmployeeData(userId, outlet, role);
 
-    if (!employeeData) {
+    if (!employeeData || employeeData.length === 0) {
       return res.status(200).json({
         data: [
           {
-            _id: null,
-            employeeName: null,
-            assignedOutletId: null,
+            id: null,
+            name: null,
           },
         ],
       });
@@ -66,8 +66,9 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   
     res.status(200).json({ data: formattedDataArray });
   } catch (error) {
-    console.error('Authentication error:', error);
-    return res.status(401).json({ error: 'Authentication failed' });
+    return res.status(500).json({ error: 'An error occurred' });
+  } finally {
+    client.close()
   }
 };
 

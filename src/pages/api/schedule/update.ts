@@ -10,6 +10,7 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
+  const client = await connectDB();
 
   const { _id, roomName, roomSize, roomCapacity, roomVIP, status } = req.body;
 
@@ -17,7 +18,6 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     const outletId = new ObjectId(_id);
 
     // Connect to the MongoDB database
-    const client = await connectDB();
     const db = client.db('sakapulse');
     const collection = db.collection('Schedule');
 
@@ -35,6 +35,8 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   } catch (error) {
     console.error('Authentication error:', error);
     return res.status(401).json({ error: 'Authentication failed' });
+  } finally {
+    client.close()
   }
 };
 

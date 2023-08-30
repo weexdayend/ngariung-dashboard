@@ -10,6 +10,7 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
+  const client = await connectDB();
 
   const { _id, assignedOutletId } = req.body;
 
@@ -17,51 +18,57 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     const employeeId = new ObjectId(_id);
     const outletId = new ObjectId(assignedOutletId);
 
-    // Connect to the MongoDB database
-    const client = await connectDB();
     const db = client.db('sakapulse');
     const collection = db.collection('BusinessEmployee');
-    const outlet = db.collection('BusinessOutlet')
+    const outlet = db.collection('BusinessOutlet');
 
     const dataUser = await collection.findOne({ _id: employeeId });
     
-    const oldOutletId = dataUser?.assignedOutletId;
-    if (oldOutletId) {
+    if (dataUser) {
+      // Remove employee from the old outlet
       const updateOldOutlet = await outlet.updateOne(
-        { _id: oldOutletId },
-        { $pull: { employees: { _id: dataUser?._id } } }
+        { _id: dataUser.assignedOutletId },
+        { $pull: { employees: { _id: dataUser._id } } }
       );
+
       if (updateOldOutlet.modifiedCount === 0) {
-        return res.status(201).json({ error: 'Old outlet not found' });
+        return res.status(400).json({ error: 'Old outlet not found' });
       }
-    }
+      
+      // Update the employee's assigned outlet
+      const updateUser = await collection.updateOne(
+        { _id: employeeId },
+        { $set: { assignedOutletId: outletId } }
+      );
 
-    // Update the existing business document
-    const updateUser = await collection.updateOne(
-      { _id: employeeId },
-      { $set: { assignedOutletId: outletId } }
-    );
-    if (updateUser.modifiedCount === 0) {
-      return res.status(201).json({ error: 'Employee not found' });
-    }
+      if (updateUser.modifiedCount === 0) {
+        return res.status(400).json({ error: 'Employee not found' });
+      }
+      
+      // Add employee to the new outlet
+      const updateOutlet = await outlet.updateOne(
+        { _id: outletId },
+        { $push: { employees: {
+          _id: dataUser._id,
+          employeeName: dataUser.employeeName,
+          employeePhone: dataUser.employeePhone,
+          employeeRole: dataUser.employeeRole,
+        } } }
+      );
 
-    const updateOutlet = await outlet.updateOne(
-      { _id: outletId },
-      { $push: { employees: { 
-        _id: dataUser?._id,
-        employeeName: dataUser?.employeeName,
-        employeePhone: dataUser?.employeePhone,
-        employeeRole: dataUser?.employeeRole,
-      } } }
-    );
-    if (updateOutlet.modifiedCount === 0) {
-      return res.status(201).json({ error: 'Outlet not found' });
+      if (updateOutlet.modifiedCount === 0) {
+        return res.status(400).json({ error: 'Outlet not found' });
+      }
+      
+      res.status(200).json({ message: 'Employee updated successfully' });
+    } else {
+      res.status(400).json({ error: 'Employee not found' });
     }
-
-    res.status(200).json({ message: 'Employee updated successfully' });
   } catch (error) {
-    console.error('Authentication error:', error);
-    return res.status(401).json({ error: 'Authentication failed' });
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'An error occurred' });
+  } finally {
+    client.close()
   }
 };
 

@@ -11,6 +11,8 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
+  const client = await connectDB();
+
   if (req.method !== 'POST') {
     return res.status(405).end(); // Method Not Allowed
   }
@@ -27,7 +29,6 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     const tenantObjectId = new ObjectId(tenantId)
 
     // Connect to the MongoDB database
-    const client = await connectDB();
     const db = client.db('sakapulse');
     const users = db.collection('Users');
     const employees = db.collection('BusinessEmployee');
@@ -70,6 +71,8 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   } catch (error) {
     console.error('Authentication error:', error);
     return res.status(401).json({ error: 'Authentication failed' });
+  } finally {
+    client.close()
   }
 };
 
