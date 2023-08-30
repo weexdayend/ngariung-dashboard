@@ -16,7 +16,7 @@ type DataCardProps = {
 function Card({ data, date, setNextStep }: DataCardProps & { setNextStep: (e: CardProps) => void }) {
 
   const formattedDate = moment(date).format('YYYY-MM-DD');
-  const filteredData = data && data.filter((item: any) => item.date === formattedDate);
+  const filteredData = data?.filter((item: any) => item.date === formattedDate);
 
   return (
     <>
