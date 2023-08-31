@@ -18,32 +18,6 @@ function FormPrices({ onClose, onUpdated, item }: Props) {
   const [newData, setNewData] = useState(!item)
   const [dataChanged, setDataChanged] = useState(false);
 
-  useEffect(() => {
-    if (item) {
-      item.schedule.map((child: any) => {
-        setBasePrice(child.prices.basePrice)
-        setTaxRate(child.prices.taxRate)
-        setServiceRate(child.prices.serviceRate)
-      })
-    }
-  } ,[item])
-
-  useEffect(() => {
-    if (item) {
-      item.schedule.map((child: any) => {
-        const hasDataChanged = 
-          child.prices.basePrice !== basePrice ||
-          child.prices.taxRate !== taxRate ||
-          child.prices.serviceRate !== serviceRate;
-
-
-        setDataChanged(hasDataChanged)
-      })
-
-    }
-  }, [basePrice, taxRate, serviceRate])
-
-  const isAnyFieldEmpty = !basePrice || !taxRate || !serviceRate
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,16 +25,11 @@ function FormPrices({ onClose, onUpdated, item }: Props) {
     const endpoint = `${process.env.API_URL}schedule/addPrices`;
 
     const body: any = {
+      _id: item._id,
+      scheduleId: item.scheduleId,
       basePrice,
       taxRate,
       serviceRate,
-    }
-
-    const scheduleId = item.schedule.map((child: any) => child.scheduleId)
-
-    if (!newData) {
-      body['_id'] = item._id;
-      body['scheduleId'] = scheduleId[0]
     }
 
     try {
@@ -144,25 +113,12 @@ function FormPrices({ onClose, onUpdated, item }: Props) {
           >
             Cancel
           </button>
-          {
-            newData ? (
-              <button
-                type="submit"
-                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                disabled={isAnyFieldEmpty}
-              >
-                Save data
-              </button>
-            ) : (
-              <button
-                type="submit"
-                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                disabled={!dataChanged}
-              >
-                Update data
-              </button>
-            )
-          }
+          <button
+            type="submit"
+            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Save data
+          </button>
         </div>
       </form>
     </React.Fragment>

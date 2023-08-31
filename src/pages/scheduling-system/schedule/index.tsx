@@ -24,8 +24,6 @@ function Index({ error, eventData, fitnessData, outletData, eventCategoryData, e
   const [updated, setUpdated] = useState(false)
   const [datas, setDatas] = useState(fitnessData)
 
-  console.log(eventData)
-
   const fetchNewData = async () => {
     const response = await axios.get(`${process.env.API_URL}schedule/get`);
     const res = await response.data;
@@ -88,7 +86,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     
     const fetchOutlet = async () => {
-      const responseOutlet = await axios.get(`${process.env.API_URL}outlet/getWithRoomEmployee`, {
+      const responseOutlet = await axios.get(`${process.env.API_URL}outlet/collective`, {
         headers: {
           Cookie: `token=${cookies['token']}`
         },

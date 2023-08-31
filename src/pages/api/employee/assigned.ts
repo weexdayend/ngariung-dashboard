@@ -25,16 +25,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     const dataUser = await collection.findOne({ _id: employeeId });
     
     if (dataUser) {
-      // Remove employee from the old outlet
-      const updateOldOutlet = await outlet.updateOne(
-        { _id: dataUser.assignedOutletId },
-        { $pull: { employees: { _id: dataUser._id } } }
-      );
 
-      if (updateOldOutlet.modifiedCount === 0) {
-        return res.status(400).json({ error: 'Old outlet not found' });
-      }
-      
       // Update the employee's assigned outlet
       const updateUser = await collection.updateOne(
         { _id: employeeId },

@@ -15,13 +15,13 @@ const TableComponent: React.FC<TableProps> = ({ data, columns, renderRow, render
         <thead>
           <tr>
             {columns.map((column) => (
-              <th key={column} className="py-3 px-3 text-left text-xs">{column}</th>
+              <th key={column+1} className="py-3 px-3 text-left text-xs">{column}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {data.map((item) => (
-            <tr key={item.id} className='hover:bg-gray-50'>{renderRow(item)}</tr>
+            <tr key={item.id+1} className='hover:bg-gray-50'>{renderRow(item)}</tr>
           ))}
         </tbody>
       </table>

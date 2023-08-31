@@ -46,9 +46,10 @@ function TableRoom({ onUpdated, scheduleData }: Props) {
   const [editData, setEditData] = useState(null)
   const [formPrices, setFormPrices] = useState(false)
   const [selectedData, setSelectedData] = useState([])
+  const [reviseData, setReviseData] = useState({ _id: '', scheduleId: ''})
 
-  const handleAddPrices = (item: any) => {
-    setSelectedData(item)
+  const handleAddPrices = (eventId: any, scheduleId: any, schedule: any) => {
+    setReviseData({_id: eventId, scheduleId: scheduleId})
     setFormPrices(true)
   }
 
@@ -85,113 +86,112 @@ function TableRoom({ onUpdated, scheduleData }: Props) {
     );
   }
 
-  const renderRow = (item: any) => {
-
-    let totalAmount = 0
-    let taxAmount = 0
-    let serviceAmount = 0
-    item.schedule.map((schedule: any) => {
-      taxAmount = parseInt(schedule.prices.basePrice)*(parseInt(schedule.prices.taxRate)/100);
-      serviceAmount = parseInt(schedule.prices.basePrice)*(parseInt(schedule.prices.serviceRate)/100);
-      totalAmount = parseInt(schedule.prices.basePrice)+taxAmount+serviceAmount
-    })
-
-    return(
-      <>
-        <td className='py-4 px-3 text-sm'>
-          {
-            item.schedule.map((schedule: any, i: any) => (
-            <Popover key={i+1} className="relative">
-              {({ open }) => (
-                <>
-                  <Popover.Button
-                    className={`
-                      ${open ? '' : 'text-opacity-90'}
-                      group inline-flex items-center rounded-md ${schedule.gates ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-indigo-600'} px-2 py-1 text-sm font-medium`}
-                  >
-                    <span>{schedule.gates ? schedule.gates : 'Not open yet'}</span>
-                    <ChevronDownIcon
-                      className={`${open ? '' : 'text-opacity-70'}
-                        ml-2 h-5 w-5 text-white transition duration-150 ease-in-out group-hover:text-opacity-80`}
-                      aria-hidden="true"
-                    />
-                  </Popover.Button>
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-200"
-                    enterFrom="opacity-0 translate-y-1"
-                    enterTo="opacity-100 translate-y-0"
-                    leave="transition ease-in duration-150"
-                    leaveFrom="opacity-100 translate-y-0"
-                    leaveTo="opacity-0 translate-y-1"
-                  >
-                    <Popover.Panel className="absolute z-10 mt-3 w-screen max-w-sm transform px-4 sm:px-0 lg:max-w-md">
-                      <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                        <div className="relative grid gap-8 bg-white p-7 lg:grid-cols-2">
-                          {Gates.map((pop: any) => (
-                            <div
-                              onClick={() => {
-                                if(schedule.gates != pop.name){
-                                  assigned(item._id, schedule.scheduleId, pop.name)
-                                }
-                              }}
-                              key={pop.name+1}
-                              className={`-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out ${schedule.gates == pop.name ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'hover:bg-gray-50 text-gray-600'} cursor-pointer`}
-                            >
-                              <div className="">
-                                <p className="text-sm font-medium">
-                                  {pop.name}
-                                </p>
-                              </div>
+  const ScheduleTable: React.FC = () => {
+    return (
+      <table className="w-full table-fixed">
+        <thead>
+          <tr>
+            <th className="py-3 px-3 text-left text-xs"></th>
+            <th className="py-3 px-3 text-left text-xs">Date</th>
+            <th className="py-3 px-3 text-left text-xs">Outlet</th>
+            <th className="py-3 px-3 text-left text-xs">Event Category</th>
+            <th className="py-3 px-3 text-left text-xs">Start Event Name</th>
+            <th className="py-3 px-3 text-left text-xs">Booking</th>
+            <th className="py-3 px-3 text-left text-xs">Ticket Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {scheduleData.data.map((scheduleItem: any, i: any) =>
+            scheduleItem.schedule.map((event: any) => (
+              <tr key={event.scheduleId}>
+                <td className='py-4 px-3 text-sm'>
+                  <Popover key={i+1} className="relative">
+                    {({ open }) => (
+                    <>
+                      <Popover.Button
+                        className={`
+                          ${open ? '' : 'text-opacity-90'}
+                          group inline-flex items-center rounded-md ${event.gates ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-indigo-600'} px-2 py-1 text-sm font-medium`}
+                      >
+                        <span>{event.gates ? event.gates : 'Not open yet'}</span>
+                        <ChevronDownIcon
+                          className={`${open ? '' : 'text-opacity-70'}
+                            ml-2 h-5 w-5 text-white transition duration-150 ease-in-out group-hover:text-opacity-80`}
+                          aria-hidden="true"
+                        />
+                      </Popover.Button>
+                      <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-200"
+                        enterFrom="opacity-0 translate-y-1"
+                        enterTo="opacity-100 translate-y-0"
+                        leave="transition ease-in duration-150"
+                        leaveFrom="opacity-100 translate-y-0"
+                        leaveTo="opacity-0 translate-y-1"
+                      >
+                        <Popover.Panel className="absolute z-10 mt-3 w-screen max-w-sm transform px-4 sm:px-0 lg:max-w-md">
+                          <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                            <div className="relative grid gap-8 bg-white p-7 lg:grid-cols-2">
+                              {Gates.map((pop: any) => (
+                                <div
+                                  onClick={() => {
+                                    if(event.gates != pop.name){
+                                      assigned(scheduleItem._id, event.scheduleId, pop.name)
+                                    }
+                                  }}
+                                  key={pop.name+1}
+                                  className={`-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out ${event.gates == pop.name ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'hover:bg-gray-50 text-gray-600'} cursor-pointer`}
+                                >
+                                  <div className="">
+                                    <p className="text-sm font-medium">
+                                      {pop.name}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    </Popover.Panel>
-                  </Transition>
-                </>
-              )}
-            </Popover>
+                          </div>
+                        </Popover.Panel>
+                      </Transition>
+                    </>
+                  )}
+                </Popover>
+                </td>
+                <td className='py-4 px-3 text-xs'>
+                  {scheduleItem.date}
+                </td>
+                <td className='py-4 px-3 text-xs'>
+                  {scheduleItem.outlet.name}
+                </td>
+                <td className='py-4 px-3 text-xs'>
+                  <span className='w-fit flex flex-row items-center'>
+                    {event.eventCategory.name}
+                  </span>
+                </td>
+                <td className='py-4 px-3 text-xs font-bold'>
+                  <span className='w-fit flex flex-row items-center'>
+                    {event.eventName} - {event.eventType.name}
+                  </span>
+                </td>
+                <td className='py-4 px-3 text-xs'>
+                  <span className='w-fit flex flex-row items-center'>
+                    {event.currentBookings}/{event.maxBookings}
+                  </span>
+                </td>
+                <td className='py-4 px-3 text-xs'>
+                  <div className='w-fit flex flex-row items-center cursor-pointer' onClick={() => handleAddPrices(scheduleItem._id, event.scheduleId, event)}>
+                    {event.prices.basePrice === 0 ? 'Add Prices' : (
+                      parseInt(event.prices.basePrice)+parseInt(event.prices.basePrice)*(parseInt(event.prices.taxRate)/100)+parseInt(event.prices.basePrice)*(parseInt(event.prices.serviceRate)/100)
+                    )}
+                  </div>
+                </td>
+              </tr>
             ))
-          }
-        </td>
-        <td className='py-4 px-3 text-xs'>
-          {item.date}
-        </td>
-        <td className='py-4 px-3 text-xs'>
-          {item.outlet.name}
-        </td>
-        <td className='py-4 px-3 text-xs'>
-          <span className='w-fit flex flex-row items-center'>
-            {item.schedule.map((schedule: any) => (
-              <>{schedule.eventCategory.name}</>
-            ))}
-          </span>
-        </td>
-        <td className='py-4 px-3 text-xs font-bold'>
-          <span className='w-fit flex flex-row items-center'>
-          {item.schedule.map((schedule: any) => (
-            <>{schedule.eventName} - {schedule.eventType.name}</>
-          ))}
-          </span>
-        </td>
-        <td className='py-4 px-3 text-xs'>
-          <span className='w-fit flex flex-row items-center'>
-            {item.schedule.map((schedule: any) => (
-              <>{schedule.currentBookings}/{schedule.maxBookings}</>
-            ))}
-          </span>
-        </td>
-        <td className='py-4 px-3 text-xs'>
-          <div className='w-fit flex flex-row items-center cursor-pointer' onClick={() => handleAddPrices(item)}>
-            {item.schedule.map((schedule: any) => (
-              <>{schedule.prices.basePrice === 0 ? 'Add Prices' : totalAmount}</>
-            ))}
-          </div>
-        </td>
-      </>
-    )
-  }
+          )}
+        </tbody>
+      </table>
+    );
+  };
 
   const renderFilter = () => {
     return (
@@ -215,14 +215,14 @@ function TableRoom({ onUpdated, scheduleData }: Props) {
       }}
     />
     {
-      scheduleData && (<TableComponent columns={column} data={scheduleData.data} renderRow={renderRow} renderFilter={renderFilter()} />)
+      scheduleData && (<ScheduleTable />)
     }
     {formPrices && (
       <PanelComponent setOpen={setFormPrices}>
         <FormPrices 
           onClose={() => setFormPrices(false)} 
           onUpdated={() => setUpdated(true)} 
-          item={selectedData}  
+          item={reviseData}  
         />
       </PanelComponent>
     )}

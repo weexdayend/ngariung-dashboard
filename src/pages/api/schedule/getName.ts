@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
+import { Db, ObjectId } from 'mongodb';
 
-import connectDB from '@/db/connect';
 import authMiddleware from '@/pages/api/middleware';
+import connectDB from '@/db/connect';
 
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
@@ -10,16 +10,15 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-  const client = await connectDB();
-
   try {
     if (req.method !== 'GET') {
       return res.status(405).end(); // Method Not Allowed
     }
-
+    
     const tenantId = req.tenantId;
     
-    const db = client.db('sakapulse');
+    const client = await connectDB();
+    const db = client.db('sakapulse')
     const collection = db.collection('Schedule');
   
     const fitnessData = await collection.find(

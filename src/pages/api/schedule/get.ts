@@ -28,7 +28,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       },
     ).toArray();
 
-    const formattedDataArray = fitnessData.map((dataItem) => {
+    const formattedDataArray = fitnessData.map((dataItem: any) => {
       const {
         _id,
         date,

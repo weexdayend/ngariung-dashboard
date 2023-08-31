@@ -18,7 +18,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   
     const { email, password } = req.body;
-    
     const db = client.db('sakapulse');
     const collection = db.collection('Users');
 

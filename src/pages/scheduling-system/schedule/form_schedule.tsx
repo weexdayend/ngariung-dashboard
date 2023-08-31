@@ -116,7 +116,7 @@ function FormSchedule({ onClose, onUpdated, item, eventData, outletData, eventCa
       setFormattedEventType(formatType)
     }
     if (item) {
-      setEventName(item.eventName);
+      setEventName({id:'', name:item.eventName} || {id:'', name:''});
       setStartTime(item.startTime);
       setEndTime(item.endTime);
       setMaxBookings(item.maxBookings);
