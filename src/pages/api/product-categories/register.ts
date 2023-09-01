@@ -7,8 +7,8 @@ interface AuthenticatedRequest extends NextApiRequest {
     tenantId?: string;
   }
 
-const isAlreadyRegistered = async (field: any, value: any) => {
-  const query = supabase.from('ProductCategories').select().eq(field, value);
+const isAlreadyRegistered = async (field: any, value: any, tenantId: any) => {
+  const query = supabase.from('ProductCategories').select().eq(field, value).eq('tenantId', tenantId);
   const TypeEvents: DbResult<typeof query> = await query;
 
   return TypeEvents;
@@ -31,7 +31,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     // }
     let message;
  
-    const checkName = await isAlreadyRegistered('categoryName', categoryName);
+    const checkName = await isAlreadyRegistered('categoryName', categoryName, req.tenantId);
     if (checkName.data?.length ?? 0 > 0) {
       message = 'Product category already registered';
       return res.status(201).json({ message: message });  
