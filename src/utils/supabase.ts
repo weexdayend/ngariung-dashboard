@@ -15,6 +15,7 @@ export interface Database {
           created_at: string
           delete_at: string | null
           id: number
+          status: boolean | null
           tenantId: string | null
           update_at: string | null
         }
@@ -23,6 +24,7 @@ export interface Database {
           created_at?: string
           delete_at?: string | null
           id?: number
+          status?: boolean | null
           tenantId?: string | null
           update_at?: string | null
         }
@@ -31,6 +33,7 @@ export interface Database {
           created_at?: string
           delete_at?: string | null
           id?: number
+          status?: boolean | null
           tenantId?: string | null
           update_at?: string | null
         }
@@ -446,8 +449,12 @@ export interface Database {
           categoryId: number | null
           created_at: string
           delete_at: string | null
+          filePhoto: string | null
           id: number
           productName: string | null
+          productPhoto: string | null
+          sotrage: string | null
+          status: boolean | null
           tenantId: string | null
           update_at: string | null
         }
@@ -456,8 +463,12 @@ export interface Database {
           categoryId?: number | null
           created_at?: string
           delete_at?: string | null
+          filePhoto?: string | null
           id?: number
           productName?: string | null
+          productPhoto?: string | null
+          sotrage?: string | null
+          status?: boolean | null
           tenantId?: string | null
           update_at?: string | null
         }
@@ -466,8 +477,12 @@ export interface Database {
           categoryId?: number | null
           created_at?: string
           delete_at?: string | null
+          filePhoto?: string | null
           id?: number
           productName?: string | null
+          productPhoto?: string | null
+          sotrage?: string | null
+          status?: boolean | null
           tenantId?: string | null
           update_at?: string | null
         }
@@ -482,6 +497,12 @@ export interface Database {
             foreignKeyName: "Products_categoryId_fkey"
             columns: ["categoryId"]
             referencedRelation: "ProductCategories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Products_sotrage_fkey"
+            columns: ["sotrage"]
+            referencedRelation: "buckets"
             referencedColumns: ["id"]
           }
         ]
