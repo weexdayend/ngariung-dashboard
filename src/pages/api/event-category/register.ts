@@ -1,5 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-
+import { NextApiRequest, NextApiResponse } from 'next'; 
 import authMiddleware from '@/pages/api/middleware';
 import supabase, { DbResult } from '@/db/supabase';
 

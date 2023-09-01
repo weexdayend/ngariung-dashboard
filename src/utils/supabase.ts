@@ -36,6 +36,60 @@ export interface Database {
         }
         Relationships: []
       }
+      Business: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string | null
+          phone: string | null
+          status: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          phone?: string | null
+          status?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          phone?: string | null
+          status?: boolean | null
+        }
+        Relationships: []
+      }
+      Customers: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string | null
+          phone: string | null
+          status: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          phone?: string | null
+          status?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          phone?: string | null
+          status?: boolean | null
+        }
+        Relationships: []
+      }
       Discounts: {
         Row: {
           amount: number | null
@@ -81,6 +135,52 @@ export interface Database {
         }
         Relationships: []
       }
+      Employee: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: number
+          name: string | null
+          outletId: number | null
+          phone: string | null
+          role: Json | null
+          userId: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: number
+          name?: string | null
+          outletId?: number | null
+          phone?: string | null
+          role?: Json | null
+          userId?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: number
+          name?: string | null
+          outletId?: number | null
+          phone?: string | null
+          role?: Json | null
+          userId?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Employee_outletId_fkey"
+            columns: ["outletId"]
+            referencedRelation: "Outlet"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Employee_userId_fkey"
+            columns: ["userId"]
+            referencedRelation: "Users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       EventCategory: {
         Row: {
           created_at: string
@@ -109,8 +209,8 @@ export interface Database {
         Row: {
           created_at: string
           delete_at: string | null
-          nameType: string | null
           id: number
+          nameType: string | null
           status: boolean | null
           tenantId: string | null
           update_at: string | null
@@ -118,8 +218,8 @@ export interface Database {
         Insert: {
           created_at?: string
           delete_at?: string | null
-          nameType?: string | null
           id?: number
+          nameType?: string | null
           status?: boolean | null
           tenantId?: string | null
           update_at?: string | null
@@ -127,8 +227,8 @@ export interface Database {
         Update: {
           created_at?: string
           delete_at?: string | null
-          nameType?: string | null
           id?: number
+          nameType?: string | null
           status?: boolean | null
           tenantId?: string | null
           update_at?: string | null
@@ -174,6 +274,138 @@ export interface Database {
             foreignKeyName: "InventoryProducts_productId_fkey"
             columns: ["productId"]
             referencedRelation: "Products"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      Membership: {
+        Row: {
+          created_at: string
+          customersId: string | null
+          expired_at: string | null
+          id: string
+          started_at: string | null
+          status: boolean | null
+          tenantId: string | null
+        }
+        Insert: {
+          created_at?: string
+          customersId?: string | null
+          expired_at?: string | null
+          id?: string
+          started_at?: string | null
+          status?: boolean | null
+          tenantId?: string | null
+        }
+        Update: {
+          created_at?: string
+          customersId?: string | null
+          expired_at?: string | null
+          id?: string
+          started_at?: string | null
+          status?: boolean | null
+          tenantId?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Membership_customersId_fkey"
+            columns: ["customersId"]
+            referencedRelation: "Customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Membership_tenantId_fkey"
+            columns: ["tenantId"]
+            referencedRelation: "Business"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      MembershipDetail: {
+        Row: {
+          created_at: string
+          id: number
+          level: string | null
+          memberId: string | null
+          name: string | null
+          prices: string | null
+          pulse: string | null
+          quota: string | null
+          status: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          level?: string | null
+          memberId?: string | null
+          name?: string | null
+          prices?: string | null
+          pulse?: string | null
+          quota?: string | null
+          status?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          level?: string | null
+          memberId?: string | null
+          name?: string | null
+          prices?: string | null
+          pulse?: string | null
+          quota?: string | null
+          status?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "MembershipDetail_memberId_fkey"
+            columns: ["memberId"]
+            referencedRelation: "Membership"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      Outlet: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          id: number
+          line: Json | null
+          name: string | null
+          postal: string | null
+          province: string | null
+          status: boolean | null
+          tenantId: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          id?: number
+          line?: Json | null
+          name?: string | null
+          postal?: string | null
+          province?: string | null
+          status?: boolean | null
+          tenantId?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          id?: number
+          line?: Json | null
+          name?: string | null
+          postal?: string | null
+          province?: string | null
+          status?: boolean | null
+          tenantId?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Outlet_tenantId_fkey"
+            columns: ["tenantId"]
+            referencedRelation: "Business"
             referencedColumns: ["id"]
           }
         ]
@@ -369,6 +601,46 @@ export interface Database {
         }
         Relationships: []
       }
+      Room: {
+        Row: {
+          capacity: string | null
+          created_at: string
+          id: number
+          name: string | null
+          outletId: number | null
+          size: string | null
+          status: boolean | null
+          vip: boolean | null
+        }
+        Insert: {
+          capacity?: string | null
+          created_at?: string
+          id?: number
+          name?: string | null
+          outletId?: number | null
+          size?: string | null
+          status?: boolean | null
+          vip?: boolean | null
+        }
+        Update: {
+          capacity?: string | null
+          created_at?: string
+          id?: number
+          name?: string | null
+          outletId?: number | null
+          size?: string | null
+          status?: boolean | null
+          vip?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Room_outletId_fkey"
+            columns: ["outletId"]
+            referencedRelation: "Outlet"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       SalesTypes: {
         Row: {
           created_at: string
@@ -401,6 +673,92 @@ export interface Database {
           update_at?: string | null
         }
         Relationships: []
+      }
+      Schedule: {
+        Row: {
+          created_at: string
+          date: string | null
+          id: number
+          outletId: number | null
+        }
+        Insert: {
+          created_at?: string
+          date?: string | null
+          id?: number
+          outletId?: number | null
+        }
+        Update: {
+          created_at?: string
+          date?: string | null
+          id?: number
+          outletId?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Schedule_outletId_fkey"
+            columns: ["outletId"]
+            referencedRelation: "Outlet"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      ScheduleDetail: {
+        Row: {
+          created_at: string
+          currentBookings: number | null
+          endTime: string | null
+          eventCategory: Json | null
+          eventName: string | null
+          eventType: Json | null
+          gates: boolean | null
+          id: string
+          maxBookings: number | null
+          pic: Json | null
+          prices: Json | null
+          room: Json | null
+          scheduleId: number | null
+          startTime: string | null
+        }
+        Insert: {
+          created_at?: string
+          currentBookings?: number | null
+          endTime?: string | null
+          eventCategory?: Json | null
+          eventName?: string | null
+          eventType?: Json | null
+          gates?: boolean | null
+          id?: string
+          maxBookings?: number | null
+          pic?: Json | null
+          prices?: Json | null
+          room?: Json | null
+          scheduleId?: number | null
+          startTime?: string | null
+        }
+        Update: {
+          created_at?: string
+          currentBookings?: number | null
+          endTime?: string | null
+          eventCategory?: Json | null
+          eventName?: string | null
+          eventType?: Json | null
+          gates?: boolean | null
+          id?: string
+          maxBookings?: number | null
+          pic?: Json | null
+          prices?: Json | null
+          room?: Json | null
+          scheduleId?: number | null
+          startTime?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ScheduleDetail_scheduleId_fkey"
+            columns: ["scheduleId"]
+            referencedRelation: "Schedule"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       Services: {
         Row: {
@@ -512,6 +870,49 @@ export interface Database {
           update_at?: string | null
         }
         Relationships: []
+      }
+      Users: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string | null
+          password: string | null
+          phone: string | null
+          role: string | null
+          status: boolean | null
+          tenantId: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          password?: string | null
+          phone?: string | null
+          role?: string | null
+          status?: boolean | null
+          tenantId?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          password?: string | null
+          phone?: string | null
+          role?: string | null
+          status?: boolean | null
+          tenantId?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Users_tenantId_fkey"
+            columns: ["tenantId"]
+            referencedRelation: "Business"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {

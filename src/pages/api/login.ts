@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import connectDB from '@/db/connect';
-
+import supabase, { DbResult } from '@/db/supabase';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { serialize } from 'cookie';
@@ -10,35 +9,48 @@ const RFRESH = process.env.REF_PASS
 const DOMAIN = process.env.DOMAIN
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const client = await connectDB();
+   
 
   try {
     if (req.method !== 'POST') {
       return res.status(405).end();
     }
-  
-    const { email, password } = req.body;
-    const db = client.db('sakapulse');
-    const collection = db.collection('Users');
+      const { email, password } = req.body;
+      // Validasi bahwa email dan password ada dalam req.body
+      if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password are required' });
+      } 
+      // Find the user by email
+      const query = supabase.from('Users').select().eq("email", email);
+      const CheckEmail = await query;
 
-    // Find the user by email
-    const user = await collection.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ error: 'Your email is invalid' });
-    }
+      if (CheckEmail.error) {
+        // Handle database query error
+        return res.status(500).json({ error: 'Database error' });
+      }
 
-    // Compare passwords
-    const passwordsMatch = await bcrypt.compare(password, user.password);
-    if (!passwordsMatch) {
-      return res.status(401).json({ error: 'Your password is invalid' });
-    }
+      if (CheckEmail.data.length === 0) {
+        // Handle the case where no user with the provided email is found
+        return res.status(400).json({ error: 'Email not found' });
+      }
+      const user = CheckEmail.data[0];
+      
+      if (!user || user.password === null) {
+        return res.status(401).json({ error: 'Invalid user or password' });
+      }
+      // Compare passwords
+      const passwordsMatch = bcrypt.compare(password, user.password);
+      if (!passwordsMatch) {
+        // Handle the case where passwords do not match
+        return res.status(401).json({ error: 'Invalid password' });
+      }
 
     if (SECRET !== undefined && RFRESH !== undefined) {
       // Generate JWT token
-      const token = jwt.sign({ userId: user._id, userRole: user.role, tenantId: user.tenantId }, SECRET, {
+      const token = jwt.sign({ userId: user.id, userRole: user.role, tenantId: user.tenantId }, SECRET, {
         expiresIn: '30d', // Set token expiration time
       });
-      const refreshToken = jwt.sign({ userId: user._id, userRole: user.role, tenantId: user.tenantId }, RFRESH, {
+      const refreshToken = jwt.sign({ userId: user.id, userRole: user.role, tenantId: user.tenantId }, RFRESH, {
         expiresIn: '30d', // Set refresh token expiration time
       });
 

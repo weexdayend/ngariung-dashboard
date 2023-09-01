@@ -18,7 +18,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   } = req.body
 
   try {
-
+ 
     const query = supabase
       .from('EventType')
       .insert({

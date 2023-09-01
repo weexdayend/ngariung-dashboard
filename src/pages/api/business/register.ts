@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
+import supabase, { DbResult } from '@/db/supabase';
 import jwt from 'jsonwebtoken';
-import { serialize } from 'cookie';
-
-import connectDB from '@/db/connect';
+import { serialize } from 'cookie'; 
 import authMiddleware from '@/pages/api/middleware';
 
 const SECRET = process.env.KEY_PASS || '';
@@ -14,13 +12,15 @@ interface AuthenticatedRequest extends NextApiRequest {
   userRole?: string;
 }
 
-async function isAlreadyRegistered(collection: any, field: string, value: string) {
-  return await collection.findOne({ [field]: value }) !== null;
-}
+const isAlreadyRegistered = async (field: any, value: any) => {
+  const query = supabase.from('Business').select().eq(field, value);
+  const TypeEvents: DbResult<typeof query> = await query;
+
+  return TypeEvents;
+};
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-  const client = await connectDB();
-
+   
   if (req.method !== 'POST') {
     return res.status(405).end(); // Method Not Allowed
   }
@@ -33,43 +33,57 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
   try {
     const userId = req.userId;
+    let message;
 
-    const db = client.db('sakapulse');
-    const businessCollection = db.collection('Business');
-
-    if (await isAlreadyRegistered(businessCollection, 'businessName', businessName)) {
-      return res.status(400).json({ error: 'Name already registered' });
+    if (!userId || userId === null) {
+      return res.status(401).json({ error: 'Invalid user or password' });
     }
-    if (await isAlreadyRegistered(businessCollection, 'businessEmail', businessEmail)) {
-      return res.status(400).json({ error: 'Email already registered' });
+     
+    const checkName = await isAlreadyRegistered('name', businessName);
+    if (checkName.data?.length ?? 0 > 0) {
+      message = 'Business name already registered';
+      return res.status(201).json({ message: message });  
     }
-    if (await isAlreadyRegistered(businessCollection, 'businessPhone', businessPhone)) {
-      return res.status(400).json({ error: 'Phone number already registered' });
-    }
-
-    const newBusiness = {
-      businessName,
-      businessPhone,
-      businessEmail,
-      status: true
-    };
-    const tenant = await businessCollection.insertOne(newBusiness);
-
-    if (!tenant.acknowledged) {
-      return res.status(400).json({ error: 'Business registration failed' });
+  
+    const checkPhone = await isAlreadyRegistered('phone', businessPhone);
+    if (checkPhone.data?.length ?? 0 > 0) {
+      message = 'Business phone already registered';
+      return res.status(201).json({ message: message });  
     }
 
-    const update = await db.collection('Users').updateOne(
-      { _id: new ObjectId(userId) },
-      { $set: { tenantId: tenant.insertedId } }
-    );
+    const checkEmail = await isAlreadyRegistered('email', businessEmail);
+    if (checkEmail.data?.length ?? 0 > 0) {
+      message = 'Business email already registered';
+      return res.status(201).json({ message: message });  
+    }
+    
+    const query = supabase
+      .from('Business')
+      .insert({
+        name: businessName,
+        phone: businessPhone,
+        email: businessEmail,
+        status: false,
+      })
+      .select()
+    const Business: DbResult<typeof query> = await query;
 
-    if (update.modifiedCount === 0) {
-      return res.status(400).json({ error: 'User data update failed' });
+    if (Business.error) {
+      return res.status(500).json({ error: 'Business registering failed' });
+    }
+       
+    const { data, error } = await supabase
+    .from('Users')
+    .update({ tenantId: Business.data[0].id })
+    .eq('id', userId)
+    .select()
+    
+    if (error) {
+      return res.status(500).json({ error: 'update users error' });
     }
 
     const token = jwt.sign(
-      { userId, userRole: req.userRole, tenantId: tenant.insertedId },
+      { userId, userRole: req.userRole, tenantId: data[0].tenantId },
       SECRET,
       { expiresIn: '1h' }
     );
