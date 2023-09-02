@@ -1,7 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
-
-import connectDB from '@/db/connect';
+import { NextApiRequest, NextApiResponse } from 'next'; 
+import supabase, { DbResult } from '@/db/supabase'; 
 import authMiddleware from '@/pages/api/middleware';
 
 interface AuthenticatedRequest extends NextApiRequest {
@@ -9,72 +7,45 @@ interface AuthenticatedRequest extends NextApiRequest {
   tenantId?: string;
 }
 
-const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-  const client = await connectDB();
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => { 
 
-  if (req.method !== 'GET') {
-    return res.status(405).end(); // Method Not Allowed
-  }
+  if (req.method !== 'GET') { return res.status(405).end(); }
 
   try {
-    const tenantId = req.tenantId;
 
-    const getOutletData = async (businessId: any) => {
-      const db = client.db('sakapulse');
-      const collection = db.collection('BusinessOutlet');
+    const tenantId = req.tenantId;
+    if (!tenantId || tenantId === null) {
+        return res.status(401).json({ error: 'Invalid tenantId' });
+    }
+
+    const getOutletData = async (tenantId: any) => { 
+      const query = supabase.from('Outlet').select("id, name, line, address, province, city, postal, Employee:Employee(name, phone, email, Users:Users(role))").eq("tenantId", tenantId);
+      const Outlet: DbResult<typeof query> = await query;
+      
+      if (!Outlet || Outlet.data === null) {
+        return res.status(401).json({ error: 'Invalid business' });
+      } 
     
-      const businessData = await collection.find(
-        { 
-          businessId: new ObjectId(businessId),
-        },
-      ).toArray();
-      return businessData;
+      return Outlet;
     }
 
     const outletData = await getOutletData(tenantId)
 
-    if (!outletData) {
+    if (!outletData) { 
       return res.status(200).json({
-        data: [
-          {
-            _id: null,
-            outletName: null,
-            outletLine: null,
-            outletAddress: null,
-            outletProvince: null,
-            outletCity: null,
-            outletZip: null,
-            status: null,
-          },
-        ],
-      });
+        id: null,
+        outletName: null,
+        outletLine: null,
+        outletAddress: null,
+        outletProvince: null,
+        outletCity: null,
+        outletZip: null,
+        status: null,
+      }); 
     }
-
-    const formattedDataArray = outletData.map((dataItem) => {
-      const {
-        _id,
-        outletName,
-        outletLine,
-        outletAddress,
-        outletProvince,
-        outletCity,
-        outletZip,
-        status,
-      } = dataItem;
-  
-      return {
-        _id,
-        outletName,
-        outletLine,
-        outletAddress,
-        outletProvince,
-        outletCity,
-        outletZip,
-        status,
-      };
-    });
-  
-    res.status(200).json({ data: formattedDataArray });
+ 
+    const { data } = outletData;
+    res.status(200).json({ data: data });
   } catch (error) {
     return res.status(401).json({ error: 'Authentication failed' });
   }

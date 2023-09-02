@@ -1,23 +1,26 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
-
-import connectDB from '@/db/connect';
-import bcrypt from 'bcrypt';
+import { NextApiRequest, NextApiResponse } from 'next'; 
 import authMiddleware from '@/pages/api/middleware';
+import supabase, { DbResult } from '@/db/supabase';
+import bcrypt from 'bcrypt';
 
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
   tenantId?: string;
 }
+const isAlreadyRegistered = async (field: any, value: any) => {
+  const query = supabase.from('Employee').select().eq(field, value);
+  const Room: DbResult<typeof query> = await query;
 
+  return Room;
+};
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-  const client = await connectDB();
-
+  
   if (req.method !== 'POST') {
     return res.status(405).end(); // Method Not Allowed
   }
 
   const { 
+    outletId, 
     employeeName, 
     employeePhone, 
     employeeEmail,
@@ -25,52 +28,69 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   } = req.body;
 
   try {
-    const tenantId = req.tenantId;
-    const tenantObjectId = new ObjectId(tenantId)
-
-    // Connect to the MongoDB database
-    const db = client.db('sakapulse');
-    const users = db.collection('Users');
-    const employees = db.collection('BusinessEmployee');
-
-    const existingEmail = await employees.findOne({ employeeEmail });
-    if (existingEmail) {
-      return res.status(400).json({ error: 'Email already registered' });
+    const tenantId = req.tenantId; 
+    let message
+    if (!tenantId || tenantId === null) {
+      return res.status(401).json({ error: 'Invalid tenantId' });
+    } 
+ 
+    // Connect to the MongoDB database 
+    const checkPhone = await isAlreadyRegistered('phone', employeePhone);
+    if (checkPhone.data?.length ?? 0 > 0) {
+      message = 'Phone registered';
+      return res.status(201).json({ message: message });  
     }
-    const existingNumber = await employees.findOne({ employeePhone });
-    if (existingNumber) {
-      return res.status(400).json({ error: 'Phone number already registered'})
+    const checkEmail = await isAlreadyRegistered('email', employeeEmail);
+    if (checkEmail.data?.length ?? 0 > 0) {
+      message = 'Email registered';
+      return res.status(201).json({ message: message });  
     }
-
+     
+  
     const hashedPassword = await bcrypt.hash('$akaPulse135', 10);
-    const newUsers = {
-      fullName: employeeName,
-      phoneNumber: employeePhone,
-      email: employeeEmail,
-      password: hashedPassword,
-      role: employeeRole.name,
-      status: false,
-      tenantId: tenantObjectId,
-    };
-    const user = await users.insertOne(newUsers);
+  
+    const queryuser = supabase
+      .from('Users')
+      .insert({
+        name: employeeName,
+        phone: employeePhone,
+        email: employeeEmail,
+        password: hashedPassword,
+        role: employeeRole.name,
+        tenantId: tenantId,
+        status: false
+      })
+      .select()
+    const Users: DbResult<typeof queryuser> = await queryuser;
+    
+    if (Users.error) {
+      return res.status(500).json({ error: 'Users registering failed' });
+    }
+    // Create a new user document 
+    const query = supabase
+    .from('Employee')
+    .insert({
+      name: employeeName, 
+      phone: employeePhone, 
+      email: employeeEmail, 
+      role: employeeRole, 
+      userId: Users.data[0].id,  
+      outletId: outletId, 
+      tenantId: req.tenantId,   
+      status: false   
+    })
+    .select()
+    const Employee: DbResult<typeof query> = await query;
 
-    // Create a new user document
-    const newEmployee = {
-      employeeName,
-      employeePhone,
-      employeeEmail,
-      employeeRole,
-      userId: user.insertedId,
-      tenantId: tenantObjectId,
-      assignedOutletId: null,
-      status: false
-    };
-    await employees.insertOne(newEmployee);
-
-    res.status(201).json({ message: 'Employee registered successfully' });
+    if (Employee.error) {
+      return res.status(500).json({ error: 'Room registering failed', data:Employee });
+    } 
+  
+    res.status(201).json({ message: 'Employee registered successfully'  });
+ 
   } catch (error) {
     console.error('Authentication error:', error);
-    return res.status(401).json({ error: 'Authentication failed' });
+    return res.status(401).json({ error: 'Authentication failed' + error });
   }
 };
 

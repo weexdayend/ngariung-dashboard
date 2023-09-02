@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
-
-import connectDB from '@/db/connect';
+import supabase from '@/db/supabase';
 import authMiddleware from '@/pages/api/middleware';
 
 interface AuthenticatedRequest extends NextApiRequest {
@@ -10,80 +8,29 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-  const client = await connectDB();
-
   if (req.method !== 'GET') {
-    return res.status(405).end(); // Method Not Allowed
+    return res.status(405).end();
   }
 
   try {
     const tenantId = req.tenantId;
-
-    const getEmployeeData = async (tenantId: any) => {
-      const db = client.db('sakapulse');
-      const collection = db.collection('BusinessEmployee');
-      const outletCollection = db.collection('BusinessOutlet'); // Add this line
-    
-      const employeeData = await collection.find({ tenantId: new ObjectId(tenantId) }).toArray();
-    
-      // Fetch outlet information for each employee
-      const employeesWithOutletData = await Promise.all(
-        employeeData.map(async (employee) => {
-          if (employee.assignedOutletId) {
-            const outlet = await outletCollection.findOne({
-              _id: new ObjectId(employee.assignedOutletId),
-            });
-            return { ...employee, outletName: outlet?.outletName };
-          }
-          return employee;
-        })
-      );
-    
-      return employeesWithOutletData;
+    if (!tenantId || tenantId === null) {
+      return res.status(401).json({ error: 'Invalid tenantId' });
     }
 
-    const employeeData = await getEmployeeData(tenantId);
+    // Mengambil data dari tabel Employee dan menyertakan data terkait dari tabel User dan Outlet
+    const { data: employeeData, error } = await supabase
+      .from('Employee')
+      .select('id, name, phone, email, Users:Users(role), Outlet:Outlet(name)')
+      .eq('tenantId', tenantId);
 
-    if (!employeeData) {
-      return res.status(200).json({
-        data: [
-          {
-            _id: null,
-            employeeName: null,
-            employeePhone: null,
-            employeeEmail: null,
-            employeeRole: null,
-            status: null,
-          },
-        ],
-      });
+    if (error) {
+      return res.status(401).json({ error: 'Error fetching employee data' });
     }
 
-    const formattedDataArray = employeeData.map((dataItem) => {
-      const {
-        _id,
-        employeeName,
-        employeePhone,
-        employeeEmail,
-        employeeRole,
-        status,
-        outletName, // Add this line
-      } = dataItem;
-    
-      return {
-        _id,
-        employeeName,
-        employeePhone,
-        employeeEmail,
-        employeeRole,
-        status,
-        outletName, // Add this line
-      };
-    });
-  
-    res.status(200).json({ data: formattedDataArray });
+    // Variabel data sekarang berisi kolom yang diinginkan dari tabel yang terkait
+    res.status(200).json({ data: employeeData });
   } catch (error) {
-    console.error('Authentication error:', error);
     return res.status(401).json({ error: 'Authentication failed' });
   }
 };

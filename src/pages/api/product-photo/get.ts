@@ -17,7 +17,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
     const getBusinessData = async (tenantId: any) => {
  
-      const query = supabase.from('Products').select().eq("tenantId", tenantId);
+      const query = supabase.from('Products').select('id, productName, BrandProducts:BrandProducts(brandName), ProductCategories:ProductCategories(categoryName)').eq("tenantId", tenantId);
       const Products: DbResult<typeof query> = await query;
       
       if (!Products || Products.data === null) {
@@ -36,7 +36,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
     const { data } = Products;
 
-    res.status(200).json({ id:data[0].id, productPhoto:data[0].productPhoto });
+    res.status(200).json({ data:data });
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'An error occurred' });
