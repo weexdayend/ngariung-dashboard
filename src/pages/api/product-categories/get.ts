@@ -9,7 +9,7 @@ interface AuthenticatedRequest extends NextApiRequest {
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
    
   if (req.method !== 'GET') {
-    return res.status(405).end(); // Method Not Allowed
+    return res.status(405).end();  
   }
 
   try {

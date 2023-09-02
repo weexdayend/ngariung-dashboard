@@ -25,8 +25,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     
     if (error) {
       return res.status(500).json({ error: 'update product category error' });
-    }
-
+    } 
     res.status(200).json({ message: 'product category updated successfully' });
   } catch (error) {
     console.error('Error:', error);

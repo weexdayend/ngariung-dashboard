@@ -51,8 +51,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
     if (Products.error) {
       return res.status(500).json({ error: 'Product registering failed' });
-    } 
-    
+    }  
     res.status(201).json({ message: 'Product successfully'  });
   } catch (error) {
     return res.status(500).json({ error: 'An error occurred' });

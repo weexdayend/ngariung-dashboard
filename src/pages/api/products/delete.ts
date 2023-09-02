@@ -14,8 +14,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     const tenantId = req.tenantId; 
     if (!tenantId || tenantId === null) {
       return res.status(401).json({ error: 'Invalid tenantid' });
-    }
-      
+    } 
     const { data, error } = await supabase
     .from('Products')
     .update({ status: null })
@@ -32,6 +31,5 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     console.error('Error:', error);
     return res.status(500).json({ error: 'An error occurred' });
   }
-};
-
+}; 
 export default authMiddleware(handler);

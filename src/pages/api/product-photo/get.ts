@@ -34,8 +34,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       return res.status(200).json({ productPhoto: null });
     }
 
-    const { data } = Products;
-
+    const { data } = Products; 
     res.status(200).json({ data:data });
   } catch (error) {
     console.error('Error:', error);

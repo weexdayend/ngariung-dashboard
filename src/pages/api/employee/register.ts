@@ -34,8 +34,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     if (!tenantId || tenantId === null) {
       return res.status(401).json({ error: 'Invalid tenantId' });
     } 
- 
-    // Connect to the MongoDB database 
+  
     const checkPhone = await isAlreadyRegistered('phone', employeePhone);
     if (checkPhone.data?.length ?? 0 > 0) {
       message = 'Phone registered';
@@ -46,8 +45,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       message = 'Email registered';
       return res.status(201).json({ message: message });  
     }
-     
-  
+      
     const hashedPassword = await bcrypt.hash('$akaPulse135', 10);
   
     const queryuser = supabase
@@ -67,7 +65,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     if (Users.error) {
       return res.status(500).json({ error: 'Users registering failed' });
     }
-    // Create a new user document 
+   
     const query = supabase
     .from('Employee')
     .insert({

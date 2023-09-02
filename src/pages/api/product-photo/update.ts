@@ -8,8 +8,7 @@ interface AuthenticatedRequest extends NextApiRequest {
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
    
-  const { productPhoto,categoryId,brandId, id } = req.body;
-
+  const { productPhoto,categoryId,brandId, id } = req.body; 
   try {
     const tenantId = req.tenantId; 
     if (!tenantId || tenantId === null) {

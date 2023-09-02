@@ -25,10 +25,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   } = req.body;
 
   try {
-    // const tenantId = req.tenantId; 
-    // if (!tenantId || tenantId === null) {
-    //     return res.status(401).json({ error: 'Invalid tenantid' });
-    // }
+     
     let message;
  
     const checkName = await isAlreadyRegistered('categoryName', categoryName, req.tenantId);

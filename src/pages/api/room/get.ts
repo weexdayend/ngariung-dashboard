@@ -41,8 +41,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
         capacity: null, 
         vip: null, 
       }); 
-    }
- 
+    } 
     const { data } = roomData;
     res.status(200).json({ data: data });
   } catch (error) {

@@ -12,26 +12,22 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
   if (req.method !== 'GET') { return res.status(405).end(); }
 
-  try {
-
+  try { 
     const tenantId = req.tenantId;
     if (!tenantId || tenantId === null) {
         return res.status(401).json({ error: 'Invalid tenantId' });
-    }
-
+    } 
     const getOutletData = async (tenantId: any) => { 
       const query = supabase.from('Outlet').select("id, name, line, address, province, city, postal, Employee:Employee(name, phone, email, Users:Users(role))").eq("tenantId", tenantId);
       const Outlet: DbResult<typeof query> = await query;
       
       if (!Outlet || Outlet.data === null) {
         return res.status(401).json({ error: 'Invalid business' });
-      } 
-    
+      }  
       return Outlet;
-    }
-
-    const outletData = await getOutletData(tenantId)
-
+    } 
+    const outletData = await getOutletData(tenantId)  
+    
     if (!outletData) { 
       return res.status(200).json({
         id: null,

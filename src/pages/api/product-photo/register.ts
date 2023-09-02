@@ -17,7 +17,7 @@ const isAlreadyRegistered = async (field: any, value: any) => {
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
    
     if (req.method !== 'POST') {
-        return res.status(405).end(); // Method Not Allowed
+        return res.status(405).end();  
     } 
 
   const { 
@@ -34,8 +34,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     if (checkName.data?.length ?? 0 > 0) {
       message = 'Product already registered';
       return res.status(201).json({ message: message });  
-    }
-    
+    } 
     const query = supabase
       .from('Products')
       .insert({

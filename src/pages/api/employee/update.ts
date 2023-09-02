@@ -10,8 +10,7 @@ interface AuthenticatedRequest extends NextApiRequest {
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
    
-  const { id, outletId, employeeName, employeePhone, employeeEmail, employeeRole } = req.body;
-
+  const { id, outletId, employeeName, employeePhone, employeeEmail, employeeRole } = req.body; 
   try {
     const tenantId = req.tenantId; 
     if (!tenantId || tenantId === null) {
@@ -33,8 +32,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     
     if (error) {
       return res.status(500).json({ error: 'update Employee error',data });
-    }
-
+    } 
     res.status(200).json({ message: 'Employee updated successfully' });
   } catch (error) {
     console.error('Authentication error:', error);
