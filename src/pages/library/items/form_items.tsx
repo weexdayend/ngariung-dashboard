@@ -27,12 +27,20 @@ function FormItems({ onClose, onUpdated, item, category }: Props) {
   const [newData, setNewData] = useState(!item)
   const [dataChanged, setDataChanged] = useState(false);
 
+  const [transformCategory, setTrasnformCategory] = useState([])
+
   useEffect(() => {
     if (item) {
       setProductName(item.productName || '');
       setProductPrice(item.prices || 0);
       setProductCategory({ id: item.categoryId, name: item.categoryName} || { id: '', name: '' });
       setStatus(item.status || false)
+
+      const transform = category && category.data.map((item: any) => ({
+        id: item.id,
+        name: item.categoryName
+      }))
+      setTrasnformCategory(transform)
 
       if(item.status == 1){
         setEnabled(true)
@@ -56,11 +64,6 @@ function FormItems({ onClose, onUpdated, item, category }: Props) {
 
 
   const isAnyFieldEmpty = !productName || !productPrice
-
-  const transformCategory = category && category.data.map((item: any) => ({
-    id: item.id,
-    name: item.categoryName
-  }))
 
   useEffect(() => {
     if (enabled) {
