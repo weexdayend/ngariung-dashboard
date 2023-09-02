@@ -7,6 +7,7 @@ import authMiddleware from '@/pages/api/middleware';
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
   tenantId?: string;
+  collectionId?: string;
 }
 
 async function addSchedule(scheduleData: any, tenantId: any) {
@@ -169,7 +170,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
   try {
     const userId = req.userId;
-    const tenantId = req.tenantId;
+    const tenantId = req.collectionId;
     
     const client = await connectDB();
     const db = client.db('sakapulse');

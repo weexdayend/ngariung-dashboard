@@ -451,8 +451,8 @@ export interface Database {
           delete_at: string | null
           filePhoto: string | null
           id: number
+          prices: number | null
           productName: string | null
-          productPhoto: string | null
           sotrage: string | null
           status: boolean | null
           tenantId: string | null
@@ -465,8 +465,8 @@ export interface Database {
           delete_at?: string | null
           filePhoto?: string | null
           id?: number
+          prices?: number | null
           productName?: string | null
-          productPhoto?: string | null
           sotrage?: string | null
           status?: boolean | null
           tenantId?: string | null
@@ -479,8 +479,8 @@ export interface Database {
           delete_at?: string | null
           filePhoto?: string | null
           id?: number
+          prices?: number | null
           productName?: string | null
-          productPhoto?: string | null
           sotrage?: string | null
           status?: boolean | null
           tenantId?: string | null
@@ -631,6 +631,7 @@ export interface Database {
           outletId: number | null
           size: string | null
           status: boolean | null
+          tenantId: string | null
           vip: boolean | null
         }
         Insert: {
@@ -641,6 +642,7 @@ export interface Database {
           outletId?: number | null
           size?: string | null
           status?: boolean | null
+          tenantId?: string | null
           vip?: boolean | null
         }
         Update: {
@@ -651,6 +653,7 @@ export interface Database {
           outletId?: number | null
           size?: string | null
           status?: boolean | null
+          tenantId?: string | null
           vip?: boolean | null
         }
         Relationships: [
@@ -894,6 +897,7 @@ export interface Database {
       }
       Users: {
         Row: {
+          collectionId: string | null
           created_at: string
           email: string | null
           id: string
@@ -905,6 +909,7 @@ export interface Database {
           tenantId: string | null
         }
         Insert: {
+          collectionId?: string | null
           created_at?: string
           email?: string | null
           id?: string
@@ -916,6 +921,7 @@ export interface Database {
           tenantId?: string | null
         }
         Update: {
+          collectionId?: string | null
           created_at?: string
           email?: string | null
           id?: string

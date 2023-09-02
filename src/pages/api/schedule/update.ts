@@ -7,6 +7,7 @@ import authMiddleware from '@/pages/api/middleware';
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
   tenantId?: string;
+  collectionId?: string;
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {

@@ -5,6 +5,7 @@ import connectDB from '@/db/connect';
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
   tenantId?: string;
+  collectionId?: string;
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
@@ -13,7 +14,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   }
 
   try {
-    const tenantId = req.tenantId;
+    const tenantId = req.collectionId;
     const client = await connectDB();
     const db = client.db('sakapulse')
     const collection = db.collection('BusinessOutlet');

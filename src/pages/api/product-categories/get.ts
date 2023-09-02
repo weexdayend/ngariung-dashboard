@@ -16,14 +16,11 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     const { tenantId } = req;
 
     const getBusinessData = async (tenantId: any) => {
- 
-      const query = supabase.from('ProductCategories').select().eq("tenantId", tenantId);
-      const ProductCategories: DbResult<typeof query> = await query;
-      
-      if (!ProductCategories || ProductCategories.data === null) {
-        return res.status(401).json({ error: 'Invalid business' });
-      }
-      const result = ProductCategories.data[0]; 
+      const productsQuery = supabase
+        .from('ProductCategories')
+        .select('*')
+        .eq('tenantId', `${tenantId}`);
+      const ProductCategories: DbResult<typeof productsQuery> = await productsQuery;
     
       return ProductCategories;
     }
@@ -36,7 +33,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
     const { data } = ProductCategories;
 
-    res.status(200).json({ id:data[0].id, categoryName:data[0].categoryName });
+    res.status(200).json({ data: data });
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'An error occurred' });

@@ -43,14 +43,14 @@ export const sidebarData: MenuItem[] = [
     icon: 'briefcase',
     subMenu: [
       { id: 41, label: 'Items', icon: 'cliplist', link: 'library/items' },
-      { id: 42, label: 'Modifiers', icon: 'clipcopy', link: 'fandb-pointofsales' },
-      { id: 43, label: 'Categories', icon: 'inbox', link: 'fandb-pointofsales' },
-      { id: 44, label: 'Build Package', icon: 'newspaper', link: 'fandb-pointofsales' },
+      // { id: 42, label: 'Modifiers', icon: 'clipcopy', link: 'fandb-pointofsales' },
+      // { id: 43, label: 'Categories', icon: 'inbox', link: 'fandb-pointofsales' },
+      // { id: 44, label: 'Build Package', icon: 'newspaper', link: 'fandb-pointofsales' },
       { id: 45, label: 'Promo', icon: 'ticket', link: 'fandb-pointofsales' },
-      { id: 46, label: 'Discounts', icon: 'tag', link: 'fandb-pointofsales' },
+      // { id: 46, label: 'Discounts', icon: 'tag', link: 'fandb-pointofsales' },
       { id: 47, label: 'Taxes', icon: 'currency', link: 'fandb-pointofsales' },
       { id: 48, label: 'Services', icon: 'archive', link: 'fandb-pointofsales' },
-      { id: 49, label: 'Sales Type', icon: 'symbol', link: 'fandb-pointofsales' },
+      // { id: 49, label: 'Sales Type', icon: 'symbol', link: 'fandb-pointofsales' },
     ]
   },
   {

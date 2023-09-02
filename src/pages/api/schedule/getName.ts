@@ -7,6 +7,7 @@ import connectDB from '@/db/connect';
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
   tenantId?: string;
+  collectionId?: string;
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
@@ -15,7 +16,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       return res.status(405).end(); // Method Not Allowed
     }
     
-    const tenantId = req.tenantId;
+    const tenantId = req.collectionId;
     
     const client = await connectDB();
     const db = client.db('sakapulse')

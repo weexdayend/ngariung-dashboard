@@ -47,10 +47,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (SECRET !== undefined && RFRESH !== undefined) {
       // Generate JWT token
-      const token = jwt.sign({ userId: user.id, userRole: user.role, tenantId: user.tenantId }, SECRET, {
+      const token = jwt.sign({ userId: user.id, userRole: user.role, tenantId: user.tenantId, collection: user.collectionId }, SECRET, {
         expiresIn: '30d', // Set token expiration time
       });
-      const refreshToken = jwt.sign({ userId: user.id, userRole: user.role, tenantId: user.tenantId }, RFRESH, {
+      const refreshToken = jwt.sign({ userId: user.id, userRole: user.role, tenantId: user.tenantId, collection: user.collectionId }, RFRESH, {
         expiresIn: '30d', // Set refresh token expiration time
       });
 

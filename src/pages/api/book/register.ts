@@ -7,6 +7,7 @@ import authMiddleware from '@/pages/api/middleware';
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
   tenantId?: string;
+  collectionId?: string;
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
@@ -23,7 +24,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   } = req.body;
 
   try {
-    const tenantId = req.tenantId;
+    const tenantId = req.collectionId;
     const db = client.db('sakapulse');
     const bookingCollection = db.collection('BookEvent');
     const scheduleCollection = db.collection('Schedule');

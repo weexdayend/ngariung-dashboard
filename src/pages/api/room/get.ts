@@ -7,6 +7,7 @@ import authMiddleware from '@/pages/api/middleware';
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
   tenantId?: string;
+  collectionId?: string;
 }
 
 
@@ -19,7 +20,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   }
 
   try {
-    const tenantId = req.tenantId;
+    const tenantId = req.collectionId;
 
     const getOutletData = async (businessId: any) => {
       const db = client.db('sakapulse');

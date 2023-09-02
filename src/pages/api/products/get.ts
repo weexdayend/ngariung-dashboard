@@ -1,45 +1,58 @@
-import { NextApiRequest, NextApiResponse } from 'next'; 
-import supabase, { DbResult } from '@/db/supabase'; 
+import { NextApiRequest, NextApiResponse } from 'next';
+
 import authMiddleware from '@/pages/api/middleware';
+import supabase, { DbResult } from '@/db/supabase';
 
 interface AuthenticatedRequest extends NextApiRequest {
+  userId?: string;
   tenantId?: string;
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-   
   if (req.method !== 'GET') {
     return res.status(405).end(); // Method Not Allowed
   }
 
   try {
-    const { tenantId } = req;
 
-    const getBusinessData = async (tenantId: any) => {
- 
-      const query = supabase.from('Products').select().eq("tenantId", tenantId);
-      const Products: DbResult<typeof query> = await query;
-      
-      if (!Products || Products.data === null) {
-        return res.status(401).json({ error: 'Invalid business' });
-      }
-      const result = Products.data[0]; 
+    const productsQuery = supabase
+      .from('Products')
+      .select('*')
+      .eq('tenantId', `${req.tenantId}`);
+  
+    // Perform the second query to get product categories
+    const categoriesQuery = supabase
+      .from('ProductCategories')
+      .select('*');
     
-      return Products;
-    }
+    // Wait for both queries to complete
+    const [productsResult, categoriesResult] = await Promise.all([productsQuery, categoriesQuery]);
+    
+    // Combine the results
+    const products = productsResult.data;
+    const categories = categoriesResult.data;
+    
+    // Assuming there's a categoryId column in Products
+    // You can now combine the data as needed in your application
+    const combinedData = products?.map((product) => {
+      const category = categories?.find((category) => category.id === product.categoryId);
+      return {
+        ...product,
+        categoryName: category ? category.categoryName : null,
+      };
+    });
 
-    const Products = await getBusinessData(tenantId);
-
-    if (!Products) {
-      return res.status(200).json({ productName: null });
-    }
-
-    const { data } = Products;
-
-    res.status(200).json({ id:data[0].id, productName:data[0].productName });
+    combinedData?.sort((a, b) => {
+      const statusA = a.status as boolean;
+      const statusB = b.status as boolean;
+    
+      return statusA === statusB ? 0 : statusA ? -1 : 1;
+    });
+    
+  
+    res.status(200).json({ data: combinedData });
   } catch (error) {
-    console.error('Error:', error);
-    return res.status(500).json({ error: 'An error occurred' });
+    return res.status(401).json({ error: 'Authentication failed' });
   }
 };
 

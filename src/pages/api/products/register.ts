@@ -15,21 +15,21 @@ const isAlreadyRegistered = async (field: any, value: any) => {
 };
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-   
+  
     if (req.method !== 'POST') {
         return res.status(405).end(); // Method Not Allowed
     } 
 
   const { 
-    categoryId,  
-    productName,  
-    brandId,    
+    productCategory,  
+    productName,
+    productPrices,
   } = req.body;
 
   try {
-     
+  
     let message;
- 
+
     const checkName = await isAlreadyRegistered('productName', productName);
     if (checkName.data?.length ?? 0 > 0) {
       message = 'Product already registered';
@@ -39,11 +39,12 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     const query = supabase
       .from('Products')
       .insert({
-        categoryId: categoryId, 
+        categoryId: productCategory, 
         productName: productName, 
-        brandId: brandId, 
+        brandId: 1, 
         tenantId: req.tenantId,  
         status: false,
+        prices: productPrices,
       })
       .select()
     const Products: DbResult<typeof query> = await query;

@@ -8,6 +8,7 @@ interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
   tenantId?: string;
   userRole?: string;
+  collectionId?: string;
 }
 
 const authMiddleware = (handler: any) => async (req: AuthenticatedRequest, res: NextApiResponse) => {
@@ -24,6 +25,7 @@ const authMiddleware = (handler: any) => async (req: AuthenticatedRequest, res: 
       req.userId = decoded.userId;
       req.tenantId = decoded.tenantId;
       req.userRole = decoded.userRole;
+      req.collectionId = decoded.collectionId;
       return handler(req, res);
     }
   } catch (error) {

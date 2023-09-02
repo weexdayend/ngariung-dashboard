@@ -20,8 +20,7 @@ const connectDB = async () => {
       version: ServerApiVersion.v1,
       strict: true,
       deprecationErrors: true,
-    },
-    maxPoolSize: 10, // Adjust the pool size as per your needs
+    }
   });
 
   try {

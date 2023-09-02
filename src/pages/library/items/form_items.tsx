@@ -6,41 +6,84 @@ import InputField from '../../../components/input_fields';
 import SwitchButton from '@/components/switch_button';
 
 import axios from 'axios';
-
-interface DropDownList {
-  id: string | '';
-  name: string | '';
-}
+import ListDropdown from '@/components/list_dropdown';
+import NumberField from '@/components/number_fields';
 
 type Props = {
   onClose: () => void;
   onUpdated: () => void;
-  item: any
+  item: any;
+  category: any;
 }
 
-function FormTypeEvent({ onClose, onUpdated, item }: Props) {
-  const [nameType, setNameType] = useState('');
-  const [typeStatus, setTypeStatus] = useState('');
+function FormItems({ onClose, onUpdated, item, category }: Props) {
+  const [productName, setProductName] = useState('');
+  const [productPrice, setProductPrice] = useState(0);
+  const [productCategory, setProductCategory] = useState({ id: '', name: '' })
+  const [status, setStatus] = useState(false);
 
   const [enabled, setEnabled] = useState<boolean>(false)
 
   const [newData, setNewData] = useState(!item)
   const [dataChanged, setDataChanged] = useState(false);
 
-  const isAnyFieldEmpty = !nameType
+  useEffect(() => {
+    if (item) {
+      setProductName(item.productName || '');
+      setProductPrice(item.prices || 0);
+      setProductCategory({ id: item.categoryId, name: item.categoryName} || { id: '', name: '' });
+      setStatus(item.status || false)
+
+      if(item.status == 1){
+        setEnabled(true)
+      }else{
+        setEnabled(false)
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if(item){
+      const hasDataChanged =
+        item.productName !== productName ||
+        item.productPrice !== productPrice ||
+        item.productCategory !== productCategory.name ||
+        item.status !== status;
+
+      setDataChanged(hasDataChanged);
+    }
+  }, [productName, productPrice, productCategory, status])
+
+
+  const isAnyFieldEmpty = !productName || !productPrice
+
+  const transformCategory = category && category.data.map((item: any) => ({
+    id: item.id,
+    name: item.categoryName
+  }))
+
+  useEffect(() => {
+    if (enabled) {
+      setStatus(true);
+    } else {
+      setStatus(false);
+    }
+  }, [enabled]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   
-    const endpoint = newData ? `${process.env.API_URL}event-type/register` : `${process.env.API_URL}event-type/update`;
+    const endpoint = newData ? `${process.env.API_URL}products/register` : `${process.env.API_URL}products/update`;
     
     const body: any = {
-      nameType,
+      productName,
+      productCategory: productCategory.id,
+      productPrice,
     };
   
     if (!newData) {
-      body['_id'] = item._id;
-      body['status'] = typeStatus
+      body['id'] = item.id;
+      body['status'] = status
     }
 
     const responsePromise = new Promise(async (resolve, reject) => {
@@ -93,7 +136,19 @@ function FormTypeEvent({ onClose, onUpdated, item }: Props) {
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-full">
                 <div className="mt-2">
-                  <InputField label="Event type" value={nameType} onChange={setNameType} />
+                  <InputField label="Product name" value={productName} onChange={setProductName} />
+                </div>
+              </div>
+
+              <div className="sm:col-span-full">
+                <div className="mt-2">
+                  <ListDropdown label="Product categoroy" value={productCategory} onChange={setProductCategory} holder={'Choose your category'} options={transformCategory} />
+                </div>
+              </div>
+
+              <div className="sm:col-span-full">
+                <div className="mt-2">
+                  <NumberField label="Product price" value={productPrice} onChange={setProductPrice} />
                 </div>
               </div>
             </div>
@@ -143,4 +198,4 @@ function FormTypeEvent({ onClose, onUpdated, item }: Props) {
   )
 }
 
-export default FormTypeEvent
+export default FormItems

@@ -7,27 +7,28 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-   
-  const { productName,categoryId,brandId, id } = req.body;
+
+  const { productName, categoryId, productPrice, status, id } = req.body;
 
   try {
+
     const tenantId = req.tenantId; 
     if (!tenantId || tenantId === null) {
       return res.status(401).json({ error: 'Invalid tenantid' });
     }
       
     const { data, error } = await supabase
-    .from('Products')
-    .update({ productName: productName, categoryId:categoryId,brandId :brandId})
-    .eq('id', id)
-    .eq('tenantId', tenantId)
-    .select()
+      .from('Products')
+      .update({ productName: productName, categoryId:categoryId, prices: productPrice, status: status})
+      .eq('id', id)
+      .eq('tenantId', tenantId)
+      .select()
     
     if (error) {
-      return res.status(500).json({ error: 'update product error' });
+      return res.status(500).json({ error: 'Update product error' });
     }
 
-    res.status(200).json({ message: 'update product successfully' });
+    res.status(200).json({ message: 'Update product successfully' });
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'An error occurred' });

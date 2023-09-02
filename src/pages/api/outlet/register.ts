@@ -7,6 +7,7 @@ import authMiddleware from '@/pages/api/middleware';
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
   tenantId?: string;
+  collectionId?: string;
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
@@ -27,7 +28,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
   try {
     const userId = req.userId;
-    const tenantId = req.tenantId;
+    const tenantId = req.collectionId;
 
     // Connect to the MongoDB database
     const db = client.db('sakapulse');
