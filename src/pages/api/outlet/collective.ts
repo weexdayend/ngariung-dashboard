@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
-import connectDB from '@/db/connect';
+import supabase, { DbResult } from '@/db/supabase'; 
+import authMiddleware from '@/pages/api/middleware';
 
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
@@ -14,53 +14,49 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   }
 
   try {
-    const tenantId = req.collectionId;
-    const client = await connectDB();
-    const db = client.db('sakapulse')
-    const collection = db.collection('BusinessOutlet');
-    
-    const outletData = await collection.find({
-      businessId: new ObjectId(tenantId),
-    }).toArray();
-
-    if (outletData.length < 0) {
-      return res.status(200).json({
-        data: [
-          {
-            id: null,
-            name: null,
-          },
-        ],
-      });
+    const tenantId = req.tenantId;
+    if (!tenantId || tenantId === null) {
+      return res.status(401).json({ error: 'Invalid tenantId' });
     }
-  
-    const formatted = outletData.map((dataItem: any) => {
-      const {
-        _id,
-        outletName,
-        employees,
-        rooms,
-      } = dataItem;
+    
+    const { data: outletData, error } = await supabase
+      .from('Outlet')
+      .select('id, name, employee(id, name, phone, email, role), room(id, name, size, vip, capacity, status)')
+      .eq('tenantId', tenantId);
 
-      const normalizeEmployee = employees.map((employee: any) => ({
-        _id: employee._id,
-        name: employee.employeeName,
-        role: employee.employeeRole,
-        phone: employee.employeePhone,
+    if (error) {
+      return res.status(500).json({ error: 'Error fetching outlet data' });
+    }
+
+    if (!outletData || outletData.length === 0) {
+      // Handle the case where no data is found
+      return res.status(200).json({ data: [{ id: null, name: null }] });
+    }
+
+    const formatted = outletData.map((dataItem) => {
+      const { id, name, employee, room } = dataItem;
+      
+      const normalizeEmployee = employee.map((employee) => ({
+        _id: employee.id,
+        name: employee.name,
+        size: employee.size,
+        vip: employee.vip,
+        capacity: employee.capacity,
+        status: employee.status,
       }));
-
-      const normalizeRoom = rooms.map((room: any) => ({
+      
+      const normalizeRoom = rooms.map((room) => ({
         _id: room._id,
         name: room.roomName,
       }));
-
+      
       return {
-        id: _id,
+        id,
         name: outletName,
         employees: normalizeEmployee,
         rooms: normalizeRoom,
-      }
-    })
+      };
+    });
     
     return res.status(200).json({ data: formatted })
   } catch (error) {

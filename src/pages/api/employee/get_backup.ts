@@ -1,20 +1,23 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import supabase from '@/db/supabase';
+import { ObjectId } from 'mongodb';
+
+import connectDB from '@/db/connect';
 import authMiddleware from '@/pages/api/middleware';
 
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
   tenantId?: string;
-  collectionId?: string;
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
+  const client = await connectDB();
+
   if (req.method !== 'GET') {
-    return res.status(405).end();
+    return res.status(405).end(); // Method Not Allowed
   }
 
   try {
-    const tenantId = req.collectionId;
+    const tenantId = req.tenantId;
 
     const getEmployeeData = async (tenantId: any) => {
       const db = client.db('sakapulse');
@@ -39,19 +42,48 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       return employeesWithOutletData;
     }
 
-    // Mengambil data dari tabel Employee dan menyertakan data terkait dari tabel User dan Outlet
-    const { data: employeeData, error } = await supabase
-      .from('Employee')
-      .select('id, name, phone, email, Users:Users(role), Outlet:Outlet(name)')
-      .eq('tenantId', tenantId);
+    const employeeData = await getEmployeeData(tenantId);
 
-    if (error) {
-      return res.status(401).json({ error: 'Error fetching employee data' });
+    if (!employeeData) {
+      return res.status(200).json({
+        data: [
+          {
+            _id: null,
+            employeeName: null,
+            employeePhone: null,
+            employeeEmail: null,
+            employeeRole: null,
+            status: null,
+          },
+        ],
+      });
     }
 
-    // Variabel data sekarang berisi kolom yang diinginkan dari tabel yang terkait
-    res.status(200).json({ data: employeeData });
+    const formattedDataArray = employeeData.map((dataItem) => {
+      const {
+        _id,
+        employeeName,
+        employeePhone,
+        employeeEmail,
+        employeeRole,
+        status,
+        outletName, // Add this line
+      } = dataItem;
+    
+      return {
+        _id,
+        employeeName,
+        employeePhone,
+        employeeEmail,
+        employeeRole,
+        status,
+        outletName, // Add this line
+      };
+    });
+  
+    res.status(200).json({ data: formattedDataArray });
   } catch (error) {
+    console.error('Authentication error:', error);
     return res.status(401).json({ error: 'Authentication failed' });
   }
 };

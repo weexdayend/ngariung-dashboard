@@ -1,7 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
-
-import connectDB from '@/db/connect';
+import { NextApiRequest, NextApiResponse } from 'next'; 
+import supabase, { DbResult } from '@/db/supabase'; 
 import authMiddleware from '@/pages/api/middleware';
 
 interface AuthenticatedRequest extends NextApiRequest {
@@ -10,90 +8,44 @@ interface AuthenticatedRequest extends NextApiRequest {
   collectionId?: string;
 }
 
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => { 
 
-
-const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-  const client = await connectDB();
-
-  if (req.method !== 'GET') {
-    return res.status(405).end(); // Method Not Allowed
-  }
+  if (req.method !== 'GET') { return res.status(405).end(); }
 
   try {
-    const tenantId = req.collectionId;
 
-    const getOutletData = async (businessId: any) => {
-      const db = client.db('sakapulse');
-      const collection = db.collection('BusinessRoom');
-      const outletCollection = db.collection('BusinessOutlet'); // Add this line
-    
-      const businessData = await collection.find(
-        { 
-          tenantId: new ObjectId(businessId),
-        },
-      ).toArray();
+    const tenantId = req.tenantId;
+    if (!tenantId || tenantId === null) {
+        return res.status(401).json({ error: 'Invalid tenantId' });
+    }
+
+    const getRoomData = async (tenantId: any) => { 
+      const query = supabase.from('Room').select("*").eq("tenantId", tenantId);
+      const Outlet: DbResult<typeof query> = await query;
       
-      // Fetch outlet information for each employee
-      const employeesWithOutletData = await Promise.all(
-        businessData.map(async (employee) => {
-          if (employee.assignedOutletId) {
-            const outlet = await outletCollection.findOne({
-              _id: new ObjectId(employee.assignedOutletId),
-            });
-            return { ...employee, outletName: outlet?.outletName };
-          }
-          return employee;
-        })
-      );
+      if (!Outlet || Outlet.data === null) {
+        return res.status(401).json({ error: 'Invalid business' });
+      } 
     
-      return employeesWithOutletData;
+      return Outlet;
     }
-    const outletData = await getOutletData(tenantId)
 
-    if (!outletData) {
+    const roomData = await getRoomData(tenantId)
+
+    if (!roomData) { 
       return res.status(200).json({
-        data: [
-          {
-            _id: null,
-            roomName: null,
-            roomSize: null,
-            roomVIP: null,
-            roomCapacity: null,
-            status: null,
-            tenantId: null,
-            outletName: null,
-          },
-        ],
-      });
+        id: null, 
+        outletId: null, 
+        name: null, 
+        size: null, 
+        capacity: null, 
+        vip: null, 
+      }); 
     }
-
-    const formattedDataArray = outletData.map((dataItem) => {
-      const {
-        _id,
-        roomName,
-        roomSize,
-        roomVIP,
-        roomCapacity,
-        status,
-        tenantId,
-        outletName,
-      } = dataItem;
-  
-      return {
-        _id,
-        roomName,
-        roomSize,
-        roomVIP,
-        roomCapacity,
-        status,
-        tenantId,
-        outletName,
-      };
-    });
-  
-    res.status(200).json({ data: formattedDataArray });
+ 
+    const { data } = roomData;
+    res.status(200).json({ data: data });
   } catch (error) {
-    console.error('Authentication error:', error);
     return res.status(401).json({ error: 'Authentication failed' });
   }
 };

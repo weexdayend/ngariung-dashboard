@@ -1,8 +1,6 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
-
-import connectDB from '@/db/connect';
+import { NextApiRequest, NextApiResponse } from 'next'; 
 import authMiddleware from '@/pages/api/middleware';
+import supabase, { DbResult } from '@/db/supabase';
 
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
@@ -11,25 +9,30 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-  const client = await connectDB();
-
-  const { _id, employeeName, employeePhone, employeeEmail, employeeRole, status } = req.body;
+   
+  const { id, outletId, employeeName, employeePhone, employeeEmail, employeeRole } = req.body;
 
   try {
-    const employeeId = new ObjectId(_id);
-
-    // Connect to the MongoDB database
-    const db = client.db('sakapulse');
-    const collection = db.collection('BusinessEmployee');
-
-    // Update the existing business document
-    const updateResult = await collection.updateOne(
-      { _id: employeeId },
-      { $set: { employeeName, employeePhone, employeeEmail, employeeRole, status } }
-    );
-
-    if (updateResult.modifiedCount === 0) {
-      return res.status(404).json({ error: 'Employee not found' });
+    const tenantId = req.tenantId; 
+    if (!tenantId || tenantId === null) {
+      return res.status(401).json({ error: 'Invalid tenantid' });
+    }
+      
+    const { data, error } = await supabase
+    .from('Employee')
+    .update({
+      name: employeeName, 
+      phone: employeePhone, 
+      email: employeeEmail, 
+      role: employeeRole,  
+      outletId: outletId   
+    })
+    .eq('id', id)
+    .eq('tenantId', tenantId)
+    .select()
+    
+    if (error) {
+      return res.status(500).json({ error: 'update Employee error',data });
     }
 
     res.status(200).json({ message: 'Employee updated successfully' });

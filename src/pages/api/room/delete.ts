@@ -4,20 +4,11 @@ import authMiddleware from '@/pages/api/middleware';
 
 interface AuthenticatedRequest extends NextApiRequest {
   tenantId?: string;
-  collectionId?: string;
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
    
-  const { 
-    id, 
-    outletName, 
-    outletLine,
-    outletAddress, 
-    outletProvince,
-    outletCity,
-    outletZip, 
-  } = req.body;
+  const { id } = req.body;
 
   try {
     const tenantId = req.tenantId; 
@@ -26,24 +17,17 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     }
       
     const { data, error } = await supabase
-    .from('Outlet')
-    .update({
-      name: outletName, 
-      line: outletLine, 
-      address: outletAddress, 
-      province: outletProvince, 
-      city: outletCity, 
-      postal: outletZip   
-    })
+    .from('Room')
+    .update({ status: null })
     .eq('id', id)
     .eq('tenantId', tenantId)
     .select()
     
     if (error) {
-      return res.status(500).json({ error: 'update outlet error',data });
+      return res.status(500).json({ error: 'delete Room error' });
     }
 
-    res.status(200).json({ message: 'outlet updated successfully' });
+    res.status(200).json({ message: 'delete Room successfully' });
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'An error occurred' });

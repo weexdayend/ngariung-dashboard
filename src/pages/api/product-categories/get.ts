@@ -15,17 +15,18 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   try {
     const { tenantId } = req;
 
-    const getBusinessData = async (tenantId: any) => {
-      const productsQuery = supabase
-        .from('ProductCategories')
-        .select('*')
-        .eq('tenantId', `${tenantId}`);
-      const ProductCategories: DbResult<typeof productsQuery> = await productsQuery;
-    
+    const getProductCategoriesData = async (tenantId: any) => {
+ 
+      const query = supabase.from('ProductCategories').select('id, categoryName, Products:Products(productName)').eq("tenantId", tenantId);
+      const ProductCategories: DbResult<typeof query> = await query;
+      
+      if (!ProductCategories || ProductCategories.data === null) {
+        return res.status(401).json({ error: 'Invalid product categories' });
+      }  
       return ProductCategories;
     }
 
-    const ProductCategories = await getBusinessData(tenantId);
+    const ProductCategories = await getProductCategoriesData(tenantId);
 
     if (!ProductCategories) {
       return res.status(200).json({ categoryName: null });

@@ -1,8 +1,6 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ObjectId } from 'mongodb';
-
-import connectDB from '@/db/connect';
+import { NextApiRequest, NextApiResponse } from 'next'; 
 import authMiddleware from '@/pages/api/middleware';
+import supabase, { DbResult } from '@/db/supabase';
 
 interface AuthenticatedRequest extends NextApiRequest {
   userId?: string;
@@ -11,28 +9,33 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-  const client = await connectDB();
-
-  const { _id, roomName, roomSize, roomCapacity, roomVIP, status } = req.body;
+   
+  const { id, outletId, roomName, roomSize, roomCapacity, roomVIP } = req.body;
 
   try {
-    const outletId = new ObjectId(_id);
-
-    // Connect to the MongoDB database
-    const db = client.db('sakapulse');
-    const collection = db.collection('BusinessRoom');
-
-    // Update the existing business document
-    const updateResult = await collection.updateOne(
-      { _id: outletId },
-      { $set: { roomName, roomSize, roomCapacity, roomVIP, status } }
-    );
-
-    if (updateResult.modifiedCount === 0) {
-      return res.status(404).json({ error: 'Room not found' });
+    const tenantId = req.tenantId; 
+    if (!tenantId || tenantId === null) {
+      return res.status(401).json({ error: 'Invalid tenantid' });
+    }
+      
+    const { data, error } = await supabase
+    .from('Room')
+    .update({
+      outletId: outletId, 
+      name: roomName, 
+      size: roomSize, 
+      capacity: roomCapacity, 
+      vip: roomVIP, 
+    })
+    .eq('id', id)
+    .eq('tenantId', tenantId)
+    .select()
+    
+    if (error) {
+      return res.status(500).json({ error: 'update room error',data });
     }
 
-    res.status(200).json({ message: 'Room updated successfully' });
+    res.status(200).json({ message: 'room updated successfully' });
   } catch (error) {
     console.error('Authentication error:', error);
     return res.status(401).json({ error: 'Authentication failed' });
