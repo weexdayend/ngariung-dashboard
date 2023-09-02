@@ -62,6 +62,5 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     console.error('Authentication error:', error);
     return res.status(401).json({ error: 'Authentication failed' });
   }
-};
-
+}; 
 export default authMiddleware(handler);

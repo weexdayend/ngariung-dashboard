@@ -6,16 +6,14 @@ interface AuthenticatedRequest extends NextApiRequest {
   tenantId?: string;
 }
 
-const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-   
+const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => { 
   const { id } = req.body;
 
   try {
     const tenantId = req.tenantId; 
     if (!tenantId || tenantId === null) {
       return res.status(401).json({ error: 'Invalid tenantid' });
-    }
-      
+    } 
     const { data, error } = await supabase
     .from('Employee')
     .update({ status: null })
@@ -25,8 +23,8 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     
     if (error) {
       return res.status(500).json({ error: 'delete Employee error' });
-    }
-
+    } 
+    
     res.status(200).json({ message: 'delete Employee successfully' });
   } catch (error) {
     console.error('Error:', error);
