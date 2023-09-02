@@ -7,7 +7,7 @@ interface AuthenticatedRequest extends NextApiRequest {
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
-   
+  
   const { id } = req.body;
 
   try {
