@@ -58,7 +58,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const cookies = cookie.parse(context.req.headers.cookie || '');
 
     const fetchEvent = async () => {
-      const response = await axios.get(`http://localhost:3000/api/event/get`, {
+      const response = await axios.get(`https://sakapulse.vercel.app/api/event/get`, {
         headers: {
           Cookie: `token=${cookies['token']}`
         },
@@ -68,7 +68,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
     const fetchTypes = async () => {
-      const response = await axios.get(`http://localhost:3000/api/event-type/get`, {
+      const response = await axios.get(`https://sakapulse.vercel.app/api/event-type/get`, {
         headers: {
           Cookie: `token=${cookies['token']}`
         },
@@ -78,7 +78,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
     const fetchCategories = async () => {
-      const response = await axios.get(`http://localhost:3000/api/event-category/get`, {
+      const response = await axios.get(`https://sakapulse.vercel.app/api/event-category/get`, {
         headers: {
           Cookie: `token=${cookies['token']}`
         },
