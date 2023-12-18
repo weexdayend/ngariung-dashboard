@@ -39,19 +39,19 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       return res.status(401).json({ error: 'Invalid user or password' });
     }
      
-    const checkName = await isAlreadyRegistered('name', businessName);
+    const checkName = await isAlreadyRegistered('BusinessName', businessName);
     if (checkName.data?.length ?? 0 > 0) {
       message = 'Business name already registered';
       return res.status(201).json({ message: message });  
     }
   
-    const checkPhone = await isAlreadyRegistered('phone', businessPhone);
+    const checkPhone = await isAlreadyRegistered('BusinessPhone', businessPhone);
     if (checkPhone.data?.length ?? 0 > 0) {
       message = 'Business phone already registered';
       return res.status(201).json({ message: message });  
     }
 
-    const checkEmail = await isAlreadyRegistered('email', businessEmail);
+    const checkEmail = await isAlreadyRegistered('BusinessEmail', businessEmail);
     if (checkEmail.data?.length ?? 0 > 0) {
       message = 'Business email already registered';
       return res.status(201).json({ message: message });  

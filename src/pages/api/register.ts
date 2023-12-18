@@ -20,13 +20,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     let message;
 
-    const checkEmail = await isAlreadyRegistered('email', email);
+    const checkEmail = await isAlreadyRegistered('UserEmail', email);
     if (checkEmail.data?.length ?? 0 > 0) {
       message = 'Email already registered';
       return res.status(201).json({ message: message });  
     }
   
-    const checkPhone = await isAlreadyRegistered('phone', phoneNumber);
+    const checkPhone = await isAlreadyRegistered('UserPhone', phoneNumber);
     if (checkPhone.data?.length ?? 0 > 0) {
       message = 'Phone already registered';
       return res.status(201).json({ message: message });  
@@ -35,12 +35,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const query = supabase
       .from('Users')
       .insert({
-        name: fullName,
-        phone: phoneNumber,
-        email: email,
-        password: hashedPassword,
-        role: 'admin',
-        status: true
+        UserHunterName: fullName,
+        UserPhone: phoneNumber,
+        UserEmail: email,
+        UserPassword: hashedPassword,
+        UserRole: 'admin',
+        UserStatus: true
       })
       .select()
     const TypeEvents: DbResult<typeof query> = await query;
