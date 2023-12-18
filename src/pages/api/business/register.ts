@@ -8,8 +8,8 @@ const SECRET = process.env.KEY_PASS || '';
 const DOMAIN = process.env.DOMAIN;
 
 interface AuthenticatedRequest extends NextApiRequest {
-  userId?: string;
-  userRole?: string;
+  UserID?: string;
+  UserRole?: string;
 }
 
 const isAlreadyRegistered = async (field: any, value: any) => {
@@ -32,7 +32,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   } = req.body;
 
   try {
-    const userId = req.userId;
+    const userId = req.UserID;
     let message;
 
     if (!userId || userId === null) {
@@ -58,11 +58,11 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     }
     
     const query = supabase
-      .from('Business')
+      .from('Businesses')
       .insert({
-        name: businessName,
-        phone: businessPhone,
-        email: businessEmail,
+        BusinessName: businessName,
+        BusinessPhone: businessPhone,
+        BusinessEmail: businessEmail,
         status: false,
       })
       .select()
@@ -74,7 +74,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
        
     const { data, error } = await supabase
     .from('Users')
-    .update({ tenantId: Business.data[0].id })
+    .update({ BusinessID: Business.data[0].BusinessID })
     .eq('id', userId)
     .select()
     
@@ -83,7 +83,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     }
 
     const token = jwt.sign(
-      { userId, userRole: req.userRole, tenantId: data[0].tenantId },
+      { userId, userRole: req.UserRole, tenantId: data[0].BusinessID },
       SECRET,
       { expiresIn: '1h' }
     );
