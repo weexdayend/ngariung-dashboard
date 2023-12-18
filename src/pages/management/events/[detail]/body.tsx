@@ -92,58 +92,6 @@ export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTri
     );
   }
 
-  const [participant, setParticipant] = useState<any>([])
-  const [leaderboard, setLeaderBoarrd] = useState<any>([])
-
-  const fetchParticipant = async () => {
-    const fetch = await supabase
-      .from("EventParticipations")
-      .select(`*, Users(UserHunterName)`)
-      .eq("EventID", EventID)
-    const response = fetch
-    setParticipant(response.data)
-  }
-
-  const fetchTriviaAnswer = async () => {
-    const fetch = await supabase
-      .from("TriviaAnswers")
-      .select(`*, Users(UserHunterName)`)
-      .eq("EventID", EventID)
-    const response = fetch
-    setLeaderBoarrd(response.data)
-  }
-
-  useEffect(() => {
-    if (EventID) {
-      fetchParticipant()
-      fetchTriviaAnswer()
-    }
-  }, [EventID])
-
-  useEffect(() => {
-    const EventParticipations = supabase.channel('StageCheckpointsChannel')
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'StageCheckpoints' },
-      async (payload) => {
-        if (payload.eventType === 'INSERT') {
-          fetchParticipant()
-          fetchTriviaAnswer()
-        }
-
-        if (payload.eventType === 'UPDATE') {
-          fetchParticipant()
-          fetchTriviaAnswer()
-        }
-      }
-    )
-    .subscribe()
-
-    return (() => {
-      EventParticipations.unsubscribe()
-    })
-  }, [])
-
   return (
     <div className="w-full grid grid-flow-row grid-cols-2 gap-4">
       <Toaster
@@ -188,36 +136,6 @@ export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTri
           ))
         }
         </div>
-      </div>
-
-      <div className="w-full h-fit bg-white px-4 py-4 rounded-xl">
-        <h1 className="text-lg font-bold">Leaderboards</h1>
-        {
-          participant && participant
-            .map((item: any, index: number) => {
-              let score = 0; // Initialize the score
-
-              // Find the corresponding user in the leaderboard
-              const pulse = leaderboard.find((s: any) => s.UserID === item.UserID);
-
-              // If a matching user is found in the leaderboard, add their TriviaPulse to the score
-              if (pulse) {
-                score += pulse.TriviaPulse;
-              }
-
-              return {
-                UserHunterName: item.Users.UserHunterName,
-                score,
-              };
-            })
-            .sort((a: any, b: any) => b.score - a.score) // Sort by score in descending order
-            .map((item: any, index: any) => (
-              <div key={index} className={`px-4 rounded-full py-2 flex flex-row items-center justify-between`}>
-                <p className={`font-normal text-sm`}>{index+1}. {item.UserHunterName}</p>
-                <p className={`font-bold text-base`}>{item.score}</p>
-              </div>
-            ))
-        }
       </div>
 
       <div className="w-full col-span-full h-fit px-4 py-4 flex flex-col gap-4 rounded-xl mt-6">
