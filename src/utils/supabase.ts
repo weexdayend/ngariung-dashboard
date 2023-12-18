@@ -9,935 +9,619 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      BrandProducts: {
+      Businesses: {
         Row: {
-          brandName: string | null
-          created_at: string
-          delete_at: string | null
-          id: number
-          status: boolean | null
-          tenantId: string | null
-          update_at: string | null
+          BusinessEmail: string | null
+          BusinessID: string
+          BusinessImage: string | null
+          BusinessName: string | null
+          BusinessPhone: string | null
+          BusinessPulse: string | null
+          BusinessStatus: boolean | null
+          CreatedAt: string
+          UpdatedAt: string | null
         }
         Insert: {
-          brandName?: string | null
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
+          BusinessEmail?: string | null
+          BusinessID?: string
+          BusinessImage?: string | null
+          BusinessName?: string | null
+          BusinessPhone?: string | null
+          BusinessPulse?: string | null
+          BusinessStatus?: boolean | null
+          CreatedAt?: string
+          UpdatedAt?: string | null
         }
         Update: {
-          brandName?: string | null
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
+          BusinessEmail?: string | null
+          BusinessID?: string
+          BusinessImage?: string | null
+          BusinessName?: string | null
+          BusinessPhone?: string | null
+          BusinessPulse?: string | null
+          BusinessStatus?: boolean | null
+          CreatedAt?: string
+          UpdatedAt?: string | null
         }
         Relationships: []
       }
-      Business: {
+      EventCategories: {
         Row: {
-          created_at: string
-          email: string | null
-          id: string
-          name: string | null
-          phone: string | null
-          status: boolean | null
+          CreatedAt: string
+          EventCategoryID: string
+          EventCategoryName: string | null
+          EventCategoryStatus: boolean | null
+          UpdatedAt: string | null
         }
         Insert: {
-          created_at?: string
-          email?: string | null
-          id?: string
-          name?: string | null
-          phone?: string | null
-          status?: boolean | null
+          CreatedAt?: string
+          EventCategoryID?: string
+          EventCategoryName?: string | null
+          EventCategoryStatus?: boolean | null
+          UpdatedAt?: string | null
         }
         Update: {
-          created_at?: string
-          email?: string | null
-          id?: string
-          name?: string | null
-          phone?: string | null
-          status?: boolean | null
+          CreatedAt?: string
+          EventCategoryID?: string
+          EventCategoryName?: string | null
+          EventCategoryStatus?: boolean | null
+          UpdatedAt?: string | null
         }
         Relationships: []
       }
-      Customers: {
+      EventParticipations: {
         Row: {
-          created_at: string
-          email: string | null
-          id: string
-          name: string | null
-          phone: string | null
-          status: boolean | null
+          CreatedAt: string
+          EventID: string | null
+          EventParticipationID: number
+          EventStatus: boolean | null
+          UserID: string | null
         }
         Insert: {
-          created_at?: string
-          email?: string | null
-          id?: string
-          name?: string | null
-          phone?: string | null
-          status?: boolean | null
+          CreatedAt?: string
+          EventID?: string | null
+          EventParticipationID?: number
+          EventStatus?: boolean | null
+          UserID?: string | null
         }
         Update: {
-          created_at?: string
-          email?: string | null
-          id?: string
-          name?: string | null
-          phone?: string | null
-          status?: boolean | null
-        }
-        Relationships: []
-      }
-      Discounts: {
-        Row: {
-          amount: number | null
-          created_at: string
-          delete_at: string | null
-          discountName: string | null
-          end_time: string | null
-          id: number
-          outletId: string | null
-          start_time: string | null
-          status: boolean | null
-          statusType: boolean | null
-          tenantId: string | null
-          update_at: string | null
-        }
-        Insert: {
-          amount?: number | null
-          created_at?: string
-          delete_at?: string | null
-          discountName?: string | null
-          end_time?: string | null
-          id?: number
-          outletId?: string | null
-          start_time?: string | null
-          status?: boolean | null
-          statusType?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Update: {
-          amount?: number | null
-          created_at?: string
-          delete_at?: string | null
-          discountName?: string | null
-          end_time?: string | null
-          id?: number
-          outletId?: string | null
-          start_time?: string | null
-          status?: boolean | null
-          statusType?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Relationships: []
-      }
-      Employee: {
-        Row: {
-          created_at: string
-          email: string | null
-          id: number
-          name: string | null
-          outletId: number | null
-          phone: string | null
-          role: Json | null
-          userId: string | null
-        }
-        Insert: {
-          created_at?: string
-          email?: string | null
-          id?: number
-          name?: string | null
-          outletId?: number | null
-          phone?: string | null
-          role?: Json | null
-          userId?: string | null
-        }
-        Update: {
-          created_at?: string
-          email?: string | null
-          id?: number
-          name?: string | null
-          outletId?: number | null
-          phone?: string | null
-          role?: Json | null
-          userId?: string | null
+          CreatedAt?: string
+          EventID?: string | null
+          EventParticipationID?: number
+          EventStatus?: boolean | null
+          UserID?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "Employee_outletId_fkey"
-            columns: ["outletId"]
-            referencedRelation: "Outlet"
-            referencedColumns: ["id"]
+            foreignKeyName: "EventParticipations_EventID_fkey"
+            columns: ["EventID"]
+            isOneToOne: false
+            referencedRelation: "Events"
+            referencedColumns: ["EventID"]
           },
           {
-            foreignKeyName: "Employee_userId_fkey"
-            columns: ["userId"]
+            foreignKeyName: "EventParticipations_UserID_fkey"
+            columns: ["UserID"]
+            isOneToOne: false
             referencedRelation: "Users"
-            referencedColumns: ["id"]
+            referencedColumns: ["UserID"]
           }
         ]
       }
-      EventCategory: {
+      Events: {
         Row: {
-          created_at: string
-          id: number
-          nameCategory: string | null
-          status: boolean | null
-          tenantId: string | null
+          BusinessID: string | null
+          CreatedAt: string
+          EventCategory: Json | null
+          EventDate: string | null
+          EventDesc: Json | null
+          EventID: string
+          EventImage: Json[] | null
+          EventMaxUser: number | null
+          EventName: string | null
+          EventStatus: boolean | null
+          EventTime: Json | null
+          EventType: Json | null
+          UpdatedAt: string | null
         }
         Insert: {
-          created_at?: string
-          id?: number
-          nameCategory?: string | null
-          status?: boolean | null
-          tenantId?: string | null
+          BusinessID?: string | null
+          CreatedAt?: string
+          EventCategory?: Json | null
+          EventDate?: string | null
+          EventDesc?: Json | null
+          EventID?: string
+          EventImage?: Json[] | null
+          EventMaxUser?: number | null
+          EventName?: string | null
+          EventStatus?: boolean | null
+          EventTime?: Json | null
+          EventType?: Json | null
+          UpdatedAt?: string | null
         }
         Update: {
-          created_at?: string
-          id?: number
-          nameCategory?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-        }
-        Relationships: []
-      }
-      EventType: {
-        Row: {
-          created_at: string
-          delete_at: string | null
-          id: number
-          nameType: string | null
-          status: boolean | null
-          tenantId: string | null
-          update_at: string | null
-        }
-        Insert: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          nameType?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Update: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          nameType?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Relationships: []
-      }
-      InventoryProducts: {
-        Row: {
-          created_at: string
-          delete_at: string | null
-          id: number
-          inStock: number | null
-          outStock: number | null
-          productId: number | null
-          status: boolean | null
-          tenantId: string | null
-          update_at: string | null
-        }
-        Insert: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          inStock?: number | null
-          outStock?: number | null
-          productId?: number | null
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Update: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          inStock?: number | null
-          outStock?: number | null
-          productId?: number | null
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
+          BusinessID?: string | null
+          CreatedAt?: string
+          EventCategory?: Json | null
+          EventDate?: string | null
+          EventDesc?: Json | null
+          EventID?: string
+          EventImage?: Json[] | null
+          EventMaxUser?: number | null
+          EventName?: string | null
+          EventStatus?: boolean | null
+          EventTime?: Json | null
+          EventType?: Json | null
+          UpdatedAt?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "InventoryProducts_productId_fkey"
-            columns: ["productId"]
-            referencedRelation: "Products"
-            referencedColumns: ["id"]
+            foreignKeyName: "Events_BusinessID_fkey"
+            columns: ["BusinessID"]
+            isOneToOne: false
+            referencedRelation: "Businesses"
+            referencedColumns: ["BusinessID"]
           }
         ]
       }
-      Membership: {
+      EventStages: {
         Row: {
-          created_at: string
-          customersId: string | null
-          expired_at: string | null
-          id: string
-          started_at: string | null
-          status: boolean | null
-          tenantId: string | null
+          CreatedAt: string
+          EventID: string | null
+          EventStageDesc: Json | null
+          EventStageID: string
+          EventStageName: string | null
+          UpdatedAt: string | null
         }
         Insert: {
-          created_at?: string
-          customersId?: string | null
-          expired_at?: string | null
-          id?: string
-          started_at?: string | null
-          status?: boolean | null
-          tenantId?: string | null
+          CreatedAt?: string
+          EventID?: string | null
+          EventStageDesc?: Json | null
+          EventStageID?: string
+          EventStageName?: string | null
+          UpdatedAt?: string | null
         }
         Update: {
-          created_at?: string
-          customersId?: string | null
-          expired_at?: string | null
-          id?: string
-          started_at?: string | null
-          status?: boolean | null
-          tenantId?: string | null
+          CreatedAt?: string
+          EventID?: string | null
+          EventStageDesc?: Json | null
+          EventStageID?: string
+          EventStageName?: string | null
+          UpdatedAt?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "Membership_customersId_fkey"
-            columns: ["customersId"]
-            referencedRelation: "Customers"
-            referencedColumns: ["id"]
+            foreignKeyName: "EventStages_EventID_fkey"
+            columns: ["EventID"]
+            isOneToOne: false
+            referencedRelation: "Events"
+            referencedColumns: ["EventID"]
+          }
+        ]
+      }
+      EventTrivia: {
+        Row: {
+          CreatedAt: string
+          EventID: string | null
+          EventStage: string | null
+          EventTriviaArticle: Json | null
+          EventTriviaCode: number | null
+          EventTriviaID: string
+          EventTriviaName: string | null
+          EventTriviaPulse: number | null
+          EventTriviaQuestion: Json[] | null
+          UpdatedAt: string | null
+        }
+        Insert: {
+          CreatedAt?: string
+          EventID?: string | null
+          EventStage?: string | null
+          EventTriviaArticle?: Json | null
+          EventTriviaCode?: number | null
+          EventTriviaID?: string
+          EventTriviaName?: string | null
+          EventTriviaPulse?: number | null
+          EventTriviaQuestion?: Json[] | null
+          UpdatedAt?: string | null
+        }
+        Update: {
+          CreatedAt?: string
+          EventID?: string | null
+          EventStage?: string | null
+          EventTriviaArticle?: Json | null
+          EventTriviaCode?: number | null
+          EventTriviaID?: string
+          EventTriviaName?: string | null
+          EventTriviaPulse?: number | null
+          EventTriviaQuestion?: Json[] | null
+          UpdatedAt?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "EventTrivia_EventID_fkey"
+            columns: ["EventID"]
+            isOneToOne: false
+            referencedRelation: "Events"
+            referencedColumns: ["EventID"]
           },
           {
-            foreignKeyName: "Membership_tenantId_fkey"
-            columns: ["tenantId"]
-            referencedRelation: "Business"
-            referencedColumns: ["id"]
+            foreignKeyName: "EventTrivia_EventStage_fkey"
+            columns: ["EventStage"]
+            isOneToOne: false
+            referencedRelation: "EventStages"
+            referencedColumns: ["EventStageID"]
           }
         ]
       }
-      MembershipDetail: {
+      EventTypes: {
         Row: {
-          created_at: string
-          id: number
-          level: string | null
-          memberId: string | null
-          name: string | null
-          prices: string | null
-          pulse: string | null
-          quota: string | null
-          status: boolean | null
+          CreatedAt: string
+          EventTypeID: string
+          EventTypeName: string | null
+          EventTypeStatus: boolean | null
+          UpdatedAt: string | null
         }
         Insert: {
-          created_at?: string
-          id?: number
-          level?: string | null
-          memberId?: string | null
-          name?: string | null
-          prices?: string | null
-          pulse?: string | null
-          quota?: string | null
-          status?: boolean | null
+          CreatedAt?: string
+          EventTypeID?: string
+          EventTypeName?: string | null
+          EventTypeStatus?: boolean | null
+          UpdatedAt?: string | null
         }
         Update: {
-          created_at?: string
-          id?: number
-          level?: string | null
-          memberId?: string | null
-          name?: string | null
-          prices?: string | null
-          pulse?: string | null
-          quota?: string | null
-          status?: boolean | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "MembershipDetail_memberId_fkey"
-            columns: ["memberId"]
-            referencedRelation: "Membership"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      Outlet: {
-        Row: {
-          address: string | null
-          city: string | null
-          created_at: string
-          id: number
-          line: Json | null
-          name: string | null
-          postal: string | null
-          province: string | null
-          status: boolean | null
-          tenantId: string | null
-        }
-        Insert: {
-          address?: string | null
-          city?: string | null
-          created_at?: string
-          id?: number
-          line?: Json | null
-          name?: string | null
-          postal?: string | null
-          province?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-        }
-        Update: {
-          address?: string | null
-          city?: string | null
-          created_at?: string
-          id?: number
-          line?: Json | null
-          name?: string | null
-          postal?: string | null
-          province?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "Outlet_tenantId_fkey"
-            columns: ["tenantId"]
-            referencedRelation: "Business"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      ProductCategories: {
-        Row: {
-          categoryName: string | null
-          created_at: string
-          delete_at: string | null
-          id: number
-          status: boolean | null
-          tenantId: string | null
-          update_at: string | null
-        }
-        Insert: {
-          categoryName?: string | null
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Update: {
-          categoryName?: string | null
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
+          CreatedAt?: string
+          EventTypeID?: string
+          EventTypeName?: string | null
+          EventTypeStatus?: boolean | null
+          UpdatedAt?: string | null
         }
         Relationships: []
       }
-      Products: {
+      Sponsorships: {
         Row: {
-          brandId: number | null
-          categoryId: number | null
-          created_at: string
-          delete_at: string | null
-          filePhoto: string | null
-          id: number
-          prices: number | null
-          productName: string | null
-          sotrage: string | null
-          status: boolean | null
-          tenantId: string | null
-          update_at: string | null
+          BusinessID: string | null
+          CreatedAt: string
+          SponsorEmail: string | null
+          SponsorID: string
+          SponsorImage: string | null
+          SponsorName: string | null
+          SponsorPhone: string | null
+          UpdatedAt: string | null
         }
         Insert: {
-          brandId?: number | null
-          categoryId?: number | null
-          created_at?: string
-          delete_at?: string | null
-          filePhoto?: string | null
-          id?: number
-          prices?: number | null
-          productName?: string | null
-          sotrage?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
+          BusinessID?: string | null
+          CreatedAt?: string
+          SponsorEmail?: string | null
+          SponsorID?: string
+          SponsorImage?: string | null
+          SponsorName?: string | null
+          SponsorPhone?: string | null
+          UpdatedAt?: string | null
         }
         Update: {
-          brandId?: number | null
-          categoryId?: number | null
-          created_at?: string
-          delete_at?: string | null
-          filePhoto?: string | null
-          id?: number
-          prices?: number | null
-          productName?: string | null
-          sotrage?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
+          BusinessID?: string | null
+          CreatedAt?: string
+          SponsorEmail?: string | null
+          SponsorID?: string
+          SponsorImage?: string | null
+          SponsorName?: string | null
+          SponsorPhone?: string | null
+          UpdatedAt?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "Products_brandId_fkey"
-            columns: ["brandId"]
-            referencedRelation: "BrandProducts"
-            referencedColumns: ["id"]
+            foreignKeyName: "Sponsorships_BusinessID_fkey"
+            columns: ["BusinessID"]
+            isOneToOne: false
+            referencedRelation: "Businesses"
+            referencedColumns: ["BusinessID"]
+          }
+        ]
+      }
+      StageCheckpoints: {
+        Row: {
+          CreatedAt: string
+          EventID: string | null
+          EventStageDesc: Json | null
+          EventStageID: string | null
+          EventStageName: string | null
+          EventStageStatus: number | null
+          StageCheckpointID: string
+          UserID: string | null
+        }
+        Insert: {
+          CreatedAt?: string
+          EventID?: string | null
+          EventStageDesc?: Json | null
+          EventStageID?: string | null
+          EventStageName?: string | null
+          EventStageStatus?: number | null
+          StageCheckpointID?: string
+          UserID?: string | null
+        }
+        Update: {
+          CreatedAt?: string
+          EventID?: string | null
+          EventStageDesc?: Json | null
+          EventStageID?: string | null
+          EventStageName?: string | null
+          EventStageStatus?: number | null
+          StageCheckpointID?: string
+          UserID?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "StageCheckpoints_EventID_fkey"
+            columns: ["EventID"]
+            isOneToOne: false
+            referencedRelation: "Events"
+            referencedColumns: ["EventID"]
           },
           {
-            foreignKeyName: "Products_categoryId_fkey"
-            columns: ["categoryId"]
-            referencedRelation: "ProductCategories"
-            referencedColumns: ["id"]
+            foreignKeyName: "StageCheckpoints_EventStageID_fkey"
+            columns: ["EventStageID"]
+            isOneToOne: false
+            referencedRelation: "EventStages"
+            referencedColumns: ["EventStageID"]
           },
           {
-            foreignKeyName: "Products_sotrage_fkey"
-            columns: ["sotrage"]
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
+            foreignKeyName: "StageCheckpoints_UserID_fkey"
+            columns: ["UserID"]
+            isOneToOne: false
+            referencedRelation: "Users"
+            referencedColumns: ["UserID"]
           }
         ]
       }
-      ProductSuppliers: {
+      TriviaAnswers: {
         Row: {
-          created_at: string
-          delete_at: string | null
-          id: number
-          productId: number | null
-          supplierId: number | null
-          tenantId: string | null
-          update_at: string | null
+          CreatedAt: string
+          EventID: string | null
+          EventStageID: string | null
+          EventTriviaID: string | null
+          TriviaAnswer: Json | null
+          TriviaAnswerID: string
+          TriviaExp: number | null
+          TriviaPulse: number | null
+          UserID: string | null
         }
         Insert: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          productId?: number | null
-          supplierId?: number | null
-          tenantId?: string | null
-          update_at?: string | null
+          CreatedAt?: string
+          EventID?: string | null
+          EventStageID?: string | null
+          EventTriviaID?: string | null
+          TriviaAnswer?: Json | null
+          TriviaAnswerID?: string
+          TriviaExp?: number | null
+          TriviaPulse?: number | null
+          UserID?: string | null
         }
         Update: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          productId?: number | null
-          supplierId?: number | null
-          tenantId?: string | null
-          update_at?: string | null
+          CreatedAt?: string
+          EventID?: string | null
+          EventStageID?: string | null
+          EventTriviaID?: string | null
+          TriviaAnswer?: Json | null
+          TriviaAnswerID?: string
+          TriviaExp?: number | null
+          TriviaPulse?: number | null
+          UserID?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "ProductSuppliers_productId_fkey"
-            columns: ["productId"]
-            referencedRelation: "Products"
-            referencedColumns: ["id"]
+            foreignKeyName: "TriviaAnswers_EventID_fkey"
+            columns: ["EventID"]
+            isOneToOne: false
+            referencedRelation: "Events"
+            referencedColumns: ["EventID"]
           },
           {
-            foreignKeyName: "ProductSuppliers_supplierId_fkey"
-            columns: ["supplierId"]
-            referencedRelation: "Suppliers"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      ProductUnits: {
-        Row: {
-          created_at: string
-          delete_at: string | null
-          id: number
-          unitName: string | null
-          unitSymbol: string | null
-          update_at: string | null
-        }
-        Insert: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          unitName?: string | null
-          unitSymbol?: string | null
-          update_at?: string | null
-        }
-        Update: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          unitName?: string | null
-          unitSymbol?: string | null
-          update_at?: string | null
-        }
-        Relationships: []
-      }
-      Promos: {
-        Row: {
-          amount: number | null
-          created_at: string
-          delete_at: string | null
-          end_time: string | null
-          id: number
-          outletId: string | null
-          promoName: string | null
-          promoType: boolean | null
-          start_time: string | null
-          status: boolean | null
-          tenantId: string | null
-          update_at: string | null
-        }
-        Insert: {
-          amount?: number | null
-          created_at?: string
-          delete_at?: string | null
-          end_time?: string | null
-          id?: number
-          outletId?: string | null
-          promoName?: string | null
-          promoType?: boolean | null
-          start_time?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Update: {
-          amount?: number | null
-          created_at?: string
-          delete_at?: string | null
-          end_time?: string | null
-          id?: number
-          outletId?: string | null
-          promoName?: string | null
-          promoType?: boolean | null
-          start_time?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Relationships: []
-      }
-      Room: {
-        Row: {
-          capacity: string | null
-          created_at: string
-          id: number
-          name: string | null
-          outletId: number | null
-          size: string | null
-          status: boolean | null
-          tenantId: string | null
-          vip: boolean | null
-        }
-        Insert: {
-          capacity?: string | null
-          created_at?: string
-          id?: number
-          name?: string | null
-          outletId?: number | null
-          size?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-          vip?: boolean | null
-        }
-        Update: {
-          capacity?: string | null
-          created_at?: string
-          id?: number
-          name?: string | null
-          outletId?: number | null
-          size?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-          vip?: boolean | null
-        }
-        Relationships: [
+            foreignKeyName: "TriviaAnswers_EventStageID_fkey"
+            columns: ["EventStageID"]
+            isOneToOne: false
+            referencedRelation: "EventStages"
+            referencedColumns: ["EventStageID"]
+          },
           {
-            foreignKeyName: "Room_outletId_fkey"
-            columns: ["outletId"]
-            referencedRelation: "Outlet"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      SalesTypes: {
-        Row: {
-          created_at: string
-          delete_at: string | null
-          id: number
-          outletId: string | null
-          salesTypeName: string | null
-          status: boolean | null
-          tenantId: string | null
-          update_at: string | null
-        }
-        Insert: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          outletId?: string | null
-          salesTypeName?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Update: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          outletId?: string | null
-          salesTypeName?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Relationships: []
-      }
-      Schedule: {
-        Row: {
-          created_at: string
-          date: string | null
-          id: number
-          outletId: number | null
-        }
-        Insert: {
-          created_at?: string
-          date?: string | null
-          id?: number
-          outletId?: number | null
-        }
-        Update: {
-          created_at?: string
-          date?: string | null
-          id?: number
-          outletId?: number | null
-        }
-        Relationships: [
+            foreignKeyName: "TriviaAnswers_EventTriviaID_fkey"
+            columns: ["EventTriviaID"]
+            isOneToOne: false
+            referencedRelation: "EventTrivia"
+            referencedColumns: ["EventTriviaID"]
+          },
           {
-            foreignKeyName: "Schedule_outletId_fkey"
-            columns: ["outletId"]
-            referencedRelation: "Outlet"
-            referencedColumns: ["id"]
+            foreignKeyName: "TriviaAnswers_UserID_fkey"
+            columns: ["UserID"]
+            isOneToOne: false
+            referencedRelation: "Users"
+            referencedColumns: ["UserID"]
           }
         ]
-      }
-      ScheduleDetail: {
-        Row: {
-          created_at: string
-          currentBookings: number | null
-          endTime: string | null
-          eventCategory: Json | null
-          eventName: string | null
-          eventType: Json | null
-          gates: boolean | null
-          id: string
-          maxBookings: number | null
-          pic: Json | null
-          prices: Json | null
-          room: Json | null
-          scheduleId: number | null
-          startTime: string | null
-        }
-        Insert: {
-          created_at?: string
-          currentBookings?: number | null
-          endTime?: string | null
-          eventCategory?: Json | null
-          eventName?: string | null
-          eventType?: Json | null
-          gates?: boolean | null
-          id?: string
-          maxBookings?: number | null
-          pic?: Json | null
-          prices?: Json | null
-          room?: Json | null
-          scheduleId?: number | null
-          startTime?: string | null
-        }
-        Update: {
-          created_at?: string
-          currentBookings?: number | null
-          endTime?: string | null
-          eventCategory?: Json | null
-          eventName?: string | null
-          eventType?: Json | null
-          gates?: boolean | null
-          id?: string
-          maxBookings?: number | null
-          pic?: Json | null
-          prices?: Json | null
-          room?: Json | null
-          scheduleId?: number | null
-          startTime?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "ScheduleDetail_scheduleId_fkey"
-            columns: ["scheduleId"]
-            referencedRelation: "Schedule"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      Services: {
-        Row: {
-          amount: number | null
-          created_at: string
-          delete_at: string | null
-          id: number
-          outletId: string | null
-          servicesName: string | null
-          status: boolean | null
-          tenantId: string | null
-          update_at: string | null
-        }
-        Insert: {
-          amount?: number | null
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          outletId?: string | null
-          servicesName?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Update: {
-          amount?: number | null
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          outletId?: string | null
-          servicesName?: string | null
-          status?: boolean | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Relationships: []
-      }
-      Suppliers: {
-        Row: {
-          created_at: string
-          delete_at: string | null
-          id: number
-          status: boolean | null
-          supplierAddress: string | null
-          supplierEmail: string | null
-          supplierName: string | null
-          supplierPhone: string | null
-          tenantId: string | null
-          update_at: string | null
-        }
-        Insert: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          status?: boolean | null
-          supplierAddress?: string | null
-          supplierEmail?: string | null
-          supplierName?: string | null
-          supplierPhone?: string | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Update: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          status?: boolean | null
-          supplierAddress?: string | null
-          supplierEmail?: string | null
-          supplierName?: string | null
-          supplierPhone?: string | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Relationships: []
-      }
-      Taxes: {
-        Row: {
-          created_at: string
-          delete_at: string | null
-          id: number
-          outletId: string | null
-          status: boolean | null
-          taxAmount: number | null
-          taxName: string | null
-          tenantId: string | null
-          update_at: string | null
-        }
-        Insert: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          outletId?: string | null
-          status?: boolean | null
-          taxAmount?: number | null
-          taxName?: string | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Update: {
-          created_at?: string
-          delete_at?: string | null
-          id?: number
-          outletId?: string | null
-          status?: boolean | null
-          taxAmount?: number | null
-          taxName?: string | null
-          tenantId?: string | null
-          update_at?: string | null
-        }
-        Relationships: []
       }
       Users: {
         Row: {
-          collectionId: string | null
-          created_at: string
-          email: string | null
-          id: string
-          name: string | null
-          password: string | null
-          phone: string | null
-          role: string | null
-          status: boolean | null
-          tenantId: string | null
+          BusinessID: string | null
+          CreatedAt: string
+          UpdatedAt: string | null
+          UserEmail: string | null
+          UserHunterName: string | null
+          UserID: string
+          UserPassword: string | null
+          UserPhone: string | null
+          UserRole: string | null
+          UserStatus: boolean | null
         }
         Insert: {
-          collectionId?: string | null
-          created_at?: string
-          email?: string | null
-          id?: string
-          name?: string | null
-          password?: string | null
-          phone?: string | null
-          role?: string | null
-          status?: boolean | null
-          tenantId?: string | null
+          BusinessID?: string | null
+          CreatedAt?: string
+          UpdatedAt?: string | null
+          UserEmail?: string | null
+          UserHunterName?: string | null
+          UserID?: string
+          UserPassword?: string | null
+          UserPhone?: string | null
+          UserRole?: string | null
+          UserStatus?: boolean | null
         }
         Update: {
-          collectionId?: string | null
-          created_at?: string
-          email?: string | null
-          id?: string
-          name?: string | null
-          password?: string | null
-          phone?: string | null
-          role?: string | null
-          status?: boolean | null
-          tenantId?: string | null
+          BusinessID?: string | null
+          CreatedAt?: string
+          UpdatedAt?: string | null
+          UserEmail?: string | null
+          UserHunterName?: string | null
+          UserID?: string
+          UserPassword?: string | null
+          UserPhone?: string | null
+          UserRole?: string | null
+          UserStatus?: boolean | null
         }
         Relationships: [
           {
-            foreignKeyName: "Users_tenantId_fkey"
-            columns: ["tenantId"]
-            referencedRelation: "Business"
-            referencedColumns: ["id"]
+            foreignKeyName: "Users_BusinessID_fkey"
+            columns: ["BusinessID"]
+            isOneToOne: false
+            referencedRelation: "Businesses"
+            referencedColumns: ["BusinessID"]
+          }
+        ]
+      }
+      UsersProfile: {
+        Row: {
+          CreatedAt: string
+          ProfileDesc: Json | null
+          ProfileExp: number | null
+          ProfileID: string
+          ProfileImage: Json | null
+          ProfileName: string | null
+          ProfileNIK: string | null
+          ProfilePulse: number | null
+          UpdatedAt: string | null
+          UserID: string | null
+        }
+        Insert: {
+          CreatedAt?: string
+          ProfileDesc?: Json | null
+          ProfileExp?: number | null
+          ProfileID?: string
+          ProfileImage?: Json | null
+          ProfileName?: string | null
+          ProfileNIK?: string | null
+          ProfilePulse?: number | null
+          UpdatedAt?: string | null
+          UserID?: string | null
+        }
+        Update: {
+          CreatedAt?: string
+          ProfileDesc?: Json | null
+          ProfileExp?: number | null
+          ProfileID?: string
+          ProfileImage?: Json | null
+          ProfileName?: string | null
+          ProfileNIK?: string | null
+          ProfilePulse?: number | null
+          UpdatedAt?: string | null
+          UserID?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "UsersProfile_UserID_fkey"
+            columns: ["UserID"]
+            isOneToOne: false
+            referencedRelation: "Users"
+            referencedColumns: ["UserID"]
+          }
+        ]
+      }
+      VoucherClaims: {
+        Row: {
+          CreatedAt: string
+          UserID: string | null
+          VoucherClaimID: string
+          VoucherID: string | null
+        }
+        Insert: {
+          CreatedAt?: string
+          UserID?: string | null
+          VoucherClaimID?: string
+          VoucherID?: string | null
+        }
+        Update: {
+          CreatedAt?: string
+          UserID?: string | null
+          VoucherClaimID?: string
+          VoucherID?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "VoucherClaims_UserID_fkey"
+            columns: ["UserID"]
+            isOneToOne: false
+            referencedRelation: "Users"
+            referencedColumns: ["UserID"]
+          },
+          {
+            foreignKeyName: "VoucherClaims_VoucherID_fkey"
+            columns: ["VoucherID"]
+            isOneToOne: false
+            referencedRelation: "Vouchers"
+            referencedColumns: ["VoucherID"]
+          }
+        ]
+      }
+      Vouchers: {
+        Row: {
+          BusinessID: string | null
+          CreatedAt: string
+          SponsorID: string | null
+          VoucherDesc: Json | null
+          VoucherExp: number | null
+          VoucherExpire: string | null
+          VoucherID: string
+          VoucherMaxClaimed: number | null
+          VoucherName: string | null
+          VoucherPulse: number | null
+          VoucherStatus: boolean | null
+        }
+        Insert: {
+          BusinessID?: string | null
+          CreatedAt?: string
+          SponsorID?: string | null
+          VoucherDesc?: Json | null
+          VoucherExp?: number | null
+          VoucherExpire?: string | null
+          VoucherID?: string
+          VoucherMaxClaimed?: number | null
+          VoucherName?: string | null
+          VoucherPulse?: number | null
+          VoucherStatus?: boolean | null
+        }
+        Update: {
+          BusinessID?: string | null
+          CreatedAt?: string
+          SponsorID?: string | null
+          VoucherDesc?: Json | null
+          VoucherExp?: number | null
+          VoucherExpire?: string | null
+          VoucherID?: string
+          VoucherMaxClaimed?: number | null
+          VoucherName?: string | null
+          VoucherPulse?: number | null
+          VoucherStatus?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Vouchers_BusinessID_fkey"
+            columns: ["BusinessID"]
+            isOneToOne: false
+            referencedRelation: "Businesses"
+            referencedColumns: ["BusinessID"]
+          },
+          {
+            foreignKeyName: "Vouchers_SponsorID_fkey"
+            columns: ["SponsorID"]
+            isOneToOne: false
+            referencedRelation: "Sponsorships"
+            referencedColumns: ["SponsorID"]
           }
         ]
       }
@@ -956,3 +640,83 @@ export interface Database {
     }
   }
 }
+
+export type Tables<
+  PublicTableNameOrOptions extends
+    | keyof (Database["public"]["Tables"] & Database["public"]["Views"])
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : PublicTableNameOrOptions extends keyof (Database["public"]["Tables"] &
+      Database["public"]["Views"])
+  ? (Database["public"]["Tables"] &
+      Database["public"]["Views"])[PublicTableNameOrOptions] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : never
+
+export type TablesInsert<
+  PublicTableNameOrOptions extends
+    | keyof Database["public"]["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
+  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : never
+
+export type TablesUpdate<
+  PublicTableNameOrOptions extends
+    | keyof Database["public"]["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
+  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : never
+
+export type Enums<
+  PublicEnumNameOrOptions extends
+    | keyof Database["public"]["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+    : never = never
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
+  ? Database["public"]["Enums"][PublicEnumNameOrOptions]
+  : never

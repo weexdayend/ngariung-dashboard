@@ -4,8 +4,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { serialize } from 'cookie';
 
-const SECRET = process.env.KEY_PASS
-const RFRESH = process.env.REF_PASS
+const SECRET = process.env.PASS_KEY
+const RFRESH = process.env.PASS_KEY
 const DOMAIN = process.env.DOMAIN
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -21,7 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(400).json({ error: 'Email and password are required' });
       } 
       // Find the user by email
-      const query = supabase.from('Users').select().eq("email", email);
+      const query = supabase.from('Users').select().eq("UserEmail", email);
       const CheckEmail = await query;
 
       if (CheckEmail.error) {
@@ -35,11 +35,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
       const user = CheckEmail.data[0];
       
-      if (!user || user.password === null) {
+      if (!user || user.UserPassword === null) {
         return res.status(401).json({ error: 'Invalid user or password' });
       }
       // Compare passwords
-      const passwordsMatch = bcrypt.compare(password, user.password);
+      const passwordsMatch = bcrypt.compare(password, user.UserPassword);
       if (!passwordsMatch) {
         // Handle the case where passwords do not match
         return res.status(401).json({ error: 'Invalid password' });
@@ -47,10 +47,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (SECRET !== undefined && RFRESH !== undefined) {
       // Generate JWT token
-      const token = jwt.sign({ userId: user.id, userRole: user.role, tenantId: user.tenantId, collection: user.collectionId }, SECRET, {
+      const token = jwt.sign({ UserID: user.UserID, BusinessID: user.BusinessID }, SECRET, {
         expiresIn: '30d', // Set token expiration time
       });
-      const refreshToken = jwt.sign({ userId: user.id, userRole: user.role, tenantId: user.tenantId, collection: user.collectionId }, RFRESH, {
+      const refreshToken = jwt.sign({ UserID: user.UserID, BusinessID: user.BusinessID }, RFRESH, {
         expiresIn: '30d', // Set refresh token expiration time
       });
 

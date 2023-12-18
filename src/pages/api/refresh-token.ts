@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-const SECRET = process.env.KEY_PASS;
-const RFRESH = process.env.REF_PASS;
+const SECRET = process.env.PASS_KEY;
+const RFRESH = process.env.PASS_KEY;
 
 const refreshTokenHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST') {

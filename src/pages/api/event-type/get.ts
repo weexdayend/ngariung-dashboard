@@ -4,8 +4,8 @@ import authMiddleware from '@/pages/api/middleware';
 import supabase, { DbResult } from '@/db/supabase';
 
 interface AuthenticatedRequest extends NextApiRequest {
-  userId?: string;
-  tenantId?: string;
+  UserID?: string;
+  BusinessiD?: string;
 }
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
@@ -15,7 +15,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
   try {
 
-    const query = supabase.from('EventType').select().eq('tenantId', `${req.tenantId}`)
+    const query = supabase.from('EventTypes').select()
     const TypeEvents: DbResult<typeof query> = await query
   
     res.status(200).json({ data: TypeEvents.data });

@@ -25,7 +25,6 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   } = req.body
 
   try {
-
     const query = supabase
     .from('Events')
     .insert({
@@ -37,7 +36,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       EventImage,
       EventMaxUser,
       BusinessID: req.BusinessID,
-      EventTime
+      EventTime,
     })
     .select()
     

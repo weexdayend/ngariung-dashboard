@@ -15,16 +15,16 @@ type Props = {
   isLoggedIn: boolean;
   error: any
   dataEvent: any
-  dataType: any
-  dataCategory: any
+  dataTypes: any
+  dataCategories: any
 }
 
-function Index({ error, dataEvent, dataType, dataCategory }: Props) {
+function Index({ error, dataEvent, dataTypes, dataCategories }: Props) {
   const [updated, setUpdated] = useState(false)
   const [datas, setDatas] = useState(dataEvent)
 
   const fetchNewData = async () => {
-    const response = await axios.get(`${process.env.API_URL}event/get`);
+    const response = await axios.get(`/api/event/get`);
     const res = await response.data;
     setDatas(res)
   }
@@ -47,7 +47,7 @@ function Index({ error, dataEvent, dataType, dataCategory }: Props) {
         reverseOrder={false}
       />
       {
-        datas && (<TableEvents dataEvent={datas} dataType={dataType} dataCategory={dataCategory} onUpdated={() => setUpdated(true)} />)
+        datas && (<TableEvents dataEvent={datas} dataTypes={dataTypes} dataCategories={dataCategories} onUpdated={() => setUpdated(true)} />)
       }
     </Layout>
   )
@@ -58,7 +58,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const cookies = cookie.parse(context.req.headers.cookie || '');
 
     const fetchEvent = async () => {
-      const response = await axios.get(`${process.env.API_URL}event/get`, {
+      const response = await axios.get(`http://localhost:3000/api/event/get`, {
         headers: {
           Cookie: `token=${cookies['token']}`
         },
@@ -67,8 +67,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       return data
     }
 
-    const fetchType = async () => {
-      const response = await axios.get(`${process.env.API_URL}event/type/get`, {
+    const fetchTypes = async () => {
+      const response = await axios.get(`http://localhost:3000/api/event-type/get`, {
         headers: {
           Cookie: `token=${cookies['token']}`
         },
@@ -77,8 +77,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       return data
     }
 
-    const fetchCategory = async () => {
-      const response = await axios.get(`${process.env.API_URL}event/category/get`, {
+    const fetchCategories = async () => {
+      const response = await axios.get(`http://localhost:3000/api/event-category/get`, {
         headers: {
           Cookie: `token=${cookies['token']}`
         },
@@ -89,14 +89,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     return Promise.all([
       fetchEvent(),
-      fetchType(),
-      fetchCategory()
-    ]).then(([dataEvent, dataType, dataCategory]) => {
+      fetchTypes(),
+      fetchCategories()
+    ]).then(([dataEvent, dataTypes, dataCategories]) => {
       return {
         props: {
           dataEvent,
-          dataType,
-          dataCategory
+          dataTypes,
+          dataCategories
         }
       }
     })

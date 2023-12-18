@@ -235,7 +235,7 @@ export default function FormTrivia({ onClose, onUpdated, EventID, item }: Props)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const endpoint = newData ? `${process.env.API_URL}event/register-trivia` : `${process.env.API_URL}event/update-trivia`
+    const endpoint = newData ? `/api/event/register-trivia` : `/api/event/update-trivia`
 
     let jsonb
 

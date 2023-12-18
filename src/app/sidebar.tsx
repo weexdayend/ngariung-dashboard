@@ -12,7 +12,6 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 
 function Sidebar({}) {
-  const [role, setRole] = useState<string>('')
   const expandedMenu = useSelector(selectedExpanded);
 
   const dispatch = useDispatch();
@@ -29,16 +28,6 @@ function Sidebar({}) {
   const paths = router.asPath.split('/').filter((path) => path !== '');
 
   const formattedPaths = paths.map((path) => capitalizeFirstLetterOfEachWord(path.replace(/-/g, ' ')));
-
-  useEffect(() => {
-    const fetchRole = async () => {
-      const response = await axios.get(`${process.env.API_URL}getRole`);
-      const data = response.data;
-
-      setRole(data.role)
-    }
-    fetchRole()
-  }, [])
 
   return (
     <>

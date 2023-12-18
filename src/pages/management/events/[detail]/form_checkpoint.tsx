@@ -91,7 +91,7 @@ export default function FormCheckpoint({ onClose, onUpdated, EventID, item }: Pr
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const endpoint = newData ? `${process.env.API_URL}event/register-stage` : `${process.env.API_URL}event/update-stage`;
+    const endpoint = newData ? `/api/event/register-stage` : `/api/event/update-stage`;
     
     let jsonb
 

@@ -25,19 +25,19 @@ function Index({ error }: Props) {
   const { detail } = router.query
 
   const fetchDataEvent = async () => {
-    const response = await axios.get(`${process.env.API_URL}event/${detail}/detail`);
+    const response = await axios.get(`/api/event/${detail}/detail`);
     const res = await response.data;
     setEvents(res.data)
   }
 
   const fetchDataStages = async () => {
-    const response = await axios.get(`${process.env.API_URL}event/${detail}/stage`)
+    const response = await axios.get(`/api/event/${detail}/stage`)
     const res = await response.data
     setStages(res.data)
   }
   
   const fetchDataTrivia = async () => {
-    const response = await axios.get(`${process.env.API_URL}event/${detail}/trivia`)
+    const response = await axios.get(`/api/event/${detail}/trivia`)
     const res = await response.data
     setTrivia(res.data)
   }

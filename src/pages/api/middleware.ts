@@ -2,13 +2,11 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import cookie from 'cookie';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-const SECRET = process.env.KEY_PASS
+const SECRET = process.env.PASS_KEY
 
 interface AuthenticatedRequest extends NextApiRequest {
-  userId?: string;
-  tenantId?: string;
-  userRole?: string;
-  collectionId?: string;
+  UserID?: string;
+  BusinessID?: string;
 }
 
 const authMiddleware = (handler: any) => async (req: AuthenticatedRequest, res: NextApiResponse) => {
@@ -22,10 +20,8 @@ const authMiddleware = (handler: any) => async (req: AuthenticatedRequest, res: 
   try {
     if (SECRET !== undefined) {
       const decoded = jwt.verify(token, SECRET) as JwtPayload;
-      req.userId = decoded.userId;
-      req.tenantId = decoded.tenantId;
-      req.userRole = decoded.userRole;
-      req.collectionId = decoded.collectionId;
+      req.UserID = decoded.UserID;
+      req.BusinessID = decoded.BusinessID;
       return handler(req, res);
     }
   } catch (error) {

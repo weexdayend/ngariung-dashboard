@@ -13,10 +13,6 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     return res.status(405).end(); // Method Not Allowed
   }
 
-  const {
-    line
-  } = req.query
-
   try {
     const BusinessID = req.BusinessID; 
     if (!BusinessID || BusinessID === null) {
@@ -24,40 +20,69 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
     }
 
     const {
-      id,
-      name,
-      status,
+      EventID,
+      EventName,
+      EventDate,
+      EventType,
+      EventCategory,
+      EventDesc,
+      EventImage,
+      EventMaxUser,
+      EventTime,
+      EventStatus,
     } = req.body
-    
-    if (line == 'type') {
-      const query = supabase
-        .from('EventTypes')
-        .update({
-          EventTypeName: name,
-          EventTypeStatus: status
-        })
-        .eq('EventTypeID', id)
-        .select()
-        
-      const TypeEvents: DbResult<typeof query> = await query
-    
-      res.status(201).json({ message: 'Event type registered successfully', status: TypeEvents.error });
-    }
 
-    if (line == 'category') {
-      const query = supabase
-        .from('EventCategories')
-        .update({
-          EventCategoryName: name,
-          EventCategoryStatus: status,
-        })
-        .eq('EventCategoryID', id)
-        .select()
-        
-      const TypeEvents: DbResult<typeof query> = await query
+
     
-      res.status(201).json({ message: 'Event type registered successfully', status: TypeEvents.error });
-    }
+    // if (line == 'type') {
+    //   const query = supabase
+    //     .from('EventTypes')
+    //     .update({
+    //       EventTypeName: name,
+    //       EventTypeStatus: status
+    //     })
+    //     .eq('EventTypeID', id)
+    //     .select()
+        
+    //   const TypeEvents: DbResult<typeof query> = await query
+    
+    //   res.status(201).json({ message: 'Event type registered successfully', status: TypeEvents.error });
+    // }
+
+    // if (line == 'category') {
+    //   const query = supabase
+    //     .from('EventCategories')
+    //     .update({
+    //       EventCategoryName: name,
+    //       EventCategoryStatus: status,
+    //     })
+    //     .eq('EventCategoryID', id)
+    //     .select()
+        
+    //   const TypeEvents: DbResult<typeof query> = await query
+    
+    //   res.status(201).json({ message: 'Event type registered successfully', status: TypeEvents.error });
+    // }
+
+    const query = supabase
+    .from('Events')
+    .update({
+      EventName,
+      EventDate,
+      EventType,
+      EventCategory,
+      EventDesc,
+      EventImage,
+      EventMaxUser,
+      BusinessID: req.BusinessID,
+      EventTime,
+      EventStatus,
+    })
+    .eq("EventID", EventID)
+    
+  const TypeEvents: DbResult<typeof query> = await query
+
+  res.status(201).json({ message: 'Event information update successfully', status: TypeEvents });
 
   } catch (error) {
     return res.status(401).json({ error: 'Authentication failed' });

@@ -1,8 +1,8 @@
 import { PostgrestError, createClient } from '@supabase/supabase-js'
 import { Database } from '@/utils/supabase'
 
-const API_URL = process.env.SUPABASE_URL || ''
-const ANON_KEY = process.env.SUPABASE_ANON_KEY || ''
+const API_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
 const supabase = createClient<Database>(
   API_URL,

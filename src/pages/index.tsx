@@ -14,7 +14,7 @@ function withAuth<P extends Props>(Component: React.ComponentType<P>) {
     useEffect(() => {
       const checkLoginStatus = async () => {
         try {
-          const response = await axios.get(`${process.env.API_URL}auth`);
+          const response = await axios.get(`http://localhost:3000/api/auth`);
           const data = response.data;
           setIsLoggedIn(data.isLoggedIn); // Set the isLoggedIn state based on API response
         } catch (error) {

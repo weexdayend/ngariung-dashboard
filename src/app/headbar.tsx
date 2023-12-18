@@ -21,7 +21,7 @@ function HeadBar() {
 
   function handleLogout() {
     // Call the logout API route
-    axios.post(`${process.env.API_URL}logout`)
+    axios.post(`api/logout`)
       .then(() => {
         // Redirect the user to the login page or any other appropriate page
         router.replace('/auth');
@@ -36,7 +36,7 @@ function HeadBar() {
       <div className="backdrop-blur-md bg-white/10 px-1 py-4 rounded-b-3xl">
         <div className="flex items-center justify-between mx-auto px-4">
           <div className='w-full col-span-2 ml-4'>
-            <div className="text-blue-950 font-bold text-4xl">Sarana Group</div>
+            <div className="text-blue-950 font-bold text-4xl">Sakapulse</div>
           </div>
           <div className="xs:hidden sm:hidden md:hidden lg:flex xl:flex flex-row items-center px-3 py-2 rounded-full space-x-3">
             <BellIcon height={24} width={24} className="text-blue-9500 cursor-pointer" />

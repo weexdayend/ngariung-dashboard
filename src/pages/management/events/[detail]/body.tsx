@@ -61,7 +61,7 @@ export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTri
   }
 
   const assigned = async (EventTriviaID: any, EventStageID: any) => {
-    const endpoint = `${process.env.API_URL}event/assign-trivia`;
+    const endpoint = `/api/event/assign-trivia`;
     const body: any = {
       EventTriviaID: EventTriviaID,
       EventStageID: EventStageID,
@@ -160,10 +160,11 @@ export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTri
       />
 
       <div className="w-full h-fit px-4 py-4 flex flex-col gap-4 rounded-xl">
-        <p className="text-xs font-light text-zinc-400">{dataEvent[0].EventDate}</p>
+        <p className="text-xs font-light text-zinc-600">{dataEvent[0].EventDate}, {dataEvent[0].EventTime.EventStart} - {dataEvent[0].EventTime.EventEnd}</p>
         <h1 className="text-lg font-bold">{dataEvent[0].EventName}</h1>
         <p className="text-sm text-zinc-600">{dataEvent[0].EventDesc.desc}</p>
         <p className="text-xs text-zinc-600">{dataEvent[0].EventDesc.venue} {dataEvent[0].EventDesc.address}</p>
+        <p className="text-sm text-zinc-600">Max Participant : {dataEvent[0].EventMaxUser}</p>
         <div className="w-full flex flex-wrap flex-row gap-2">
           <div className="px-4 py-1 bg-yellow-400 rounded-full">
             <p className="text-sm text-indigo-600">{dataEvent[0].EventType.name}</p>

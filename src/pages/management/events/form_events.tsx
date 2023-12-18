@@ -9,10 +9,12 @@ import SwitchButton from '@/components/switch_button';
 import {
   TrashIcon
 } from '@heroicons/react/outline'
+
 import DateField from '@/components/date_fields';
 import ListDropdown from '@/components/list_dropdown';
 import TextAreaField from '@/components/textarea_fields';
 import InputTime from '@/components/input_time';
+import NumberField from '@/components/number_fields';
 
 type Props = {
   onClose: () => void;
@@ -33,6 +35,8 @@ function FormEvents({ onClose, onUpdated, item, dataType, dataCategory }: Props)
   const [EventStatus, setEventStatus] = useState<boolean>(false)
   const [EventStart, setEventStart] = useState<string>('')
   const [EventEnd, setEventEnd] = useState<string>('')
+  const [EventMaxUsers, setEventMaxUsers] = useState<number>(0)
+  const [EventPassword, setEventPassword] = useState<string>('-')
 
   const [typeData, setTypeData] = useState([])
   const [categoryData, setCategoryData] = useState([])
@@ -167,13 +171,17 @@ function FormEvents({ onClose, onUpdated, item, dataType, dataCategory }: Props)
 
   useEffect(() => {
     if (item) {
-      setEventName(item.EventName || '');
-      setEventDate(item.EventDate || '');
-      setEventType({ id: item.EventType.id, name: item.EventType.name } || { id: '', name: ''});
-      setEventCategory({ id: item.EventCategory.id, name: item.EventCategory.name } || { id: '', name: ''});
+      setEventName(item.EventName || '')
+      setEventDate(item.EventDate || '')
+      setEventType({ id: item.EventType.id, name: item.EventType.name } || { id: '', name: ''})
+      setEventCategory({ id: item.EventCategory.id, name: item.EventCategory.name } || { id: '', name: ''})
       setEventVenue(item.EventDesc.venue || '')
       setEventAddress(item.EventDesc.address || '')
       setEventDesc(item.EventDesc.desc || '')
+      setEventStart(item.EventTime.EventStart || '')
+      setEventEnd(item.EventTime.EventEnd || '')
+      setEventMaxUsers(item.EventMaxUser || 0)
+      setEventPassword(item.EventType.password || '-')
       const imageMetadataArray = item.EventImage.map((imageData: any) => {
         const base64 = imageData.base64; // Replace with the correct key for base64 data
         const name = imageData.name; // Replace with the correct key for the image name
@@ -203,22 +211,23 @@ function FormEvents({ onClose, onUpdated, item, dataType, dataCategory }: Props)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const endpoint = newData ? `${process.env.API_URL}event/register` : `${process.env.API_URL}event/update`;
+    const endpoint = newData ? `/api/event/register` : `/api/event/update`;
+    const password = EventType.name === 'Private' ? EventPassword : '-'
 
     const body: any = {
       EventName: EventName,
       EventDate: EventDate,
-      EventType: EventType,
+      EventType: { ...EventType, password: password },
       EventCategory: EventCategory,
       EventDesc: { venue: EventVenue, address: EventAddress, desc: EventDesc },
       EventImage: imageData,
-      EventMaxUser: 0,
-      EventTime: { EventStart: EventStart, EventEnd: EventEnd }
+      EventMaxUser: EventMaxUsers,
+      EventTime: { EventStart: EventStart, EventEnd: EventEnd },
     }
 
     if (!newData) {
-      body['id'] = item.EventID;
-      body['status'] = EventStatus
+      body['EventID'] = item.EventID;
+      body['EventStatus'] = EventStatus
     }
 
     try {
@@ -292,29 +301,33 @@ function FormEvents({ onClose, onUpdated, item, dataType, dataCategory }: Props)
                 </div>
               </div>
 
+              {
+                EventType.name === 'Private' && (
+                  <div className="sm:col-span-full">
+                    <div className="mt-2">
+                      <InputField label="Event password" value={EventPassword} onChange={setEventPassword} />
+                    </div>
+                  </div>
+                )
+              }
+
               <div className="sm:col-span-full">
                 <div className="mt-2">
                   <ListDropdown label={'Event category'} holder={'Select your event category'} value={EventCategory} onChange={setEventCategory} options={categoryData} />
                 </div>
               </div>
 
-              {
-                EventType.name === 'Special' && (
-                  <>
-                  <div className="sm:col-span-full">
-                    <div className="mt-2">
-                      <InputField label="Event venue" value={EventVenue} onChange={setEventVenue} />
-                    </div>
-                  </div>
+              <div className="sm:col-span-full">
+                <div className="mt-2">
+                  <InputField label="Event venue" value={EventVenue} onChange={setEventVenue} />
+                </div>
+              </div>
 
-                  <div className="sm:col-span-full">
-                    <div className="mt-2">
-                      <InputField label="Event address" value={EventAddress} onChange={setEventAddress} />
-                    </div>
-                  </div>
-                  </>
-                )
-              }
+              <div className="sm:col-span-full">
+                <div className="mt-2">
+                  <InputField label="Event address" value={EventAddress} onChange={setEventAddress} />
+                </div>
+              </div>
 
               <div className="sm:col-span-full">
                 <div className="mt-2">
@@ -323,16 +336,22 @@ function FormEvents({ onClose, onUpdated, item, dataType, dataCategory }: Props)
               </div>
 
               <div className="col-span-3">
-                  <div className="mt-2">
-                    <InputTime label="Start time" value={EventStart} onChange={setEventStart} />
-                  </div>
+                <div className="mt-2">
+                  <InputTime label="Start time" value={EventStart} onChange={setEventStart} />
                 </div>
+              </div>
 
-                <div className="col-span-3">
-                  <div className="mt-2">
-                    <InputTime label="End time" value={EventEnd} onChange={setEventEnd} />
-                  </div>
+              <div className="col-span-3">
+                <div className="mt-2">
+                  <InputTime label="End time" value={EventEnd} onChange={setEventEnd} />
                 </div>
+              </div>
+
+              <div className="col-span-full">
+                <div className="mt-2">
+                  <NumberField label="Max participant" value={EventMaxUsers} onChange={setEventMaxUsers} />
+                </div>
+              </div>
 
               <div className="sm:col-span-full">
                 <div className="mt-2">
