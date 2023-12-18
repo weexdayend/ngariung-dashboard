@@ -8,7 +8,6 @@ import { Popover, Transition } from '@headlessui/react'
 import { Toaster, toast } from 'react-hot-toast';
 
 import axios from 'axios'
-import supabase, { DbResult } from '@/db/supabase';
 
 import {
   TrashIcon,
@@ -107,36 +106,40 @@ export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTri
         }}
       />
 
-      <div className="w-full h-fit px-4 py-4 flex flex-col gap-4 rounded-xl">
-        <p className="text-xs font-light text-zinc-600">{dataEvent[0].EventDate}, {dataEvent[0].EventTime.EventStart} - {dataEvent[0].EventTime.EventEnd}</p>
-        <h1 className="text-lg font-bold">{dataEvent[0].EventName}</h1>
-        <p className="text-sm text-zinc-600">{dataEvent[0].EventDesc.desc}</p>
-        <p className="text-xs text-zinc-600">{dataEvent[0].EventDesc.venue} {dataEvent[0].EventDesc.address}</p>
-        <p className="text-sm text-zinc-600">Max Participant : {dataEvent[0].EventMaxUser}</p>
-        <div className="w-full flex flex-wrap flex-row gap-2">
-          <div className="px-4 py-1 bg-yellow-400 rounded-full">
-            <p className="text-sm text-indigo-600">{dataEvent[0].EventType.name}</p>
-          </div>
-          <div className="px-4 py-1 bg-indigo-100 rounded-full">
-            <p className="text-sm text-indigo-600">{dataEvent[0].EventCategory.name}</p>
-          </div>
-        </div>
-        <div className="flex flex-row flex-wrap gap-4">
-        {
-          dataEvent[0].EventImage.map((image: any, index: any) => (
-          <div key={index} className="flex flex-row justify-between items-center px-2 py-2 bg-blue-50 rounded-xl">
-            <div className="flex flex-row items-center">
-              <img
-                src={image.base64}
-                alt={`Uploaded Image ${index + 1}`}
-                className="w-14 h-14 rounded-xl mr-2 object-cover"
-              />
+      {
+        dataEvent && (
+          <div className="w-full h-fit px-4 py-4 flex flex-col gap-4 rounded-xl">
+            <p className="text-xs font-light text-zinc-600">{dataEvent[0].EventDate}, {dataEvent[0].EventTime.EventStart} - {dataEvent[0].EventTime.EventEnd}</p>
+            <h1 className="text-lg font-bold">{dataEvent[0].EventName}</h1>
+            <p className="text-sm text-zinc-600">{dataEvent[0].EventDesc.desc}</p>
+            <p className="text-xs text-zinc-600">{dataEvent[0].EventDesc.venue} {dataEvent[0].EventDesc.address}</p>
+            <p className="text-sm text-zinc-600">Max Participant : {dataEvent[0].EventMaxUser}</p>
+            <div className="w-full flex flex-wrap flex-row gap-2">
+              <div className="px-4 py-1 bg-yellow-400 rounded-full">
+                <p className="text-sm text-indigo-600">{dataEvent[0].EventType.name}</p>
+              </div>
+              <div className="px-4 py-1 bg-indigo-100 rounded-full">
+                <p className="text-sm text-indigo-600">{dataEvent[0].EventCategory.name}</p>
+              </div>
+            </div>
+            <div className="flex flex-row flex-wrap gap-4">
+            {
+              dataEvent[0].EventImage.map((image: any, index: any) => (
+              <div key={index} className="flex flex-row justify-between items-center px-2 py-2 bg-blue-50 rounded-xl">
+                <div className="flex flex-row items-center">
+                  <img
+                    src={image.base64}
+                    alt={`Uploaded Image ${index + 1}`}
+                    className="w-14 h-14 rounded-xl mr-2 object-cover"
+                  />
+                </div>
+              </div>
+              ))
+            }
             </div>
           </div>
-          ))
-        }
-        </div>
-      </div>
+        )
+      }
 
       <div className="w-full col-span-full h-fit px-4 py-4 flex flex-col gap-4 rounded-xl mt-6">
         <div className="w-full flex justify-between">

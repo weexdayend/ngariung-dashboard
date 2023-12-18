@@ -34,9 +34,9 @@ export const sidebarData: MenuItem[] = [
       // { id: 35, label: 'Employee', icon: 'users', link: 'management/employee' },
       // { id: 36, label: 'Supplier', icon: 'office_building', link: 'management/supplier' },
       // { id: 37, label: 'Room', icon: 'home', link: 'management/room' },
-      { id: 38, label: 'Events', icon: 'calendar', link: 'management/events' },
-      { id: 38, label: 'Event Types', icon: 'beaker', link: 'management/event-type' },
-      { id: 38, label: 'Event Categories', icon: 'cliplist', link: 'management/event-category' },
+      { id: 34, label: 'Events', icon: 'calendar', link: 'management/events' },
+      { id: 35, label: 'Event Types', icon: 'beaker', link: 'management/event-type' },
+      { id: 36, label: 'Event Categories', icon: 'cliplist', link: 'management/event-category' },
       // { id: 38, label: 'Inventory', icon: 'home', link: 'management/inventory' },
     ]
   },
