@@ -120,7 +120,7 @@ function TableEvents({ dataEvent, dataTypes, dataCategories, onUpdated }: Props)
             <tbody className='w-full flex-1'>
               {
                 dataEvent.data.map((item: any, index: number) => (
-                  <tr className='w-full'>
+                  <tr key={index} className='w-full'>
                     <td className='px-3 py-3 text-left text-sm'>{item.EventDate}</td>
                     <td className='px-3 py-3 text-left text-sm'>
                       <Link href={`/management/events/${item.EventID}`} className="text-sm text-indigo-700">
