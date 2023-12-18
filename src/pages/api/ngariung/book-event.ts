@@ -50,13 +50,41 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // EventType.password matches, proceed with inserting into EventParticipations
-    const query = await supabase.from('EventParticipations').insert({
+    const querySecond = await supabase.from('EventParticipations').insert({
       EventID: EventID,
       UserID: UserID,
     });
 
-    if (query.error) {
+    if (querySecond.error) {
       throw new Error('Something went wrong!');
+    }
+
+    const queryThird = await supabase
+      .from('EventStages')
+      .select()
+      .eq('EventID', EventID)
+
+    const resQueryThird = queryThird.data
+
+    if (resQueryThird) {
+      for (const stage of resQueryThird) {
+        const queryFourth = await supabase
+          .from('StageCheckpoints')
+          .insert({
+            UserID: UserID,
+            EventID: EventID,
+            EventStageID: stage.EventStageID,
+            EventStageStatus: 0,
+            Automate: stage.Automate
+          });
+    
+        if (queryFourth.error) {
+          // Handle insertion error for the current stage
+          console.error(`Insertion error for EventStageID: ${stage.EventStageID}`, queryFourth.error);
+        }
+      }
+    } else {
+      console.error('No data retrieved from EventStages query');
     }
 
     // Set CORS headers in the response

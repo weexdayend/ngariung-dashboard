@@ -45,6 +45,39 @@ export interface Database {
         }
         Relationships: []
       }
+      CertificateWorkshop: {
+        Row: {
+          created_at: string
+          email: string | null
+          event: string | null
+          fullName: string | null
+          id: string
+          phone: string | null
+          serial: string | null
+          userInfo: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          event?: string | null
+          fullName?: string | null
+          id?: string
+          phone?: string | null
+          serial?: string | null
+          userInfo?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          event?: string | null
+          fullName?: string | null
+          id?: string
+          phone?: string | null
+          serial?: string | null
+          userInfo?: string | null
+        }
+        Relationships: []
+      }
       EventCategories: {
         Row: {
           CreatedAt: string
@@ -74,22 +107,19 @@ export interface Database {
           CreatedAt: string
           EventID: string | null
           EventParticipationID: number
-          EventStatus: boolean | null
-          UserID: string | null
+          UserID: string
         }
         Insert: {
           CreatedAt?: string
           EventID?: string | null
           EventParticipationID?: number
-          EventStatus?: boolean | null
-          UserID?: string | null
+          UserID: string
         }
         Update: {
           CreatedAt?: string
           EventID?: string | null
           EventParticipationID?: number
-          EventStatus?: boolean | null
-          UserID?: string | null
+          UserID?: string
         }
         Relationships: [
           {
@@ -98,13 +128,6 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "Events"
             referencedColumns: ["EventID"]
-          },
-          {
-            foreignKeyName: "EventParticipations_UserID_fkey"
-            columns: ["UserID"]
-            isOneToOne: false
-            referencedRelation: "Users"
-            referencedColumns: ["UserID"]
           }
         ]
       }
@@ -166,6 +189,7 @@ export interface Database {
       }
       EventStages: {
         Row: {
+          Automate: number
           CreatedAt: string
           EventID: string | null
           EventStageDesc: Json | null
@@ -174,6 +198,7 @@ export interface Database {
           UpdatedAt: string | null
         }
         Insert: {
+          Automate?: number
           CreatedAt?: string
           EventID?: string | null
           EventStageDesc?: Json | null
@@ -182,6 +207,7 @@ export interface Database {
           UpdatedAt?: string | null
         }
         Update: {
+          Automate?: number
           CreatedAt?: string
           EventID?: string | null
           EventStageDesc?: Json | null
@@ -320,34 +346,31 @@ export interface Database {
       }
       StageCheckpoints: {
         Row: {
+          Automate: number | null
           CreatedAt: string
           EventID: string | null
-          EventStageDesc: Json | null
           EventStageID: string | null
-          EventStageName: string | null
           EventStageStatus: number | null
           StageCheckpointID: string
-          UserID: string | null
+          UserID: string
         }
         Insert: {
+          Automate?: number | null
           CreatedAt?: string
           EventID?: string | null
-          EventStageDesc?: Json | null
           EventStageID?: string | null
-          EventStageName?: string | null
           EventStageStatus?: number | null
           StageCheckpointID?: string
-          UserID?: string | null
+          UserID: string
         }
         Update: {
+          Automate?: number | null
           CreatedAt?: string
           EventID?: string | null
-          EventStageDesc?: Json | null
           EventStageID?: string | null
-          EventStageName?: string | null
           EventStageStatus?: number | null
           StageCheckpointID?: string
-          UserID?: string | null
+          UserID?: string
         }
         Relationships: [
           {
@@ -363,13 +386,6 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "EventStages"
             referencedColumns: ["EventStageID"]
-          },
-          {
-            foreignKeyName: "StageCheckpoints_UserID_fkey"
-            columns: ["UserID"]
-            isOneToOne: false
-            referencedRelation: "Users"
-            referencedColumns: ["UserID"]
           }
         ]
       }

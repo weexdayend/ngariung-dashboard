@@ -21,20 +21,30 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const { EventID, UserID } = req.body
+    const {
+        EventID,
+        UserID,
+        name,
+        email,
+        phone,
+        serial,
+    } = req.body
 
-    const query = supabase
-      .from(`StageCheckpoints`)
-      .select(`*, EventStages(EventStageName)`)
-      .eq('EventID', EventID)
-      .eq('UserID', UserID)
-      .order('Automate', { ascending: true })
-    const TypeEvents: DbResult<typeof query> = await query;
+    await supabase
+        .from(`CertificateWorkshop`)
+        .insert({
+            email: email,
+            phone: phone,
+            fullName: name,
+            serial: serial,
+            event: EventID,
+            userInfo: UserID
+        })
 
     // Set CORS headers in the response
     res.setHeader('Access-Control-Allow-Origin', '*'); // You can replace * with your specific frontend URL
 
-    res.status(200).json({ data: TypeEvents.data, message: 'Get data event stages by id successfully' });
+    res.status(200).json({ message: 'Send information for certificate successfully' });
   } catch (error) {
     console.error('Supabase query error:', error);
     return res.status(401).json({ error: 'Authentication failed' });
