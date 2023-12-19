@@ -17,7 +17,7 @@ export default function FormStageCheck({ onClose, onUpdated, EventStageID, item,
   if (!item || !Array.isArray(item) || item.length === 0) {
     return (
       <div className="text-red-500">
-        <p>Error: No valid data provided. Please check the 'item' prop.</p>
+        <p>Error: No valid data provided. Please check the item prop.</p>
       </div>
     );
   }
