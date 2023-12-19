@@ -70,7 +70,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       for (const stage of resQueryThird) {
         const queryFourth = await supabase
           .from('StageCheckpoints')
-          .insert({
+          .upsert({
             UserID: UserID,
             EventID: EventID,
             EventStageID: stage.EventStageID,

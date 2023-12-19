@@ -142,6 +142,7 @@ export interface Database {
           EventImage: Json[] | null
           EventMaxUser: number | null
           EventName: string | null
+          EventRundown: Json | null
           EventStatus: boolean | null
           EventTime: Json | null
           EventType: Json | null
@@ -157,6 +158,7 @@ export interface Database {
           EventImage?: Json[] | null
           EventMaxUser?: number | null
           EventName?: string | null
+          EventRundown?: Json | null
           EventStatus?: boolean | null
           EventTime?: Json | null
           EventType?: Json | null
@@ -172,6 +174,7 @@ export interface Database {
           EventImage?: Json[] | null
           EventMaxUser?: number | null
           EventName?: string | null
+          EventRundown?: Json | null
           EventStatus?: boolean | null
           EventTime?: Json | null
           EventType?: Json | null

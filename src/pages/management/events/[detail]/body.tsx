@@ -12,8 +12,14 @@ import axios from 'axios'
 import {
   TrashIcon,
   PencilIcon,
-  ChevronDownIcon
+  ChevronDownIcon,
+  EyeIcon,
 } from '@heroicons/react/outline'
+
+import FormRundown from './form_rundown'
+import InfiniteScroll from 'react-infinite-scroll-component';
+import Pagination from '@/components/pagination'
+import FormStageCheck from './form_stagecheck'
 
 type Props = {
   onUpdated: () => void;
@@ -21,9 +27,10 @@ type Props = {
   dataEvent: any
   dataStage: any
   dataTrivia: any
+  stageList: any
 }
 
-export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTrivia }: Props) {
+export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTrivia, stageList }: Props) {
   const [updated, setUpdated] = useState(false)
 
   const [open, setOpen] = useState(false)
@@ -91,6 +98,25 @@ export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTri
     );
   }
 
+  const [selectedStage, setSelectedStage] = useState<string>('')
+  const [stageName, setSelectedStageName] = useState<string>('')
+
+  const uniqueUserIds = new Set();
+  stageList.forEach((list: any) => {
+    uniqueUserIds.add(list.user.id);
+  });
+  const countRegisteredUser = uniqueUserIds.size;
+
+  const countActiveUser = stageList.reduce((count: any, list: any) => {
+    const isActiveUser = list.stages.some((stage: any) => stage.status === 1);
+    return count + (isActiveUser ? 1 : 0);
+  }, 0);
+  
+  const countNotActiveUser = stageList.reduce((count: any, list: any) => {
+    const isNotActiveUser = list.stages.every((stage: any) => stage.status === 0);
+    return count + (isNotActiveUser ? 1 : 0);
+  }, 0);
+
   return (
     <div className="w-full grid grid-flow-row grid-cols-2 gap-4">
       <Toaster
@@ -111,21 +137,11 @@ export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTri
           <div className="w-full h-fit px-4 py-4 flex flex-col gap-4 rounded-xl">
             <p className="text-xs font-light text-zinc-600">{dataEvent[0].EventDate}, {dataEvent[0].EventTime.EventStart} - {dataEvent[0].EventTime.EventEnd}</p>
             <h1 className="text-lg font-bold">{dataEvent[0].EventName}</h1>
-            <p className="text-sm text-zinc-600">{dataEvent[0].EventDesc.desc}</p>
-            <p className="text-xs text-zinc-600">{dataEvent[0].EventDesc.venue} {dataEvent[0].EventDesc.address}</p>
-            <p className="text-sm text-zinc-600">Max Participant : {dataEvent[0].EventMaxUser}</p>
-            <div className="w-full flex flex-wrap flex-row gap-2">
-              <div className="px-4 py-1 bg-yellow-400 rounded-full">
-                <p className="text-sm text-indigo-600">{dataEvent[0].EventType.name}</p>
-              </div>
-              <div className="px-4 py-1 bg-indigo-100 rounded-full">
-                <p className="text-sm text-indigo-600">{dataEvent[0].EventCategory.name}</p>
-              </div>
-            </div>
+
             <div className="flex flex-row flex-wrap gap-4">
             {
               dataEvent[0].EventImage.map((image: any, index: any) => (
-              <div key={index} className="flex flex-row justify-between items-center px-2 py-2 bg-blue-50 rounded-xl">
+              <div key={index} className="flex flex-row justify-between items-center rounded-xl">
                 <div className="flex flex-row items-center">
                   <img
                     src={image.base64}
@@ -137,13 +153,51 @@ export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTri
               ))
             }
             </div>
+
+            <p className="text-sm text-zinc-600">{dataEvent[0].EventDesc.desc}</p>
+            <p className="text-xs text-zinc-600">{dataEvent[0].EventDesc.venue} {dataEvent[0].EventDesc.address}</p>
+            <p className="text-sm text-zinc-600">Max Participant : {dataEvent[0].EventMaxUser}</p>
+            <div className="w-full flex flex-wrap flex-row gap-2">
+              <div className="px-4 py-1 bg-yellow-400 rounded-full">
+                <p className="text-sm text-indigo-600">{dataEvent[0].EventType.name}</p>
+              </div>
+              <div className="px-4 py-1 bg-indigo-100 rounded-full">
+                <p className="text-sm text-indigo-600">{dataEvent[0].EventCategory.name}</p>
+              </div>
+            </div>
           </div>
         )
       }
 
+      <div className="w-full h-fit px-4 py-4 flex flex-col gap-4 rounded-xl">
+        <div className="w-full px-4 py-4 rounded-xl bg-indigo-900">
+          <p className="text-xl text-white">Total User Registered</p>
+          <p className="text-3xl text-white font-bold">{countRegisteredUser}</p>
+        </div>
+
+        <div className="flex flex-row gap-4">
+          <div className="w-full px-4 py-4 rounded-xl bg-gradient-to-t from-purple-500 to-indigo-600">
+            <p className="text-xl text-white">Vibrant Participant</p>
+            <p className="text-3xl text-white font-bold">{countActiveUser}</p>
+          </div>
+
+          <div className="w-full px-4 py-4 rounded-xl bg-gray-600">
+            <p className="text-xl text-white">Uninvolved</p>
+            <p className="text-3xl text-white font-bold">{countNotActiveUser}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="w-full col-span-full h-fit px-4 py-4 flex flex-col gap-4 rounded-xl mt-6">
+        <div className="w-full flex justify-between items-center">
+          <h1 className="text-3xl font-bold">Highlight</h1>
+          <p onClick={() => handleClick('rundown')} className="text-indigo-600">Add highlight event</p>
+        </div>
+      </div>
+
       <div className="w-full col-span-full h-fit px-4 py-4 flex flex-col gap-4 rounded-xl mt-6">
         <div className="w-full flex justify-between">
-          <h1 className="text-3xl font-bold">Stage or Level List</h1>
+          <h1 className="text-3xl font-bold">Stages</h1>
           <p onClick={() => handleClick('checkpoint')} className="text-indigo-600">Add new checkpoint</p>
         </div>
         <div className="grid grid-cols-3 gap-4">
@@ -163,41 +217,76 @@ export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTri
                 }
                 return 0;
               })
-              .map((item: any, index: any) => (
-              <div key={index} className="flex flex-col px-4 py-6 gap-2 bg-blue-50 rounded-xl shadow-lg shadow-indigo-500/10">
-                <div className="flex flex-row justify-between">
-                  <div className="w-full">
-                    <p className="text-sm text-indigo-600">{item.EventStageDesc.type}</p>
-                  </div>
+              .map((item: any, index: any) => {
+                // Count occurrences of child.status === 1 and child.status === 0 for all items
+                const countStatus1 = stageList.reduce((count: any, list: any) => {
+                  const status1Count = list.stages.filter((filter: any) => filter.status === 1 && filter.stage === item.EventStageID).length;
+                  return count + status1Count;
+                }, 0);
 
-                  <div className="flex flex-row gap-2">
-                    <PencilIcon onClick={() => editCheckpoint(item, 'checkpoint')} className="w-4 text-zinc-500" />
-                    <TrashIcon className="w-4 text-red-500" />
+                const countStatus0 = stageList.reduce((count: any, list: any) => {
+                  const status0Count = list.stages.filter((filter: any) => filter.status === 0 && filter.stage === item.EventStageID).length;
+                  return count + status0Count;
+                }, 0);
+
+                return(
+                  <div key={index} 
+                    className={`flex flex-col px-4 py-6 gap-2 bg-blue-50 rounded-xl shadow-lg shadow-indigo-500/10`}
+                  >
+                    <div className="flex flex-row justify-between">
+                      <div className="w-full">
+                        <p className="text-sm text-indigo-600">{item.EventStageDesc.type}</p>
+                      </div>
+
+                      <div className="flex flex-row gap-2">
+                        {
+                          countStatus1 && countStatus0 ? (
+                            <EyeIcon onClick={() => {
+                              setSelectedStage(item.EventStageID)
+                              setSelectedStageName(item.EventStageName)
+                              handleClick('stagecheck')
+                            }} className="w-4 text-zinc-500 cursor-pointer hover:text-indigo-500" />
+                          ) : (<></>)
+                        }
+                        <PencilIcon onClick={() => editCheckpoint(item, 'checkpoint')} className="w-4 text-zinc-500 hover:text-indigo-500 cursor-pointer" />
+                        <TrashIcon className="w-4 text-zinc-500 hover:text-red-500 cursor-pointer" />
+                      </div>
+                    </div>
+                    <p className="text-base font-bold">{item.EventStageName}</p>
+                    <p className="text-sm font-medium">{item.EventStageDesc.clue}</p>
+                    <div className="flex flex-row items-center justify-center px-2 pt-2.5 pb-1.5 rounded-lg bg-white">
+                      {
+                        item.EventStageDesc.type == 'Scan' ? (
+                          <>
+                            <p className="text-sm">Token - <span className="font-bold">{item.EventStageDesc.code}</span></p>
+                          </>
+                        ) : (
+                          <>
+                            <p className="text-sm">Qeustion - <span className="font-bold">{item.EventStageDesc.question}</span></p>
+                            <p className="text-sm">Answer - <span className="font-bold">{item.EventStageDesc.answer}</span></p>
+                          </>
+                        )
+                      }
+                    </div>
+                    <div className="w-full flex flex-row gap-2">
+                      <div className="flex-1 px-2 pt-2.5 pb-1.5 bg-indigo-500 rounded-lg">
+                        <p className="text-xs text-neutral-50">Check-in <span className="font-bold text-sm">{countStatus1}</span></p>
+                      </div>
+                      <div className="flex-1 px-2 pt-2.5 pb-1.5 bg-gray-500 rounded-lg">
+                        <p className="text-xs text-neutral-50">Not yet <span className="font-bold text-sm">{countStatus0}</span></p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <p className="text-base font-bold">{item.EventStageName}</p>
-                <p className="text-sm font-medium">{item.EventStageDesc.clue}</p>
-                {
-                  item.EventStageDesc.type == 'Scan' ? (
-                    <>
-                      <p className="text-sm font-medium">QR Code / Token : {item.EventStageDesc.code}</p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-sm font-medium">Qeustion : {item.EventStageDesc.question}</p>
-                      <p className="text-sm font-medium">Answer : {item.EventStageDesc.answer}</p>
-                    </>
-                  )
-                }
-              </div>
-            ))
+                )
+              }
+            )
           }
         </div>
       </div>
 
       <div className="w-full h-fit col-span-full px-4 py-4 flex flex-col gap-4 rounded-xl mt-6">
         <div className="w-full flex justify-between">
-          <h1 className="text-3xl font-bold">Trivia or Question List</h1>
+          <h1 className="text-3xl font-bold">Trivia</h1>
           <p onClick={() => handleClick('trivia')} className="text-indigo-600">Add new trivia</p>
         </div>
         <div className="grid grid-cols-4 gap-4">
@@ -324,6 +413,27 @@ export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTri
                   onUpdated={() => setUpdated(true)}
                   EventID={EventID}
                   item={editData}
+                />
+              )
+            }
+            {
+              form == 'rundown' && (
+                <FormRundown
+                  onClose={() => setOpen(false)}
+                  onUpdated={() => setUpdated(true)}
+                  EventID={EventID}
+                  item={editData}
+                />
+              )
+            }
+            {
+              form == 'stagecheck' && (
+                <FormStageCheck
+                  onClose={() => setOpen(false)}
+                  onUpdated={() => setUpdated(true)}
+                  EventStageID={selectedStage}
+                  item={stageList}
+                  stageName={stageName}
                 />
               )
             }

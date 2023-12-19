@@ -36,6 +36,7 @@
     "localforage": "^1.10.0",
     "moment": "^2.29.4",
     "mongodb": "^5.7.0",
+    "mongoose": "^8.0.3",
     "next": "^13.4.5",
     "ni18n": "^1.1.0",
     "nprogress": "^0.2.0",
