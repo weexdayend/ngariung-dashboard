@@ -13,7 +13,16 @@ export default function FormStageCheck({ onClose, onUpdated, EventStageID, item,
   const itemsPerPage = 5; // Adjust the number of items to display per page as needed
   const [currentPage, setCurrentPage] = useState(1);
 
-  const sortedItem = item && [...item].sort((a, b) => a.user.name.localeCompare(b.user.name));
+  // Check if 'item' exists before proceeding
+  if (!item || !Array.isArray(item) || item.length === 0) {
+    return (
+      <div className="text-red-500">
+        Error: No valid data provided. Please check the 'item' prop.
+      </div>
+    );
+  }
+
+  const sortedItem = [...item].sort((a, b) => a.user.name.localeCompare(b.user.name));
 
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
