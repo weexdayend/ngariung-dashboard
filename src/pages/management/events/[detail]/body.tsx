@@ -100,17 +100,17 @@ export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTri
   const [stageName, setSelectedStageName] = useState<string>('')
 
   const uniqueUserIds = new Set();
-  stageList.forEach((list: any) => {
+  stageList && stageList.forEach((list: any) => {
     uniqueUserIds.add(list.user.id);
   });
   const countRegisteredUser = uniqueUserIds.size;
 
-  const countActiveUser = stageList.reduce((count: any, list: any) => {
+  const countActiveUser = stageList && stageList.reduce((count: any, list: any) => {
     const isActiveUser = list.stages.some((stage: any) => stage.status === 1);
     return count + (isActiveUser ? 1 : 0);
   }, 0);
   
-  const countNotActiveUser = stageList.reduce((count: any, list: any) => {
+  const countNotActiveUser = stageList && stageList.reduce((count: any, list: any) => {
     const isNotActiveUser = list.stages.every((stage: any) => stage.status === 0);
     return count + (isNotActiveUser ? 1 : 0);
   }, 0);
@@ -425,7 +425,7 @@ export default function Body({ onUpdated, EventID, dataEvent, dataStage, dataTri
               )
             }
             {
-              form == 'stagecheck' && (
+              form == 'stagecheck' && stageList && (
                 <FormStageCheck
                   onClose={() => setOpen(false)}
                   onUpdated={() => setUpdated(true)}

@@ -22,17 +22,6 @@ export default function FormStageCheck({ onClose, onUpdated, EventStageID, item,
   // Slice the array to get only the items for the current page
   const paginatedItem = sortedItem.slice(startIndex, endIndex);
 
-  // Count occurrences of child.status === 1 and child.status === 0 for all items
-  const countStatus1 = sortedItem.reduce((count: any, list: any) => {
-    const status1Count = list.stages.filter((filter: any) => filter.status === 1 && filter.stage === EventStageID).length;
-    return count + status1Count;
-  }, 0);
-
-  const countStatus0 = sortedItem.reduce((count: any, list: any) => {
-    const status0Count = list.stages.filter((filter: any) => filter.status === 0 && filter.stage === EventStageID).length;
-    return count + status0Count;
-  }, 0);
-
   return (
     <div className="space-y-12">
       <div className="space-y-12">
