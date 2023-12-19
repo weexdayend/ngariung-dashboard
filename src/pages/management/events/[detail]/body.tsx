@@ -17,8 +17,6 @@ import {
 } from '@heroicons/react/outline'
 
 import FormRundown from './form_rundown'
-import InfiniteScroll from 'react-infinite-scroll-component';
-import Pagination from '@/components/pagination'
 import FormStageCheck from './form_stagecheck'
 
 type Props = {

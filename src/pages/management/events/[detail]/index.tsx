@@ -99,7 +99,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const { detail } = query;
 
     const fetchListUser = async () => {
-      const endpoint = `http://localhost:3000/api/users/get-users`;
+      const endpoint = `https://sakapulse.vercel.app/api/users/get-users`;
       const body: any = {
         EventID: detail
       };
