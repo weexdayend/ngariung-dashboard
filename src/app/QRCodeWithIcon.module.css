@@ -1,0 +1,5 @@
+/* components/QRCodeWithIcon.module.css */
+.qrCodeContainer {
+  position: relative;
+  width: fit-content;
+}

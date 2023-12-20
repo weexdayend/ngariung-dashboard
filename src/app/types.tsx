@@ -29,6 +29,7 @@ import {
   CollectionIcon,
   CloudDownloadIcon,
   CalendarIcon,
+  QrcodeIcon,
 } from '@heroicons/react/outline'
 
 export interface SubMenuItem {
@@ -75,4 +76,5 @@ export const Heroicons = {
   collection: CollectionIcon,
   cloudown: CloudDownloadIcon,
   calendar: CalendarIcon,
+  qr: QrcodeIcon,
 };

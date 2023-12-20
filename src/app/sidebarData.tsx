@@ -35,8 +35,9 @@ export const sidebarData: MenuItem[] = [
       // { id: 36, label: 'Supplier', icon: 'office_building', link: 'management/supplier' },
       // { id: 37, label: 'Room', icon: 'home', link: 'management/room' },
       { id: 34, label: 'Events', icon: 'calendar', link: 'management/events' },
-      { id: 35, label: 'Event Types', icon: 'beaker', link: 'management/event-type' },
-      { id: 36, label: 'Event Categories', icon: 'cliplist', link: 'management/event-category' },
+      { id: 35, label: 'Qr Generator', icon: 'qr', link: 'management/qr-generator' },
+      // { id: 35, label: 'Event Types', icon: 'beaker', link: 'management/event-type' },
+      // { id: 36, label: 'Event Categories', icon: 'cliplist', link: 'management/event-category' },
       // { id: 38, label: 'Inventory', icon: 'home', link: 'management/inventory' },
     ]
   },
