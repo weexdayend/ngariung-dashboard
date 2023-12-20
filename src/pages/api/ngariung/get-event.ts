@@ -23,7 +23,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const query = supabase
         .from(`Events`)
-        .select(`EventID, EventName, EventDesc, EventDate, EventTime, EventType, EventImage, Businesses(BusinessImage)`);
+        .select(`EventID, EventName, EventDesc, EventDate, EventTime, EventType, EventImage, EventStatus, Businesses(BusinessImage)`);
     const TypeEvents: DbResult<typeof query> = await query;
 
     // Set CORS headers in the response
